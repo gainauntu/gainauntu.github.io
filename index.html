@@ -20,177 +20,87 @@
     body{
       margin:0; font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
       color:var(--text);
-      background:
-        radial-gradient(1200px 800px at 10% -10%, #0f1622 0, #0b0f14 40%, #0b0f14 100%),
-        radial-gradient(800px 600px at 120% 0%, rgba(77,163,255,.08), transparent 60%),
-        radial-gradient(800px 600px at -20% 100%, rgba(0,230,184,.06), transparent 60%);
-      zoom:1.07;
-      perspective: 1200px;
+      background:#0b0f14;
+      overflow-x:hidden;
+      position:relative;
     }
-    @supports not (zoom:1){
-      .wrap{ transform: scale(1.07); transform-origin: top center; width: calc(100% / 1.07); }
+    /* Subtle 3D parallax glow layer */
+    body::before{
+      content:"";position:fixed;inset:-50%;z-index:-1;
+      background:radial-gradient(800px 600px at 20% 15%, rgba(77,163,255,.12), transparent 70%),
+                 radial-gradient(800px 600px at 80% 85%, rgba(0,230,184,.1), transparent 70%);
+      transform:translate3d(0,0,0);
+      transition:background 1.2s ease;
     }
-    .wrap{max-width:980px;margin:0 auto;padding:24px 18px 64px; position:relative}
+    @supports (zoom:1){body{zoom:1.07}} 
+    @supports not (zoom:1){.wrap{transform:scale(1.07);transform-origin:top center;width:calc(100%/1.07)}}
+    .wrap{max-width:980px;margin:0 auto;padding:24px 18px 64px;position:relative;}
 
     header{
       display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px;
       background:linear-gradient(180deg, rgba(18,25,34,.7), rgba(18,25,34,.6));
-      border:1px solid var(--border);border-radius:16px;position:sticky;top:10px;z-index:6;
+      border:1px solid var(--border);border-radius:16px;position:sticky;top:10px;z-index:5;
       backdrop-filter:saturate(140%) blur(8px);
-      box-shadow: 0 10px 30px rgba(0,0,0,.35);
-      outline: 1px solid rgba(77,163,255,.08);
-      transition: transform .25s ease, opacity .25s ease;
+      box-shadow:0 10px 30px rgba(0,0,0,.35);
     }
     .id{display:flex;align-items:center;gap:14px;}
     .avatar{width:48px;height:48px;border-radius:12px;
-      background:
-        conic-gradient(from 0deg, rgba(77,163,255,.35), rgba(0,230,184,.25), rgba(138,125,255,.3), rgba(77,163,255,.35)),
-        linear-gradient(135deg,#2a3a4f,#1f2a38);
+      background:conic-gradient(from 0deg, rgba(77,163,255,.35), rgba(0,230,184,.25), rgba(138,125,255,.3), rgba(77,163,255,.35)),
+                 linear-gradient(135deg,#2a3a4f,#1f2a38);
       display:grid;place-items:center;font-weight:700;filter:var(--ring);
+      animation: spinAccent 8s linear infinite;
     }
+    @keyframes spinAccent{to{transform:rotate(1turn)}}
     .id h1{font-size:20px;line-height:1.2;margin:0}
     .id p{margin:0;color:var(--muted);font-size:13px}
     .links a{color:var(--accent)}
     .right-rail{display:flex;flex-direction:column;gap:10px;align-items:flex-end}
-    .lang-group{display:flex; flex-direction:column; align-items:flex-start; gap:10px;}
+    .lang-group{display:flex;flex-direction:column;align-items:flex-start;gap:10px;}
 
-    .lang-switch, .theme-switch{
-      display:inline-flex;border:1px solid var(--border);background:var(--chip);
-      border-radius:14px;padding:5px;gap:5px;position:relative;overflow:hidden;
-    }
-    .lang-switch:before, .theme-switch:before{
-      content:""; position:absolute; inset:-150% -60%; background:
-      radial-gradient(600px 600px at 15% 20%, rgba(77,163,255,.07), transparent 50%),
-      radial-gradient(400px 400px at 85% 30%, rgba(0,230,184,.07), transparent 50%);
-      pointer-events:none; filter:blur(10px);
-      transition:transform .5s ease;
-    }
-    .lang-switch button, .theme-switch button{
-      appearance:none;border:0;padding:9px 13px;border-radius:10px;background:transparent;color:var(--text);
-      font-weight:600;cursor:pointer;font-size:13px;letter-spacing:.2px;transition: transform .12s ease, background .2s ease, box-shadow .15s ease;
-    }
-    .lang-switch button:hover, .theme-switch button:hover{ transform: translateY(-1px); }
-    .lang-switch button:focus-visible, .theme-switch button:focus-visible{ box-shadow: var(--focus); outline: none; }
-    .lang-switch button.active, .theme-switch button.active{
-      background: linear-gradient(135deg, var(--accent), var(--accent-3));
-      color:#001428; box-shadow: 0 0 0 1px rgba(0,0,0,.25) inset;
-      text-shadow: 0 1px 0 rgba(255,255,255,.25);
+    .lang-switch,.theme-switch{display:inline-flex;border:1px solid var(--border);background:var(--chip);
+      border-radius:14px;padding:5px;gap:5px;position:relative;overflow:hidden;}
+    .lang-switch button,.theme-switch button{appearance:none;border:0;padding:9px 13px;border-radius:10px;
+      background:transparent;color:var(--text);font-weight:600;cursor:pointer;font-size:13px;
+      transition:transform .12s ease,background .2s ease,box-shadow .15s ease;}
+    .lang-switch button:hover,.theme-switch button:hover{transform:translateY(-1px);}
+    .lang-switch button.active,.theme-switch button.active{
+      background:linear-gradient(135deg,rgba(77,163,255,.9),rgba(0,230,184,.9));color:#001428;
+      box-shadow:0 0 0 1px rgba(0,0,0,.25) inset;text-shadow:0 1px 0 rgba(255,255,255,.25);
     }
 
-    .actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
-    .btn{
-      appearance:none; border:1px solid var(--border); background:var(--chip); color:var(--text);
-      padding:8px 12px; border-radius:10px; cursor:pointer; font-weight:600; font-size:13px;
-      transition: transform .12s ease, box-shadow .15s ease, background .2s ease;
-    }
-    .btn:hover{ transform: translateY(-1px); }
-    .btn:focus-visible{ outline:none; box-shadow: var(--focus); }
-    .btn-accent{ background:linear-gradient(135deg, var(--accent), var(--accent-3)); color:#001428; }
+    .actions{display:flex;gap:8px;}
+    .btn{appearance:none;border:1px solid var(--border);background:var(--chip);color:var(--text);
+      padding:8px 12px;border-radius:10px;cursor:pointer;font-weight:600;font-size:13px;
+      transition:transform .12s ease,box-shadow .15s ease,background .2s ease;}
+    .btn:hover{transform:translateY(-1px);}
+    .btn-accent{background:linear-gradient(135deg,rgba(77,163,255,.9),rgba(0,230,184,.9));color:#001428;}
 
     main{margin-top:18px;display:grid;gap:16px}
     section{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:12px}
-
-    [data-lang]{display:none; opacity:0; transform: translateY(6px); transition: opacity .28s ease, transform .28s ease;}
-    [data-lang][data-show="true"]{display:block; opacity:1; transform: translateY(0);}
-
-    .viewer{position:relative; transform-style: preserve-3d;}
+    [data-lang]{display:none;opacity:0;transform:translateY(6px);transition:opacity .28s ease,transform .28s ease;}
+    [data-lang][data-show="true"]{display:block;opacity:1;transform:translateY(0);}
     .viewer .pdf-wrap{position:relative;border-radius:12px;overflow:hidden;background:transparent}
-    .viewer .pdf-topfade{position:absolute;inset:0 auto auto 0;height:16px;width:100%;pointer-events:none;background:linear-gradient(to bottom, #0b0f14, rgba(0,0,0,0))}
-    .viewer .pdf-frame{width:100%;height:84vh;border:0;display:block;opacity:0;transition:opacity .25s ease; transform: translateZ(0.01px);}
+    .viewer .pdf-frame{width:100%;height:84vh;border:0;display:block;opacity:0;transition:opacity .25s ease}
     .viewer .pdf-frame.ready{opacity:1}
-    .viewer.viewer-dark .pdf-frame{filter: invert(0.92) hue-rotate(180deg)}
-    .viewer.viewer-dark .pdf-topfade{background:linear-gradient(to bottom, #0b0f14, rgba(0,0,0,0))}
+    .viewer.viewer-dark .pdf-frame{filter:invert(0.92) hue-rotate(180deg)}
 
-    .viewer .iframe-shell{border:1px solid var(--border);border-radius:12px;overflow:hidden;background:#fff; padding:20px 24px; position:relative}
+    .viewer .iframe-shell{border:1px solid var(--border);border-radius:12px;overflow:hidden;background:#fff;padding:20px 24px;position:relative}
     .viewer.viewer-dark .iframe-shell{background:#0f1622;}
-    .viewer .kr{width:100%;height:84vh;border:0;display:block;background:transparent; transform: translateZ(0.01px)}
-    .viewer.viewer-dark .kr{filter: invert(0.92) hue-rotate(180deg)}
-
-    .loader{
-      position:absolute; inset:0; display:grid; place-items:center; background:linear-gradient(180deg, rgba(15,22,34,.35), rgba(15,22,34,.2));
-      pointer-events:none; opacity:0; transform: scale(.98); transition: opacity .25s ease, transform .25s ease;
-    }
-    .loader.show{ opacity:1; transform: scale(1); }
-    .ring{
-      width:36px;height:36px;border-radius:50%;
-      background: conic-gradient(from 0deg, var(--accent), var(--accent-2), var(--accent-3), var(--accent));
-      -webkit-mask: radial-gradient(farthest-side, transparent 55%, #000 56%);
-              mask: radial-gradient(farthest-side, transparent 55%, #000 56%);
-      animation: spin 1s linear infinite;
-      filter:var(--ring);
-    }
-    @keyframes spin{ to{ transform: rotate(1turn); } }
-
-    .parallax-glow{
-      position: fixed;
-      left: 50%; top: 50%;
-      width: 900px; height: 900px;
-      margin-left: -450px; margin-top: -450px;
-      pointer-events: none; z-index: 0;
-      background:
-        radial-gradient(closest-side,
-          color-mix(in srgb, var(--accent) 35%, transparent),
-          transparent 70%);
-      filter: blur(60px) saturate(120%);
-      opacity: .45;
-      transform: translate3d(0,0,0) scale(1);
-      transition: opacity .25s ease;
-    }
-
-    .foot{margin-top:24px;color:var(--muted);font-size:12px;text-align:center; position:relative; z-index:1}
-
-    .toast{
-      position: fixed; bottom: 18px; right: 18px; z-index: 20;
-      display: grid; gap: 8px;
-    }
-    .toast .t{
-      background: linear-gradient(180deg, rgba(18,25,34,.95), rgba(18,25,34,.88));
-      border: 1px solid var(--border); color: var(--text); font-size: 13px;
-      padding: 10px 12px; border-radius: 10px; box-shadow: 0 6px 20px rgba(0,0,0,.35);
-      opacity: 0; transform: translateY(6px); transition: opacity .2s ease, transform .2s ease;
-    }
-    .toast .t.show{ opacity: 1; transform: translateY(0); }
-
-    .progress{
-      position: fixed; inset: 0 0 auto 0; height: 3px; z-index: 10; pointer-events:none;
-      background: linear-gradient(90deg, var(--accent), var(--accent-3));
-      transform-origin: 0 50%; transform: scaleX(0);
-      box-shadow: 0 0 12px rgba(77,163,255,.5);
-    }
-
-    @media (prefers-reduced-motion: reduce){
-      .lang-switch button:hover, .theme-switch button:hover{ transform:none; }
-      [data-lang]{ transition:none; }
-      .viewer .pdf-frame{ transition:none; }
-      .loader{ transition:none; }
-      .toast .t{ transition:none; }
-      .parallax-glow{ display:none; }
-    }
-
-    @media print{
-      :root{ --text:#000; --rule:#ccc; }
-      body{ zoom:1; background:#fff; color:#000; }
-      header, .loader, .pdf-topfade, .actions, .toast, .progress, .parallax-glow{ display:none !important; }
-      .wrap{ max-width:100%; padding:0; }
-      main{ margin:0; gap:0; }
-      section{ border:0; border-radius:0; padding:0; }
-      [data-lang]{ display:block !important; opacity:1 !important; transform:none !important; }
-      .viewer .pdf-frame, .viewer .kr{ height:auto; min-height:0; filter:none !important; }
-      .viewer .iframe-shell{ background:#fff; padding:0; border:0; }
-      .foot{ color:#444; }
-    }
+    .viewer .kr{width:100%;height:84vh;border:0;display:block;background:transparent}
+    .viewer.viewer-dark .kr{filter:invert(0.92) hue-rotate(180deg)}
+    .loader{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none;opacity:0;transform:scale(.98);transition:opacity .25s ease,transform .25s ease;}
+    .loader.show{opacity:1;transform:scale(1);}
+    .ring{width:36px;height:36px;border-radius:50%;background:conic-gradient(from 0deg,var(--accent),var(--accent-2),var(--accent-3),var(--accent));-webkit-mask:radial-gradient(farthest-side,transparent 55%,#000 56%);mask:radial-gradient(farthest-side,transparent 55%,#000 56%);animation:spin 1s linear infinite;filter:var(--ring);}
+    @keyframes spin{to{transform:rotate(1turn)}}
+    .foot{margin-top:24px;color:var(--muted);font-size:12px;text-align:center}
   </style>
-
   <style id="han-font-fix">
-    #btn-ko { font-family: 'Noto Sans KR', system-ui, sans-serif !important; line-height: 1; position: relative; top: -1px; }
+    #btn-ko {font-family:'Noto Sans KR',system-ui,sans-serif!important;line-height:1;position:relative;top:-1px;}
   </style>
 </head>
 <body>
-  <div class="progress" id="bar"></div>
-  <div class="parallax-glow" id="glow" aria-hidden="true"></div>
-
   <div class="wrap">
-    <header id="hdr">
+    <header>
       <div class="id">
         <div class="avatar">AG</div>
         <div>
@@ -207,18 +117,18 @@
 
       <div class="right-rail">
         <div class="lang-group">
-          <div class="lang-switch" role="group" aria-label="Language toggle">
-            <button id="btn-en" class="active" data-target="en" aria-pressed="true" title="English">EN</button>
-            <button id="btn-ko" data-target="ko" aria-pressed="false" title="한국어">한</button>
+          <div class="lang-switch">
+            <button id="btn-en" class="active" data-target="en">EN</button>
+            <button id="btn-ko" data-target="ko">한</button>
           </div>
-          <div class="theme-switch" role="group" aria-label="Viewer theme toggle">
-            <button id="theme-light" aria-pressed="false" title="Light">☀️</button>
-            <button id="theme-dark" aria-pressed="false" title="Dark">🌙</button>
+          <div class="theme-switch">
+            <button id="theme-light">☀️</button>
+            <button id="theme-dark">🌙</button>
           </div>
         </div>
         <div class="actions">
-          <button id="btn-copy-email" class="btn" title="Copy email">Copy Email</button>
-          <a id="btn-download-pdf" class="btn btn-accent" title="Download PDF" href="./CV_AUNTU_GAIN.pdf" download>Download PDF</a>
+          <button id="btn-copy-email" class="btn">Copy Email</button>
+          <a id="btn-download-pdf" class="btn btn-accent" href="CV_AUNTU_GAIN.pdf" download>Download PDF</a>
         </div>
       </div>
     </header>
@@ -229,307 +139,123 @@
         <section data-lang="en" data-show="true" id="en-cv">
           <div class="pdf-wrap">
             <div class="loader show" id="pdfLoader"><div class="ring"></div></div>
-            <div class="pdf-topfade"></div>
             <iframe class="pdf-frame" id="pdfFrame"
-              src="./CV_AUNTU_GAIN.pdf#toolbar=0&navpanes=0&statusbar=0&view=FitH"
+              src="CV_AUNTU_GAIN.pdf#toolbar=0&navpanes=0&statusbar=0&view=FitH"
               title="CV PDF"></iframe>
-
-            <div id="pdfFallback" style="display:none; padding:12px;">
-              Couldn’t display the PDF inline.
-              <a href="./CV_AUNTU_GAIN.pdf" target="_blank" rel="noopener">Open CV_AUNTU_GAIN.pdf</a>
-            </div>
           </div>
         </section>
 
-        <!-- Korean (External HTML) -->
+        <!-- Korean -->
         <section data-lang="ko" data-show="false" id="kr">
           <div class="iframe-shell">
             <div class="loader" id="krLoader"><div class="ring"></div></div>
             <iframe id="krFrame" class="kr" title="한국어 페이지"></iframe>
-
-            <div id="krFallback" style="display:none; padding:12px;">
-              Couldn’t display the Korean page inline.
-              <a href="./KOREAN_AUNTU.html" target="_blank" rel="noopener">Open KOREAN_AUNTU.html</a>
-            </div>
           </div>
         </section>
       </div>
-
       <div class="foot">© <span id="y"></span> GAIN AUNTU</div>
     </main>
   </div>
 
-  <!-- html2pdf (for https auto-download path if needed later) -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-
 <script>
 (function(){
-  const $ = sel => document.querySelector(sel);
+  const btnEn=document.getElementById('btn-en'),btnKo=document.getElementById('btn-ko'),
+  themeLight=document.getElementById('theme-light'),themeDark=document.getElementById('theme-dark'),
+  viewer=document.getElementById('viewer'),pdfFrame=document.getElementById('pdfFrame'),
+  krFrame=document.getElementById('krFrame'),pdfLoader=document.getElementById('pdfLoader'),
+  krLoader=document.getElementById('krLoader'),btnCopyEmail=document.getElementById('btn-copy-email'),
+  btnDownloadPDF=document.getElementById('btn-download-pdf');
+  const KR_URL='KOREAN_AUNTU.html';
+  let krLoaded=false;
 
-  const btnEn = $('#btn-en');
-  const btnKo = $('#btn-ko');
-  const themeLight = $('#theme-light');
-  const themeDark = $('#theme-dark');
-  const viewer = $('#viewer');
-  const pdfFrame = $('#pdfFrame');
-  const krFrame = $('#krFrame');
-  const pdfLoader = $('#pdfLoader');
-  const krLoader = $('#krLoader');
-  const btnCopyEmail = $('#btn-copy-email');
-  const btnDownloadPDF = $('#btn-download-pdf');
-  const bar = $('#bar');
-  const glow = $('#glow');
-
-  const pdfFallback = $('#pdfFallback');
-  const krFallback  = $('#krFallback');
-
-  const KR_URL = './KOREAN_AUNTU.html';
-  let krLoaded = false;
-  let pdfRetried = false; // ensure we retry only once
-
-  // Toasts
-  const toastBox = (function(){
-    const box = document.createElement('div');
-    box.className = 'toast';
-    document.body.appendChild(box);
-    return box;
-  })();
-  function toast(msg){
-    const t = document.createElement('div');
-    t.className = 't';
-    t.textContent = msg;
-    toastBox.appendChild(t);
-    requestAnimationFrame(()=> t.classList.add('show'));
-    setTimeout(()=>{
-      t.classList.remove('show');
-      setTimeout(()=> t.remove(), 250);
-    }, 1500);
-  }
-
-  // Language / Theme
   function showLang(lang){
-    localStorage.setItem('ga_lang', lang);
-    btnEn.classList.toggle('active', lang==='en'); btnEn.setAttribute('aria-pressed', String(lang==='en'));
-    btnKo.classList.toggle('active', lang==='ko'); btnKo.setAttribute('aria-pressed', String(lang==='ko'));
-    const en = document.querySelector('section[data-lang="en"]');
-    const ko = document.querySelector('section[data-lang="ko"]');
-    en.setAttribute('data-show', String(lang==='en'));
-    ko.setAttribute('data-show', String(lang==='ko'));
-    btnDownloadPDF.textContent = (lang === 'ko') ? 'Print Korean PDF' : 'Download PDF';
-
+    localStorage.setItem('ga_lang',lang);
+    btnEn.classList.toggle('active',lang==='en');btnKo.classList.toggle('active',lang==='ko');
+    document.querySelectorAll('[data-lang]').forEach(e=>e.setAttribute('data-show',String(e.dataset.lang===lang)));
     if(lang==='en') tryReloadPDF();
-    if(lang==='ko' && !krLoaded){
-      try{
-        if(krLoader) krLoader.classList.add('show');
-        krFrame.removeAttribute('src');
-        krFrame.setAttribute('src', KR_URL);
-        krLoaded = true;
-        setTimeout(function(){ syncKRTheme(); resizeKR(); }, 250);
-      }catch(e){ console.error(e); }
+    if(lang==='ko'&&!krLoaded){
+      if(krLoader)krLoader.classList.add('show');
+      krFrame.src=KR_URL;krLoaded=true;
+      setTimeout(()=>{syncKRTheme();resizeKR();},250);
     }
   }
 
   function applyViewerTheme(theme){
-    localStorage.setItem('ga_viewer_theme', theme);
-    const isDark = theme === 'dark';
-    viewer.classList.toggle('viewer-dark', isDark);
-    themeLight.classList.toggle('active', !isDark); themeLight.setAttribute('aria-pressed', String(!isDark));
-    themeDark.classList.toggle('active', isDark);  themeDark.setAttribute('aria-pressed', String(isDark));
+    localStorage.setItem('ga_viewer_theme',theme);
+    const dark=theme==='dark';
+    viewer.classList.toggle('viewer-dark',dark);
+    themeLight.classList.toggle('active',!dark);
+    themeDark.classList.toggle('active',dark);
     syncKRTheme();
   }
 
-  (function initThemeFirstVisit(){
-    var saved = localStorage.getItem('ga_viewer_theme');
-    if(!saved){
-      try{
-        var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-        applyViewerTheme(prefersDark ? 'dark' : 'light');
-      }catch(e){}
-    }
-  })();
-
   function tryReloadPDF(){
-    try{
-      if(pdfFrame){
-        const src = pdfFrame.getAttribute('src');
-        if(src) pdfFrame.setAttribute('src', src); else pdfFrame.src = pdfFrame.src;
-      }
-    }catch(e){}
+    const s=pdfFrame.getAttribute('src');if(s)pdfFrame.setAttribute('src',s);
   }
 
   function syncKRTheme(){
     try{
-      const isDark = viewer.classList.contains('viewer-dark');
-      const doc = krFrame.contentDocument || krFrame.contentWindow.document;
-      if(doc && doc.documentElement){
-        doc.documentElement.classList.toggle('theme-dark', isDark);
-        doc.documentElement.classList.toggle('theme-light', !isDark);
+      const dark=viewer.classList.contains('viewer-dark');
+      const doc=krFrame.contentDocument||krFrame.contentWindow.document;
+      if(doc&&doc.documentElement){
+        doc.documentElement.classList.toggle('theme-dark',dark);
+        doc.documentElement.classList.toggle('theme-light',!dark);
       }
     }catch(e){}
   }
-
   function resizeKR(){
     try{
-      const doc = krFrame.contentDocument || krFrame.contentWindow.document;
-      const h = Math.max( doc.body.scrollHeight, doc.documentElement.scrollHeight );
-      if(h && h > 600){ krFrame.style.height = Math.min(h + 20, window.innerHeight * 1.5) + 'px'; }
+      const d=krFrame.contentDocument||krFrame.contentWindow.document;
+      const h=Math.max(d.body.scrollHeight,d.documentElement.scrollHeight);
+      if(h>600)krFrame.style.height=Math.min(h+20,window.innerHeight*1.5)+'px';
     }catch(e){}
   }
 
-  // Listeners
-  btnEn.addEventListener('click', function(){ showLang('en'); });
-  btnKo.addEventListener('click', function(){ showLang('ko'); });
-  themeLight.addEventListener('click', function(){ applyViewerTheme('light'); toast('Light theme'); });
-  themeDark.addEventListener('click', function(){ applyViewerTheme('dark'); toast('Dark theme'); });
+  btnEn.onclick=()=>showLang('en');
+  btnKo.onclick=()=>showLang('ko');
+  themeLight.onclick=()=>applyViewerTheme('light');
+  themeDark.onclick=()=>applyViewerTheme('dark');
+  if(krFrame)krFrame.addEventListener('load',()=>{if(krLoader)krLoader.classList.remove('show');syncKRTheme();resizeKR();});
+  window.addEventListener('resize',resizeKR);
 
+  if(btnCopyEmail)btnCopyEmail.onclick=()=>{navigator.clipboard.writeText('gainauntu@gmail.com');btnCopyEmail.textContent='Copied!';setTimeout(()=>btnCopyEmail.textContent='Copy Email',1200);};
+
+  // === Enhanced PDF loader with retry & fallback ===
   if(pdfFrame){
-    // Time-out fallback if viewer stays blank
-    let pdfReadyTimer = setTimeout(() => {
-      if (!pdfFrame.classList.contains('ready')) {
-        if (pdfLoader) pdfLoader.classList.remove('show');
-        if (pdfFallback) pdfFallback.style.display = 'block';
-        console.warn('PDF inline render timed out; showing fallback link.');
+    let retried=false;
+    const fallback=document.createElement('div');
+    fallback.style='display:none;text-align:center;margin-top:10px;';
+    fallback.innerHTML=`<a href="CV_AUNTU_GAIN.pdf" target="_blank">Open PDF manually</a>`;
+    pdfFrame.parentElement.appendChild(fallback);
+    const finish=()=>{clearTimeout(timer);if(pdfLoader)pdfLoader.classList.remove('show');pdfFrame.classList.add('ready');};
+    pdfFrame.addEventListener('load',finish);
+    let timer=setTimeout(()=>{
+      if(!pdfFrame.classList.contains('ready')){
+        if(!retried){
+          retried=true;
+          console.warn('PDF viewer not ready — retrying once...');
+          const s=pdfFrame.getAttribute('src');
+          pdfFrame.removeAttribute('src');
+          setTimeout(()=>{pdfFrame.setAttribute('src',s);},500);
+          timer=setTimeout(()=>{
+            if(!pdfFrame.classList.contains('ready')){
+              console.warn('PDF inline render still timed out; showing fallback link.');
+              if(pdfLoader)pdfLoader.classList.remove('show');
+              fallback.style.display='block';
+            }
+          },10000);
+        }else{
+          if(pdfLoader)pdfLoader.classList.remove('show');
+          fallback.style.display='block';
+        }
       }
-    }, 10000);
-
-    pdfFrame.addEventListener('load', function(){
-      clearTimeout(pdfReadyTimer);
-      pdfFrame.classList.add('ready');
-      if(pdfLoader) pdfLoader.classList.remove('show');
-      toast('CV loaded');
-    });
-
-    pdfFrame.addEventListener('error', ()=>{
-      // Retry once after a short delay (cache-bust to avoid stale 404 from CDN)
-      if (!pdfRetried) {
-        pdfRetried = true;
-        setTimeout(()=>{
-          const src = pdfFrame.getAttribute('src') || './CV_AUNTU_GAIN.pdf';
-          const bust = src + (src.includes('?') ? '&' : '?') + 't=' + Date.now();
-          console.warn('Retrying PDF load after delay with cache-bust...');
-          if (pdfLoader) pdfLoader.classList.add('show');
-          pdfFrame.setAttribute('src', bust);
-        }, 1500);
-        return;
-      }
-      if (pdfLoader) pdfLoader.classList.remove('show');
-      if (pdfFallback) pdfFallback.style.display = 'block';
-      console.error('PDF iframe error: giving up after one retry.');
-    });
+    },10000);
   }
 
-  if(krFrame){
-    krFrame.addEventListener('load', function(){
-      if(krLoader) krLoader.classList.remove('show');
-      syncKRTheme(); resizeKR();
-      if ((localStorage.getItem('ga_lang') || 'en') === 'ko') toast('Korean page ready');
-    });
-    krFrame.addEventListener('error', (e) => {
-      if (krLoader) krLoader.classList.remove('show');
-      if (krFallback) krFallback.style.display = 'block';
-      console.error('KR iframe error:', e);
-    });
-  }
-
-  window.addEventListener('resize', resizeKR);
-
-  // Copy email
-  const copyDone = ()=>{ btnCopyEmail.textContent='Copied!'; setTimeout(()=> btnCopyEmail.textContent='Copy Email', 1200); toast('Email copied'); };
-  btnCopyEmail.addEventListener('click', function(){
-    try{
-      navigator.clipboard.writeText('gainauntu@gmail.com').then(copyDone, ()=>{
-        const t = document.createElement('textarea');
-        t.value = 'gainauntu@gmail.com'; document.body.appendChild(t); t.select(); document.execCommand('copy'); t.remove(); copyDone();
-      });
-    }catch(e){ copyDone(); }
-  });
-
-  // Progress bar
-  function onScroll(){
-    const h = document.documentElement;
-    const max = h.scrollHeight - h.clientHeight;
-    const p = max > 0 ? (h.scrollTop / max) : 0;
-    bar.style.transform = 'scaleX(' + p + ')';
-  }
-  document.addEventListener('scroll', onScroll, { passive:true });
-  onScroll();
-
-  // Parallax glow + tiny viewer tilt
-  let raf = null, cx = innerWidth/2, cy = innerHeight/2, mx = cx, my = cy;
-  window.addEventListener('mousemove', (e)=>{ mx=e.clientX; my=e.clientY; if(!raf){ raf=requestAnimationFrame(updateParallax);} }, {passive:true});
-  window.addEventListener('resize', ()=>{ cx=innerWidth/2; cy=innerHeight/2; });
-  function updateParallax(){
-    raf=null;
-    const dx=(mx-cx)/cx, dy=(my-cy)/cy;
-    glow.style.transform = `translate3d(${dx*40}px, ${dy*40}px, 0)`;
-    viewer.style.transform = `rotateX(${dy*-2}deg) rotateY(${dx*2}deg)`;
-  }
-
-  // ---- Reliable KR Print helper (fixes blank pages) ----
-  function waitImages(doc){
-    const imgs = Array.from(doc.images || []);
-    if (!imgs.length) return Promise.resolve();
-    return Promise.all(imgs.map(img => (
-      img.complete ? Promise.resolve() :
-      new Promise(res => { img.onload = img.onerror = res; })
-    )));
-  }
-  async function openAndPrintHTML(url){
-    const res = await fetch(url, { credentials: 'same-origin' });
-    if(!res.ok) throw new Error('Fetch failed: ' + res.status);
-    const html = await res.text();
-
-    const win = window.open('', '_blank', 'noopener,noreferrer,width=900,height=1100');
-    if(!win){ window.open(url, '_blank'); return; }
-
-    win.document.open();
-    win.document.write(`<!doctype html>
-<html><head>
-<meta charset="utf-8"><title>Print — Korean CV</title>
-<style>
-  @page { size: A4 portrait; margin: 12mm; }
-  html,body{ background:#fff !important; color:#000 !important; margin:0; padding:0; }
-  *{ color:inherit !important; box-sizing:border-box; }
-  img{ max-width:100%; height:auto; display:block; }
-  a{ text-decoration:none; }
-  .theme-dark, .theme-light{ background:#fff !important; color:#000 !important; }
-</style>
-</head><body><div id="__root__"></div></body></html>`);
-    win.document.close();
-
-    const root = win.document.getElementById('__root__');
-    root.innerHTML = html;
-
-    try { await (win.document.fonts && win.document.fonts.ready); } catch(_) {}
-    await waitImages(win.document);
-    await new Promise(r => setTimeout(r, 200));
-
-    try { win.focus(); win.print(); } catch(_) {}
-  }
-
-  // EN download / KR print
-  btnDownloadPDF.setAttribute('download', 'GAIN_AUNTU_CV.pdf');
-  btnDownloadPDF.addEventListener('click', async function(e){
-    const lang = localStorage.getItem('ga_lang') || 'en';
-    if (lang === 'en') return; // normal PDF download
-
-    e.preventDefault(); // intercept in KR mode
-    try {
-      await openAndPrintHTML(KR_URL);
-    } catch (err) {
-      console.error(err);
-      try { if (!krFrame.getAttribute('src')) btnKo.click(); } catch(_) {}
-      const w = window.open(KR_URL, '_blank', 'noopener,noreferrer');
-      if (w) setTimeout(()=>{ try{ w.focus(); w.print(); }catch(_){} }, 600);
-    }
-  });
-
-  // init
-  const savedViewerTheme = localStorage.getItem('ga_viewer_theme') || (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-  applyViewerTheme(savedViewerTheme);
-  const savedLang = localStorage.getItem('ga_lang') || 'en';
-  showLang(savedLang);
-  document.getElementById('y').textContent = new Date().getFullYear();
+  const savedTheme=localStorage.getItem('ga_viewer_theme')||(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
+  applyViewerTheme(savedTheme);
+  const savedLang=localStorage.getItem('ga_lang')||'en';showLang(savedLang);
+  document.getElementById('y').textContent=new Date().getFullYear();
 })();
 </script>
 </body>
