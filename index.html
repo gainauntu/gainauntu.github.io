@@ -106,7 +106,6 @@
     .viewer .kr{width:100%;height:84vh;border:0;display:block;background:transparent; transform: translateZ(0.01px)}
     .viewer.viewer-dark .kr{filter: invert(0.92) hue-rotate(180deg)}
 
-    /* Loader */
     .loader{
       position:absolute; inset:0; display:grid; place-items:center; background:linear-gradient(180deg, rgba(15,22,34,.35), rgba(15,22,34,.2));
       pointer-events:none; opacity:0; transform: scale(.98); transition: opacity .25s ease, transform .25s ease;
@@ -122,7 +121,6 @@
     }
     @keyframes spin{ to{ transform: rotate(1turn); } }
 
-    /* Parallax glow */
     .parallax-glow{
       position: fixed;
       left: 50%; top: 50%;
@@ -141,7 +139,6 @@
 
     .foot{margin-top:24px;color:var(--muted);font-size:12px;text-align:center; position:relative; z-index:1}
 
-    /* Toasts */
     .toast{
       position: fixed; bottom: 18px; right: 18px; z-index: 20;
       display: grid; gap: 8px;
@@ -154,7 +151,6 @@
     }
     .toast .t.show{ opacity: 1; transform: translateY(0); }
 
-    /* Progress bar */
     .progress{
       position: fixed; inset: 0 0 auto 0; height: 3px; z-index: 10; pointer-events:none;
       background: linear-gradient(90deg, var(--accent), var(--accent-3));
@@ -222,7 +218,7 @@
         </div>
         <div class="actions">
           <button id="btn-copy-email" class="btn" title="Copy email">Copy Email</button>
-          <a id="btn-download-pdf" class="btn btn-accent" title="Download PDF" href="CV_AUNTU_GAIN.pdf" download>Download PDF</a>
+          <a id="btn-download-pdf" class="btn btn-accent" title="Download PDF" href="./CV_AUNTU_GAIN.pdf" download>Download PDF</a>
         </div>
       </div>
     </header>
@@ -235,8 +231,13 @@
             <div class="loader show" id="pdfLoader"><div class="ring"></div></div>
             <div class="pdf-topfade"></div>
             <iframe class="pdf-frame" id="pdfFrame"
-              src="CV_AUNTU_GAIN.pdf#toolbar=0&navpanes=0&statusbar=0&view=FitH"
+              src="./CV_AUNTU_GAIN.pdf#toolbar=0&navpanes=0&statusbar=0&view=FitH"
               title="CV PDF"></iframe>
+
+            <div id="pdfFallback" style="display:none; padding:12px;">
+              Couldn’t display the PDF inline.
+              <a href="./CV_AUNTU_GAIN.pdf" target="_blank" rel="noopener">Open CV_AUNTU_GAIN.pdf</a>
+            </div>
           </div>
         </section>
 
@@ -245,6 +246,11 @@
           <div class="iframe-shell">
             <div class="loader" id="krLoader"><div class="ring"></div></div>
             <iframe id="krFrame" class="kr" title="한국어 페이지"></iframe>
+
+            <div id="krFallback" style="display:none; padding:12px;">
+              Couldn’t display the Korean page inline.
+              <a href="./KOREAN_AUNTU.html" target="_blank" rel="noopener">Open KOREAN_AUNTU.html</a>
+            </div>
           </div>
         </section>
       </div>
@@ -253,7 +259,7 @@
     </main>
   </div>
 
-  <!-- html2pdf (for http/https auto-download path) -->
+  <!-- html2pdf (for https auto-download path) -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
 <script>
@@ -274,10 +280,13 @@
   const bar = $('#bar');
   const glow = $('#glow');
 
-  const KR_URL = 'KOREAN_AUNTU.html';
+  const pdfFallback = $('#pdfFallback');
+  const krFallback  = $('#krFallback');
+
+  const KR_URL = './KOREAN_AUNTU.html';
   let krLoaded = false;
 
-  /* ---------- Toasts ---------- */
+  // Toasts
   const toastBox = (function(){
     const box = document.createElement('div');
     box.className = 'toast';
@@ -296,7 +305,7 @@
     }, 1600);
   }
 
-  /* ---------- Language / Theme ---------- */
+  // Language / Theme
   function showLang(lang){
     localStorage.setItem('ga_lang', lang);
     btnEn.classList.toggle('active', lang==='en'); btnEn.setAttribute('aria-pressed', String(lang==='en'));
@@ -366,16 +375,30 @@
     }catch(e){}
   }
 
-  // listeners
+  // Listeners
   btnEn.addEventListener('click', function(){ showLang('en'); });
   btnKo.addEventListener('click', function(){ showLang('ko'); });
   themeLight.addEventListener('click', function(){ applyViewerTheme('light'); toast('Light theme'); });
   themeDark.addEventListener('click', function(){ applyViewerTheme('dark'); toast('Dark theme'); });
 
   if(pdfFrame){
+    let pdfReadyTimer = setTimeout(() => {
+      if (!pdfFrame.classList.contains('ready')) {
+        if (pdfLoader) pdfLoader.classList.remove('show');
+        if (pdfFallback) pdfFallback.style.display = 'block';
+        console.warn('PDF inline render timed out; showing fallback link.');
+      }
+    }, 3500);
+
     pdfFrame.addEventListener('load', function(){
+      clearTimeout(pdfReadyTimer);
       pdfFrame.classList.add('ready');
       if(pdfLoader) pdfLoader.classList.remove('show');
+    });
+    pdfFrame.addEventListener('error', (e) => {
+      if (pdfLoader) pdfLoader.classList.remove('show');
+      if (pdfFallback) pdfFallback.style.display = 'block';
+      console.error('PDF iframe error:', e);
     });
   }
   if(krFrame){
@@ -383,6 +406,11 @@
       if(krLoader) krLoader.classList.remove('show');
       syncKRTheme(); resizeKR();
       if ((localStorage.getItem('ga_lang') || 'en') === 'ko') toast('Korean page ready');
+    });
+    krFrame.addEventListener('error', (e) => {
+      if (krLoader) krLoader.classList.remove('show');
+      if (krFallback) krFallback.style.display = 'block';
+      console.error('KR iframe error:', e);
     });
   }
   window.addEventListener('resize', resizeKR);
@@ -398,56 +426,6 @@
     }catch(e){ copyDone(); }
   });
 
-  // EN download (default) / KR print or auto-PDF (if http)
-  btnDownloadPDF.setAttribute('download', 'GAIN_AUNTU_CV.pdf');
-  btnDownloadPDF.addEventListener('click', async function(e){
-    const lang = localStorage.getItem('ga_lang') || 'en';
-    if (lang === 'en') return; // normal download
-
-    e.preventDefault(); // KR intercept
-    const isHttp = /^https?:/i.test(location.protocol);
-
-    if (isHttp && window.html2pdf) {
-      try{
-        const res = await fetch(KR_URL, { credentials: 'same-origin' });
-        if(!res.ok) throw new Error('Fetch failed: '+res.status);
-        const html = await res.text();
-
-        const box = document.createElement('div');
-        box.style.cssText = 'position:fixed;left:-99999px;top:0;width:794px;background:#fff;color:#000;z-index:-1;';
-        box.innerHTML = html;
-        const st = document.createElement('style');
-        st.textContent = 'html,body{background:#fff!important;color:#000!important;margin:0;padding:0;}img{max-width:100%;height:auto;display:block;}';
-        box.prepend(st);
-        document.body.appendChild(box);
-
-        await html2pdf().set({
-          margin: 0.5,
-          filename: 'GAIN_AUNTU_KR.pdf',
-          image: { type: 'jpeg', quality: 0.98 },
-          html2canvas: { scale: 2, useCORS: true },
-          jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
-        }).from(box).save();
-
-        document.body.removeChild(box);
-        toast('Korean PDF downloaded');
-        return;
-      }catch(err){
-        console.error(err);
-        // Fall back to print
-      }
-    }
-
-    try {
-      if (!krFrame.getAttribute('src')) { btnKo.click(); }
-      const win = krFrame.contentWindow;
-      if (win && typeof win.print === 'function') { win.focus(); win.print(); return; }
-    } catch(_) {}
-
-    const w = window.open(KR_URL, '_blank', 'noopener,noreferrer');
-    if (w) { setTimeout(()=>{ try{ w.focus(); w.print(); }catch(_){} }, 600); }
-  });
-
   // Progress bar
   function onScroll(){
     const h = document.documentElement;
@@ -458,100 +436,82 @@
   document.addEventListener('scroll', onScroll, { passive:true });
   onScroll();
 
-  /* ---------- Smooth Accent Cycler (no buttons) ---------- */
-  // Palette of 5 stops (each has a, b, c for different roles)
-  const PALETTE = [
-    {a:'#4da3ff', b:'#00e6b8', c:'#8a7dff'},
-    {a:'#ff8a4d', b:'#ffd34d', c:'#ff5d9e'},
-    {a:'#22d3ee', b:'#34d399', c:'#60a5fa'},
-    {a:'#c084fc', b:'#f472b6', c:'#fca5a5'},
-    {a:'#7dd3fc', b:'#d8b4fe', c:'#a78bfa'}
-  ];
-  const CYCLE_MS = 18000; // 18s per blend
-
-  function hexToRgb(h){
-    const m = h.replace('#','');
-    return [
-      parseInt(m.substring(0,2),16),
-      parseInt(m.substring(2,4),16),
-      parseInt(m.substring(4,6),16)
-    ];
+  // Parallax glow + tiny viewer tilt
+  let raf = null, cx = innerWidth/2, cy = innerHeight/2, mx = cx, my = cy;
+  window.addEventListener('mousemove', (e)=>{ mx=e.clientX; my=e.clientY; if(!raf){ raf=requestAnimationFrame(updateParallax);} }, {passive:true});
+  window.addEventListener('resize', ()=>{ cx=innerWidth/2; cy=innerHeight/2; });
+  function updateParallax(){
+    raf=null;
+    const dx=(mx-cx)/cx, dy=(my-cy)/cy;
+    glow.style.transform = `translate3d(${dx*40}px, ${dy*40}px, 0)`;
+    viewer.style.transform = `rotateX(${dy*-2}deg) rotateY(${dx*2}deg)`;
   }
-  function lerp(a,b,t){ return a + (b-a)*t; }
-  function lerpRgb(c1,c2,t){ return [
-    Math.round(lerp(c1[0],c2[0],t)),
-    Math.round(lerp(c1[1],c2[1],t)),
-    Math.round(lerp(c1[2],c2[2],t))
-  ]; }
-  function rgbStr(c){ return `rgb(${c[0]}, ${c[1]}, ${c[2]})`; }
 
-  // Persist phase so refresh doesn't reset animation harshly
-  let startEpoch = Number(localStorage.getItem('ga_accent_epoch') || Date.now());
-  // Update epoch occasionally
-  setInterval(()=> localStorage.setItem('ga_accent_epoch', String(startEpoch)), 120000);
-
-  function animateAccent(ts){
-    const now = (Date.now() - startEpoch) % (PALETTE.length * CYCLE_MS);
-    const idx = Math.floor(now / CYCLE_MS);
-    const next = (idx + 1) % PALETTE.length;
-    const t = (now % CYCLE_MS) / CYCLE_MS;
-
-    const p1 = PALETTE[idx], p2 = PALETTE[next];
-    const a = lerpRgb(hexToRgb(p1.a), hexToRgb(p2.a), t);
-    const b = lerpRgb(hexToRgb(p1.b), hexToRgb(p2.b), t);
-    const c = lerpRgb(hexToRgb(p1.c), hexToRgb(p2.c), t);
-
-    document.documentElement.style.setProperty('--accent', rgbStr(a));
-    document.documentElement.style.setProperty('--accent-3', rgbStr(b));
-    document.documentElement.style.setProperty('--accent-2', rgbStr(c));
-
-    requestAnimationFrame(animateAccent);
+  // ---- Reliable KR Print helper (fixes blank pages) ----
+  function waitImages(doc){
+    const imgs = Array.from(doc.images || []);
+    if (!imgs.length) return Promise.resolve();
+    return Promise.all(imgs.map(img => (
+      img.complete ? Promise.resolve() :
+      new Promise(res => { img.onload = img.onerror = res; })
+    )));
   }
-  requestAnimationFrame(animateAccent);
+  async function openAndPrintHTML(url){
+    const res = await fetch(url, { credentials: 'same-origin' });
+    if(!res.ok) throw new Error('Fetch failed: ' + res.status);
+    const html = await res.text();
 
-  /* ---------- Subtle 3D Mouse-Parallax Glow ---------- */
-  let raf = null;
-  let cx = window.innerWidth / 2;
-  let cy = window.innerHeight / 2;
-  let mx = cx, my = cy;
+    const win = window.open('', '_blank', 'noopener,noreferrer,width=900,height=1100');
+    if(!win){ window.open(url, '_blank'); return; }
 
-  window.addEventListener('mousemove', (e)=>{
-    mx = e.clientX; my = e.clientY;
-    if (!raf) {
-      raf = requestAnimationFrame(updateParallax);
+    win.document.open();
+    win.document.write(`<!doctype html>
+<html><head>
+<meta charset="utf-8"><title>Print — Korean CV</title>
+<style>
+  @page { size: A4 portrait; margin: 12mm; }
+  html,body{ background:#fff !important; color:#000 !important; margin:0; padding:0; }
+  *{ color:inherit !important; box-sizing:border-box; }
+  img{ max-width:100%; height:auto; display:block; }
+  a{ text-decoration:none; }
+  .theme-dark, .theme-light{ background:#fff !important; color:#000 !important; }
+</style>
+</head><body><div id="__root__"></div></body></html>`);
+    win.document.close();
+
+    const root = win.document.getElementById('__root__');
+    root.innerHTML = html;
+
+    try { await (win.document.fonts && win.document.fonts.ready); } catch(_) {}
+    await waitImages(win.document);
+    await new Promise(r => setTimeout(r, 200));
+
+    try { win.focus(); win.print(); } catch(_) {}
+  }
+
+  // EN download / KR print
+  btnDownloadPDF.setAttribute('download', 'GAIN_AUNTU_CV.pdf');
+  btnDownloadPDF.addEventListener('click', async function(e){
+    const lang = localStorage.getItem('ga_lang') || 'en';
+    if (lang === 'en') return; // normal PDF download
+
+    e.preventDefault(); // intercept in KR mode
+    try {
+      await openAndPrintHTML(KR_URL);
+    } catch (err) {
+      console.error(err);
+      try { if (!krFrame.getAttribute('src')) btnKo.click(); } catch(_) {}
+      const w = window.open(KR_URL, '_blank', 'noopener,noreferrer');
+      if (w) setTimeout(()=>{ try{ w.focus(); w.print(); }catch(_){} }, 600);
     }
-  }, { passive:true });
-
-  window.addEventListener('resize', ()=>{
-    cx = window.innerWidth / 2;
-    cy = window.innerHeight / 2;
   });
 
-  function updateParallax(){
-    raf = null;
-    const dx = (mx - cx) / cx;  // -1..1
-    const dy = (my - cy) / cy;  // -1..1
-
-    // Glow follows pointer slightly
-    const moveX = dx * 40; // px
-    const moveY = dy * 40; // px
-    glow.style.transform = `translate3d(${moveX}px, ${moveY}px, 0)`;
-
-    // Tilt the viewer imperceptibly for depth
-    const tiltX = dy * -2; // deg
-    const tiltY = dx * 2;  // deg
-    viewer.style.transform = `rotateX(${tiltX}deg) rotateY(${tiltY}deg)`;
-  }
-
-  // Init state
+  // init
   const savedViewerTheme = localStorage.getItem('ga_viewer_theme') || (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
   applyViewerTheme(savedViewerTheme);
   const savedLang = localStorage.getItem('ga_lang') || 'en';
   showLang(savedLang);
   document.getElementById('y').textContent = new Date().getFullYear();
-
-  // Initial progress bar update
-  (function onScrollInit(){ const h = document.documentElement; const max = h.scrollHeight - h.clientHeight; bar.style.transform = 'scaleX(' + (max>0?(h.scrollTop/max):0) + ')'; })();
 })();
 </script>
 </body>
