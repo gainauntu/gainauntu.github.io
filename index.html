@@ -390,7 +390,7 @@
         if (pdfFallback) pdfFallback.style.display = 'block';
         console.warn('PDF inline render timed out; showing fallback link.');
       }
-    }, 3500);
+    }, 10000);
 
     pdfFrame.addEventListener('load', function(){
       clearTimeout(pdfReadyTimer);
