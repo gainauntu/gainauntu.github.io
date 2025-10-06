@@ -1,0 +1,724 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>가인온투(GAIN AUNTU)</title><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 10px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.collection-content td {
+	white-space: pre-wrap;
+	word-break: break-word;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	padding-inline-start: 0;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.page-description {
+	margin-bottom: 2em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.callout img.notion-static-icon {
+	width: 1em;
+	height: 1em;
+}
+
+.callout p {
+	margin: 0;
+}
+
+.callout h1,
+.callout h2,
+.callout h3 {
+	margin: 0 0 0.6rem;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+blockquote.quote-large {
+	font-size: 1.25em;
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(44, 44, 43, 1);
+}
+.highlight-gray {
+	color: rgba(134, 131, 126, 1);
+	fill: rgba(134, 131, 126, 1);
+}
+.highlight-brown {
+	color: rgba(159, 118, 90, 1);
+	fill: rgba(159, 118, 90, 1);
+}
+.highlight-orange {
+	color: rgba(210, 123, 45, 1);
+	fill: rgba(210, 123, 45, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 148, 52, 1);
+	fill: rgba(203, 148, 52, 1);
+}
+.highlight-teal {
+	color: rgba(80, 148, 110, 1);
+	fill: rgba(80, 148, 110, 1);
+}
+.highlight-blue {
+	color: rgba(63, 126, 190, 1);
+	fill: rgba(63, 126, 190, 1);
+}
+.highlight-purple {
+	color: rgba(154, 107, 180, 1);
+	fill: rgba(154, 107, 180, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(207, 81, 72, 1);
+	fill: rgba(207, 81, 72, 1);
+}
+.highlight-default_background {
+	color: rgba(44, 44, 43, 1);
+}
+.highlight-gray_background {
+	background: rgba(42, 28, 0, 0.07);
+}
+.highlight-brown_background {
+	background: rgba(139, 46, 0, 0.086);
+}
+.highlight-orange_background {
+	background: rgba(224, 101, 1, 0.129);
+}
+.highlight-yellow_background {
+	background: rgba(211, 168, 0, 0.137);
+}
+.highlight-teal_background {
+	background: rgba(0, 100, 45, 0.09);
+}
+.highlight-blue_background {
+	background: rgba(0, 111, 200, 0.09);
+}
+.highlight-purple_background {
+	background: rgba(102, 0, 178, 0.078);
+}
+.highlight-pink_background {
+	background: rgba(197, 0, 93, 0.086);
+}
+.highlight-red_background {
+	background: rgba(223, 22, 0, 0.094);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(134, 131, 126, 1);
+	fill: rgba(134, 131, 126, 1);
+}
+.block-color-brown {
+	color: rgba(159, 118, 90, 1);
+	fill: rgba(159, 118, 90, 1);
+}
+.block-color-orange {
+	color: rgba(210, 123, 45, 1);
+	fill: rgba(210, 123, 45, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 148, 52, 1);
+	fill: rgba(203, 148, 52, 1);
+}
+.block-color-teal {
+	color: rgba(80, 148, 110, 1);
+	fill: rgba(80, 148, 110, 1);
+}
+.block-color-blue {
+	color: rgba(63, 126, 190, 1);
+	fill: rgba(63, 126, 190, 1);
+}
+.block-color-purple {
+	color: rgba(154, 107, 180, 1);
+	fill: rgba(154, 107, 180, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(207, 81, 72, 1);
+	fill: rgba(207, 81, 72, 1);
+}
+.block-color-default_background {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray_background {
+	background: rgba(240, 239, 237, 1);
+}
+.block-color-brown_background {
+	background: rgba(245, 237, 233, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 235, 222, 1);
+}
+.block-color-yellow_background {
+	background: rgba(249, 243, 220, 1);
+}
+.block-color-teal_background {
+	background: rgba(232, 241, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(232, 242, 250, 1);
+}
+.block-color-purple_background {
+	background: rgba(243, 235, 249, 1);
+}
+.block-color-pink_background {
+	background: rgba(250, 233, 241, 1);
+}
+.block-color-red_background {
+	background: rgba(252, 233, 231, 1);
+}
+.select-value-color-default { background-color: rgba(42, 28, 0, 0.07); }
+.select-value-color-gray { background-color: rgba(28, 19, 1, 0.11); }
+.select-value-color-brown { background-color: rgba(127, 51, 0, 0.156); }
+.select-value-color-orange { background-color: rgba(196, 88, 0, 0.203); }
+.select-value-color-yellow { background-color: rgba(209, 156, 0, 0.282); }
+.select-value-color-green { background-color: rgba(0, 96, 38, 0.156); }
+.select-value-color-blue { background-color: rgba(0, 99, 174, 0.172); }
+.select-value-color-purple { background-color: rgba(92, 0, 163, 0.141); }
+.select-value-color-pink { background-color: rgba(183, 0, 78, 0.152); }
+.select-value-color-red { background-color: rgba(206, 24, 0, 0.164); }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="b175f01d-7659-4e14-b28c-b296fefd19d3" class="page sans"><header><img class="page-cover-image" src="https://www.notion.so/images/page-cover/woodcuts_1.jpg" style="object-position:center 100%"/><div class="page-header-icon page-header-icon-with-cover"><span class="icon">👔</span></div><h1 class="page-title">가인온투(GAIN AUNTU)</h1><p class="page-description"></p></header><div class="page-body"><p id="de375d02-9fe0-4b00-a399-61f67eda6dc5" class=""><strong>경기도 수원시 영통구</strong></p><p id="8d423d81-3069-4eac-beff-4a9945117d25" class=""><em><strong>   </strong></em><br/>안녕하세요! 컴퓨터비전, 머신러닝, 임베디드 시스템 프로그래밍에 관심이 많은 엔지니어 가인온투입니다.</p><h1 id="65806656-f8b5-445a-bc65-ac82e5398777" class="">☎️ Contact information</h1><p id="9c136596-8c6e-4830-b8e3-815944eb9aa9" class=""><a href="https://emojipedia.org/telephone-receiver/"><strong>📞</strong></a><strong> (+82)10-2818-6879</strong></p><p id="2059f15f-ed82-49b1-98d4-d5e5ec9a5b11" class="">📧 gainauntu@gmail.com</p><p id="6fa5c51b-77bc-4ffe-a843-fd9e3719e2e0" class="">🔗 <a href="http://www.linkedin.com/in/auntu-gain-8003781a5">LinkedIn</a></p><figure id="182623e3-d25e-4a36-a89b-f11ba3751529"><a href="https://github.com/gainauntu" class="bookmark source"><div class="bookmark-info"><div class="bookmark-text"><div class="bookmark-title">gainauntu - Overview</div><div class="bookmark-description">Dismiss Sign up for your own profile on GitHub, the best place to host code, manage projects, and build software alongside 50 million developers. Sign up Forked from microsoft/calculator Windows Calculator: A simple yet powerful calculator that ships with Windows C++ Jun Jul Aug Sep Oct Nov Dec Jan Feb Mar Apr May Mon Wed Fri gainauntu has no activity yet for this period.</div></div><div class="bookmark-href"><img src="https://github.com/favicon.ico" class="icon bookmark-icon"/>https://github.com/gainauntu</div></div><img src="https://avatars1.githubusercontent.com/u/7514797?s=400&amp;v=4" class="bookmark-image"/></a></figure><hr id="33daf989-825f-45a6-823e-a89fbe5e2efc"/><h1 id="d54a20b8-26ab-4436-8a29-c96af6651e66" class=""><strong>👩🏻‍💻</strong> Work experience</h1><h3 id="15d695fe-b3c8-808f-b116-c164bcd6318e" class="">SW 엔지니어(전임연구원), 개발팀, (주)지티시스템<em> – (2024.07~현재)</em></h3><p id="15d695fe-b3c8-8014-9e16-fa6628a1e2a2" class="">
+</p><blockquote id="15d695fe-b3c8-803c-a516-dca7b01172e0" class=""><strong>차량 전장용 클러스터 GUI Application 개발</strong></blockquote><ul id="15d695fe-b3c8-804a-8fdd-eee135ea8edb" class="bulleted-list"><li style="list-style-type:disc">HMI(Human Machine Interface) 기반 Telltale 및 Indicator 개발<ul id="15d695fe-b3c8-8005-ac51-ed6f30543b08" class="bulleted-list"><li style="list-style-type:circle">경고등, 상태 표시등, 상시 표시 등의 그래픽 요소를 요구사항에 맞게 구현</li></ul><ul id="15d695fe-b3c8-8077-9158-e9a2eda0ae30" class="bulleted-list"><li style="list-style-type:circle">차량 센서와 ECU에서 전달되는 신호를 클러스터 GUI에 매핑. (CAN/LIN Signal Mapping)</li></ul><ul id="15d695fe-b3c8-8005-a3a1-cf04fadf7ca3" class="bulleted-list"><li style="list-style-type:circle">시뮬레이션 및 테스트, 실차 검증, 이슈 관리 및 수정</li></ul><ul id="209695fe-b3c8-80f1-8c7b-d61df10748ad" class="bulleted-list"><li style="list-style-type:circle">팀 내 매니저 역할 수행</li></ul></li></ul><p id="15d695fe-b3c8-809d-8e49-fec207eef695" class="">
+</p><h3 id="8a2220dc-68af-4f4a-91f7-c3125eb3a7d7" class="block-color-default">SW 엔지니어(연구원), 연구개발전담부서, (주)아프로텍<em> – (2023.06~2024.06)</em></h3><p id="ae7a05fd-2c31-4c30-9854-357034bcd070" class="">
+</p><p id="c92128eb-e203-4a2f-a413-1b55895e638a" class=""><strong>| 인공함양 취수제어시스템 SW개발</strong></p><ul id="bf2d999d-2b56-4880-927e-cb7138baca42" class="bulleted-list"><li style="list-style-type:disc">자동 수위 측정 및 높이 제어 프로그램<ul id="ad8ae455-b617-4b6e-a56e-fde4fe46d090" class="bulleted-list"><li style="list-style-type:circle">라즈베리 파이를 활용하여 RS485 통신을 통한 수위 및 유량 센싱, 펌프 가동을 자동으로 제어하는 프로그램을 개발했습니다.</li></ul><ul id="2e79e812-ada5-4a8c-ac6a-d0144e962bd1" class="bulleted-list"><li style="list-style-type:circle">측정된 데이터는 Google Cloud SQL에 저장되어 중앙 관리 및 분석이 가능합니다.</li></ul></li></ul><ul id="0952f0f9-0d0a-43d4-87cd-65ebf8ce85f8" class="bulleted-list"><li style="list-style-type:disc">QT 기반 펌프 제어 및 모니터링 GUI 프로그램<ul id="da5f352c-f27e-4a5a-afcf-9fc0afc01c21" class="bulleted-list"><li style="list-style-type:circle">Mysql 데이터를 활용하여 그래프 기반의 모니터링 대시보드를 구현했습니다.</li></ul><ul id="7be02ac4-2aa9-4b69-9007-d2299f650f42" class="bulleted-list"><li style="list-style-type:circle">사용자 권한에 따라 UI 액세스를 제어하여 보안을 강화하고, 설정 높이 값에 따른 자동 수위 제어 기능을 추가하였습니다.</li></ul></li></ul><p id="759276e7-7ec7-4e45-811e-fc02390a94e8" class="">
+</p><p id="0a0e396d-f601-4ca8-8211-838125a97563" class=""><strong>| BMS(배터리 관리 시스템) GUI 모니터링 프로그램</strong></p><ul id="80de4d20-0175-4435-850b-11bb2865b75f" class="bulleted-list"><li style="list-style-type:disc">흐름전지 모니터링 시스템<ul id="9c7e3698-970f-4ffd-98ba-b6836298f5a3" class="bulleted-list"><li style="list-style-type:circle">배터리 상태(액체 유량, 온도, 압력) 및 CAN 통신을 통한 배터리 충방전 상태를 모니터링하는 시스템을 개발했습니다.</li></ul><ul id="ec7533f5-04c0-478c-b92a-15e6da4a2ba9" class="bulleted-list"><li style="list-style-type:circle">RS485 통신을 활용하여 유량 설정 값에 따라 자동 인버터 제어 기능을 추가하고, 위험 방지 시스템을 구축하였습니다.</li></ul><ul id="278bfaf7-3da3-4b15-b3b0-8f0768e71a42" class="bulleted-list"><li style="list-style-type:circle">개발한 프로그램을 활용하여 연구원들은 지속적인 감독 없이도 안전하게 충방전 시험을 실행할 수 있었습니다.</li></ul><p id="54e9f982-502c-4e68-8515-6b64a334002e" class="">
+</p></li></ul><p id="ff0151ca-a022-493c-a170-a56e6da1c006" class=""><strong>| 농업용 스마트 운반차 SW 개발</strong></p><ul id="c6f102e6-e4f7-4a52-aaad-2bb252a014ac" class="bulleted-list"><li style="list-style-type:disc">팔로우 마스터 기능<ul id="32be7b0a-2be9-49d1-92ce-ee91928cba20" class="bulleted-list"><li style="list-style-type:circle">UWB 및 컴퓨터 비전을 활용하여 사전에 특정한 마스터를 인식하고 안전 주행 및 장애물 회피, 거리 유지 기능을 개발했습니다.</li></ul><ul id="592cabed-fc2b-422f-8e2f-97847c2f9edf" class="bulleted-list"><li style="list-style-type:circle">최신 기술을 결합하여 농업용 운반차가 안전하게 주행할 수 있는 기능을 구현했습니다.</li></ul></li></ul><ul id="629f5f07-e7bc-4d2a-8cc9-9dca00053b94" class="bulleted-list"><li style="list-style-type:disc">구동부 제어 SW<ul id="0261bbac-78a1-4976-8f22-8f5816b74f6d" class="bulleted-list"><li style="list-style-type:circle">BLDC 전후진 모터와 조향 모터의 위치 제어 드라이버 코드를 구현하여 안전하고 효율적인 주행이 가능하도록 개발했습니다.</li></ul><ul id="706bab17-4603-43c1-985b-606ff706ab57" class="bulleted-list"><li style="list-style-type:circle">마스터의 안전을 고려한 구동부 제어 SW를 통해 농업용 운반차의 안전 주행을 실현하였습니다</li></ul><p id="1d02a91a-06b1-4379-a2ce-7d028d91f6b5" class="">
+</p></li></ul><p id="529d6b1d-d305-47bb-a100-85f6d83ab074" class=""><strong>| 미래형 버스정류장인 강남구 ‘스마트쉘터’ 키오스크 SW의 교정적 유지보수</strong></p><p id="1363659a-f98c-4ea7-9765-67e20cacf07b" class=""><strong>| 강남구 스마트쉼터 ‘미세먼지 프리존’ IoT 및 키오스크 SW의 예방, 교정, 적응 등의 유지보수</strong></p><h3 id="8fcc43c6-a025-4345-81cd-4c651a56d937" class=""><mark class="highlight-gray">SW 엔지니어(연구원), 연구개발전담부서, (주)플루톤</mark><em><mark class="highlight-gray"> – (2021.04~2023.06)</mark></em></h3><p id="5f862423-7cdc-4c73-8247-9d36af3802b6" class="">
+</p><p id="389e9c70-c6e5-4938-a0a1-ceb7d4eed484" class=""><mark class="highlight-default"><strong>| LIFEGUARD USV (인명구조 수상 드론: 자동 및 자율주행 솔루션 개발)</strong></mark></p><ul id="f52ce1ec-ea44-4218-9309-172aa86f5f6f" class="bulleted-list"><li style="list-style-type:disc"><mark class="highlight-default">자동 Survey 기능 개발</mark><ul id="509fa082-1b7e-4b55-af12-e1bf55669f89" class="bulleted-list"><li style="list-style-type:circle"><mark class="highlight-default">Windows GUI 프로그램(GCS)을 활용하여 손쉽게 Survey 대상인 구간을 지정하고, 무한반복으로 드론 survey 미션을 수행하는 자동 기능을 구현했습니다.</mark></li></ul></li></ul><ul id="239a575e-09ab-4390-bb8d-1073e188296e" class="bulleted-list"><li style="list-style-type:disc"><mark class="highlight-default">익수자 인식 알고리즘 구현</mark><ul id="0a741da1-9794-4b37-9526-fc88426e86a4" class="bulleted-list"><li style="list-style-type:circle"><mark class="highlight-default">Tensorflow 객체 인식과 자세 추정 기술을 활용하여 실시간 익수자 인식 알고리즘을 개발했습니다.</mark></li></ul><ul id="11ae8744-a06a-4ad3-8314-bf4da7cd848c" class="bulleted-list"><li style="list-style-type:circle"><mark class="highlight-default">자동 survey 미션 수행 중 익수자 감지 및 경고 기능을 추가하여 인명 구조기술에 기여하였습니다.</mark></li></ul><ul id="f9674a65-4a5e-48e5-a731-812dc9ee3371" class="bulleted-list"><li style="list-style-type:circle"><mark class="highlight-default">해당 익수자 인식 알고리즘을 특허출원하였습니다.</mark></li></ul></li></ul><ul id="e02844dd-5310-4631-ae2c-3cf44717bb0f" class="bulleted-list"><li style="list-style-type:disc"><mark class="highlight-default">장애물 회피 기능 개선</mark><ul id="77a87e94-65d2-4b8c-a012-b1eb165c388a" class="bulleted-list"><li style="list-style-type:circle"><mark class="highlight-default">라이다, 초음파, 비전 센서의 융합으로 장애물 회피 기능을 혁신적으로 개선했습니다.</mark></li></ul><ul id="3b66d284-5a52-493a-b616-296c76b14075" class="bulleted-list"><li style="list-style-type:circle"><mark class="highlight-default">ROS2 기반의 일반 카메라의 한계를 넘어, 라이다 및 리얼센스 카메라와 초음파를 결합하여 더욱 효율적인 장애물 회피 기능을 구현하였습니다.</mark></li></ul></li></ul><p id="746989d0-82b0-4d25-b53e-23d7b0d819c5" class="">
+</p><p id="389830f7-f58d-44a3-ad02-e1ba5fa6f776" class=""><mark class="highlight-default"><strong>| 스키머 드론 (K-WATER와 협력)</strong></mark></p><ul id="a5714d1a-217d-4cb5-b510-599040b11716" class="bulleted-list"><li style="list-style-type:disc"><mark class="highlight-default">정수장 스컴 정밀 청소 드론 개발</mark><ul id="c45a2bbe-c827-4a33-8e68-6a2d92aacd5a" class="bulleted-list"><li style="list-style-type:circle"><mark class="highlight-default">Pixhawk 자동 조종 장치에 펌웨어를 탑재하여 정밀한 청소 기능을 구현했습니다.</mark></li></ul><ul id="51e18b93-67c3-49af-a418-26581454b085" class="bulleted-list"><li style="list-style-type:circle"><mark class="highlight-default">RTK GPS를 활용하여 1-2cm의 오차 범위 내에서 자동 모드로 스컴 청소가 가능하도록 개발했습니다.</mark></li></ul></li></ul><ul id="6ad7af58-f401-4cfc-a808-e0029f88e7db" class="bulleted-list"><li style="list-style-type:disc"><mark class="highlight-default">스마트 도킹 및 충전 기능 추가</mark><ul id="a24aec10-8cc8-46aa-880c-6f7e4ba382e7" class="bulleted-list"><li style="list-style-type:circle"><mark class="highlight-default">Pixhawk와 별도의 Micro companion 컴퓨터를 활용하여 April Tag 인식 후 완벽한 도킹 및 안전한 충전 기능을 추가하였습니다.</mark></li></ul><ul id="7ee0a8de-b3a2-48ae-9762-537785c9f8b5" class="bulleted-list"><li style="list-style-type:circle"><mark class="highlight-default">사람의 투입 없이 24시간 운영 가능한 자동 스컴 청소 및 충전 시스템을 개발했습니다.</mark></li></ul></li></ul><p id="a79c19e2-c77f-403e-aa81-01d381319d31" class="">
+</p><p id="9b8d3e3e-e6bf-47e1-bb79-0d66247c6878" class=""><mark class="highlight-default"><strong>| 공유자전거 펌웨어 개발(용역사업 프로젝트)</strong></mark></p><ul id="2d56d1a4-b531-4ec6-a9ec-74dab17711c1" class="bulleted-list"><li style="list-style-type:disc"><mark class="highlight-default">잠금장치 펌웨어 및 고객접속용 BLE (Bluetooth Low Energy)칩 펌웨어 개발</mark><ul id="6b744ab1-c58b-4bc5-b422-772e9c0be513" class="bulleted-list"><li style="list-style-type:circle"><mark class="highlight-default">C언어를 활용하여 RTOS 운영체제 위에 잠금장치 펌웨어 및 BLE 칩 펌웨어를 개발했습니다.</mark></li></ul><ul id="a974670b-a20e-4b47-b716-afe570cff419" class="bulleted-list"><li style="list-style-type:circle"><mark class="highlight-default">고객에게 자전거 위치서비스 지원, 내부 센서 모니터링, cloud서버간 모뎀통신, GPS 거리에 따른 NFC 결제 기능 등을 제공하는 펌웨어를 개발했습니다.</mark></li></ul></li></ul><p id="edc12ba9-cb00-41f7-a45c-621d83214428" class="">
+</p><h3 id="0d67b798-783a-458b-830a-f32fb382b58e" class="block-color-gray">인턴, 데이터마이닝 연구실<em>, 전북대학교 – (2018.03~2019.07)</em></h3><p id="ee863fbb-8996-4eb5-b4ba-39ce93efc4f1" class="">
+</p><ul id="92251247-aafb-45a4-8dad-9e6b4dd5e003" class="bulleted-list"><li style="list-style-type:disc"><mark class="highlight-default">텍스트검색 평가대회(TREC)의 트윗 사건 스트림 분류를 위한 패턴 인식 작업에 참여</mark><ul id="9d01431b-cfd8-4e0d-8e13-84015b0688d7" class="bulleted-list"><li style="list-style-type:circle"><mark class="highlight-default">이경순 교수님 지도 하에 분류 모델을 만들기 위한 트윗 데이터 분류 작업에 기여했습니다.</mark></li></ul><ul id="09ad41ff-a37c-4c38-87fd-5c4b3421c78b" class="bulleted-list"><li style="list-style-type:circle"><mark class="highlight-default">연구팀은 미국 상무부 소속 국가기술표준연구소(NIST)가 주최한 텍스트검색 평가대회(TREC)의 트윗 사건 스트림 분류에서 1위를 차지했습니다.</mark></li></ul></li></ul><ul id="d3bf1b10-6d11-41a8-947a-3b2259fd349f" class="bulleted-list"><li style="list-style-type:disc"><mark class="highlight-default">영문 논문 발표문 구조 검토 기여</mark><ul id="fddf3bc6-55b7-4ec8-96ce-dbc22211622c" class="bulleted-list"><li style="list-style-type:circle"><mark class="highlight-default">석사 졸업생의 영문 논문 발표문 구조 검토에 기여하여 품질 높은 발표문을 형성하는 데 일조했습니다.</mark></li></ul></li></ul><p id="bb56d9dc-00df-4ce7-a49d-6398bf8300ae" class="">
+</p><h3 id="da4b1e45-9b40-4332-a2fe-68043231a985" class=""><strong>POSITION OF RESPONSIBILITY</strong></h3><h3 id="f21240ad-ff45-497b-98a3-7ca52cd346c6" class=""><strong>Team Leader of Student Management, Jeonbuk National University Covid-19 Isolation Care Center, September 2020 - November 2020</strong></h3><ul id="7f93fb89-ad74-4595-83ad-ee7f95c21e0b" class="bulleted-list"><li style="list-style-type:disc">Oversaw the organization and updating of critical Excel databases encompassing detailed records of university students.</li></ul><ul id="14b19c26-c3f3-475f-84f6-b89db42b388c" class="bulleted-list"><li style="list-style-type:disc">Implemented effective management of quarantined students, ensuring safety through the utilization of appropriate protective measures.</li></ul><ul id="486114eb-e523-4183-967c-374b1fe5e816" class="bulleted-list"><li style="list-style-type:disc">Facilitated communication with returning and newly enrolled students in multiple languages via various channels (telephone, email, etc.), ensuring clear and effective information dissemination.</li></ul><ul id="dbc31f35-d4f2-4b7f-af82-b99f9b2c189e" class="bulleted-list"><li style="list-style-type:disc">Directly interacted with Covid-19 positive individuals, managing sensitive situations with professionalism and care.</li></ul><p id="094b3cba-d1f5-41bb-a790-7bfb91517691" class="">
+</p><h3 id="d124b521-3567-4128-8497-240a21d087de" class=""><strong>과외 활동</strong></h3><p id="907921a0-e4a8-4138-8b2f-3a6a787bb20c" class="">JBNU Office of International Affairs assistant worker</p><p id="b33dcefb-ac85-4107-951c-f5d93e7043dc" class="">Jeonbuk National University International Club board member</p><hr id="34c5bece-dde9-407a-9f72-90b8789314b0"/><h1 id="66e204cc-e7ba-4055-a629-f9e38cedb1f6" class="">🛠 Skills</h1><h2 id="e6fd0364-8a24-43ba-b270-bcbbaddcda2a" class=""><strong><a href="https://emojipedia.org/ko/%EC%8B%A0%EB%B6%84%EC%A6%9D">🪪</a></strong><strong> 자격증</strong></h2><ul id="afd2a12f-6587-4b36-8d33-77a5b5a6d1b9" class="bulleted-list"><li style="list-style-type:disc">정보처리기사</li></ul><h2 id="172695fe-b3c8-8041-a558-fa3224613ea2" class=""><strong>🎫 비자</strong></h2><ul id="172695fe-b3c8-80f8-8955-f72d2c971a61" class="bulleted-list"><li style="list-style-type:disc">한국영주권(F-5)</li></ul><h2 id="9987fa20-6e4e-4e69-8a70-8dd78c5d3123" class="">💻 Programming Languages</h2><p id="ac174fee-5cf6-47e6-9108-72bb7e4f0852" class="">
+</p><p id="ea27d547-fb65-4f7d-878b-d67d6aa49e8f" class=""> C++           ⭐️⭐️⭐️⭐️</p><p id="00fe91e0-30d1-42b5-8898-5716b52cae73" class=""> C                ⭐️⭐️⭐️⭐️</p><p id="e317f591-1740-4e14-a29f-d528a2a43e53" class="">PYTHON       ⭐️⭐️⭐️⭐️</p><p id="f64d89aa-ac51-4019-8f00-5ae5456d2b0f" class="">MATLAB        ⭐️⭐️⭐️</p><p id="2e60db87-c4b1-4d4c-ba49-b014ac7eb5e9" class="">JAVA              <strong>⭐️⭐️⭐️</strong></p><p id="a0771ab0-fd4e-4c31-ad2c-be74e47a3103" class="">R                    ⭐️⭐️⭐️</p><p id="7a0f4ac6-eb7f-46d4-940a-669ee7f5f05c" class="">Standard ML  ⭐️⭐️⭐️</p><p id="57475fa2-5a7c-4c1e-b63d-600c4145ba95" class="">C#                  ⭐️⭐️⭐️</p><p id="981bb59f-c74a-40f7-8e69-8e1115416f81" class="">MYSQL                ⭐️⭐️⭐️</p><p id="f533c7e5-61ac-4e9b-955a-2a71b9a45cae" class="">Scheme(LISP)   ⭐️⭐️</p><p id="a81353f1-70e2-4d51-8c93-1bbd5b2e60dc" class="">
+</p><h3 id="0ec8dba8-e63d-44b1-8ea8-6b2d161d527a" class="">다룰 수 있는 기술들입니다: </h3><p id="bca99251-4d14-46ac-867b-5f5ba6c8d20f" class="">RTOS(<strong>FreeRTOS</strong>) 기반 펌웨어 개발(Custom Board)</p><p id="45a5c7f9-4f4f-460a-80a4-21df66f122e9" class="">STM32 및 아두이노 마이크로컨트롤러 기반 펌웨어 개발</p><p id="52ee1a2c-ecc0-49e7-9873-fab473a25b32" class="">EFR32BG22 BLE 펌웨어 개발 </p><p id="150de15c-57a8-46c7-8235-3312be583cce" class="">PX4 autopilot(Drone Flight Controller) 펌웨어 개발</p><p id="78500972-38e2-4426-bfaa-ef1965dab484" class="">병렬 프로그래밍 및 Multithreading에 대한 높은 이해도 및 개발 </p><p id="d3e2657b-d937-4849-a0b6-5dafe0671b24" class="">gstreamer multimedia framework 및 파이프라인 프로세스 처리 </p><p id="2e584a79-efb8-4513-b746-d3ef36a251f2" class="">static and dynamic debugging - analysis tools 사용 경험</p><p id="bbcaba57-98f7-4c9d-892e-bd94cd65292d" class="">Darknet, pytorch, tensorflow,keras기반 이미지 처리 및 객체 인식 하여<br/>드론 자율 주행 솔루션 개발</p><p id="03786033-84ef-4c43-a4ff-16c77a4b75fa" class="">Google Mediapipe, openPose AI 같은 Human Pose Estimation algorithm 사용 경험</p><p id="b25cbfb2-b13c-40b1-840c-0218cfab9ce6" class="">Unity3d 기반 게임 프로그래밍</p><p id="4ed18b16-9c3c-42b8-b291-55f927a9e9ef" class="">Linux Kernel Device Driver의 대한 높은 이해도</p><p id="fc3064a0-f1fa-41e0-be83-e0b3fe3ffc07" class="">custom device driver code 작성 경험</p><p id="aee1c73d-3335-4fed-9bb8-d410b48bcd8d" class="">Github platform Open Source project contribution</p><p id="d8cefa6f-5c82-4307-972a-226c410e9cf2" class="">Redmine/Apache Subversion이용 외주 SW 개발</p><p id="11324753-52c9-495d-9907-a74649368397" class="">Achro 임베디드 시스템 프로그래밍</p><p id="cb4f6f9e-e079-40f4-8415-d050fc1056b1" class="">라즈베리 파이 마이크로프로세서 시스템 프로그래밍</p><p id="d86cee18-af17-4c9b-b7de-68efcd11f9c1" class="">윈도우즈 프로그래밍(MFC Desktop Applications) </p><p id="fec09341-2b54-477b-afdb-f69fd8cf3bdd" class="">Computer Graphics(<strong>OpenGL</strong>) 프로그래밍</p><p id="8104eda2-7957-4fea-add2-f185d23b1ae7" class="">
+</p><h3 id="527a00a7-e824-43f2-bbc0-81ebbdc0ff62" class=""><strong>대표적인 개발 경험</strong></h3><p id="d8f4735f-36d4-40a6-8370-f28f64f72571" class="">
+</p><ol type="1" id="c325f391-d11f-4c69-a4c4-3711625cc3b9" class="numbered-list" start="1"><li><strong>공유 자전거 소프트웨어 개발</strong> (공동 프로젝트, 로커 펌웨어 개발 담당, C 언어 활용)<ul id="a0eaf528-f2d6-4200-86e6-046d010932a3" class="bulleted-list"><li style="list-style-type:disc">공유 자전거 펌웨어를 RTOS 플랫폼을 기반으로 상향식으로 개발. 힙 메모리 소비를 줄이기 위해 중심 태스크에서 GPS와 메인 MCU 간 데이터 라인을 인터럽트하여 GPS 데이터를 실시간으로 취득. MCU의 슬립 모드 진입 시 발생하는 리셋 문제를 해결하기 위해 Watchdog Timeout 전에 시스템을 주기적으로 깨워 Watchdog Timer를 리셋. BLE 칩과 MCU 간 통신을 위한 맞춤형 통신 프로토콜 개발.</li></ul></li></ol><ol type="1" id="5b763b8a-f5ce-447b-9e6f-1379e25fe244" class="numbered-list" start="2"><li><strong>Smart CTS 개발</strong> (공동 프로젝트, 서버 파싱 및 로봇팔 개발 담당, NODEJS, C, ADOxx 스크립트 언어 사용)<ul id="b3b33df5-88d2-442a-96c6-ac410c0fb2c3" class="bulleted-list"><li style="list-style-type:disc">고위험 작업을 대체할 수 있는 로봇 기술 개발. ADOxx-client와 ADOxx-server 간 통신 프로토콜을 활용하여 서버로 명령어를 전송하고, 블루투스로 데이터 수신 및 파싱을 진행한 후 Robot-ARM 및 vehicle을 조작.</li></ul></li></ol><ol type="1" id="6b69fe4d-ced6-4884-9529-8de853b57353" class="numbered-list" start="3"><li><strong>Guard&#x27;s-Eye</strong> (개인 프로젝트, 스마트 홈 보안 시스템, 파이썬 사용)<ul id="f79005a8-ee75-4392-a630-8fbdcc81f290" class="bulleted-list"><li style="list-style-type:disc">라즈베리 파이 4를 활용한 스마트 홈 보안 시스템 구축. 집주인이 외출 중일 때 모션 센서로 감지된 움직임에 대해 카메라 모듈로 사진을 촬영하고 SMTP 프로토콜을 통해 설정된 메일 주소로 이미지를 전송.</li></ul></li></ol><ol type="1" id="908bb38b-c602-499a-9cda-334b488680e4" class="numbered-list" start="4"><li><strong>Zig-Pro</strong> (개인 프로젝트, Android 게임, C# 및 Unity 3D 플랫폼 사용)<ul id="b63cb528-4c7d-4540-a4cb-f1f03bbe7721" class="bulleted-list"><li style="list-style-type:disc">공을 안전하게 굴려 정해진 길로 이동시키는 3D 게임 개발.</li></ul></li></ol><ol type="1" id="5c679b58-b17a-4912-9343-6722f3e452f9" class="numbered-list" start="5"><li><strong>수상드론 개발</strong> (회사 프로젝트, 개인 참여, 파이썬 및 C++ 사용)<ul id="697dc51d-ab9d-427c-94f1-6e8aa74d391a" class="bulleted-list"><li style="list-style-type:disc">Tensorflow와 LIDAR 데이터를 활용해 장애물 및 물에 빠진 사람을 실시간으로 인식하는 수상 드론 제어 시스템을 구축했습니다. Tensorflow object detection과 LIDAR 정보를 통합해 장애물을 인식하고, MAVLINK custom 명령어를 생성한 후, QGROUNDCONTROL(C++)을 통해 명령어를 송신하고 AI 장애물 회피 시스템을 개발했습니다.</li></ul></li></ol><ol type="1" id="1feb988f-efb5-4939-bb5e-182a04be2dda" class="numbered-list" start="6"><li><strong>서버리스 COVID-19 밀접 접촉자 얼굴 인식 및 개별 문자 전송 </strong>(개인 프로젝트, <strong>)</strong><ul id="35130ddf-3817-4464-bd13-4088f47e6422" class="bulleted-list"><li style="list-style-type:disc">AWS Cloud를 사용해 S3 저장소, Lambda compute 서비스, SNS 모바일 서비스, EC2 PROCESS, Rekognition 딥러닝 이미지 인식 서비스, DynamoDB DB 서비스, Interactive Video 서비스를 통합한, 실시간 CCTV 스트림을 활용한 정부용 프로그램을 개발했습니다.</li></ul></li></ol><ol type="1" id="52c775d3-cf84-446f-847f-2311e8ab527a" class="numbered-list" start="7"><li><strong>Lifeguard USV</strong> (회사 프로젝트, 공동 프로젝트, 파이썬(Tensorflow) 사용)<ul id="d872a890-55f5-447a-9ee9-699b6f9a0ddd" class="bulleted-list"><li style="list-style-type:disc">컴퓨터 비전 기술을 활용하여 바다나 강을 떠다니는 동안 익사자를 인식하고 인명 구조원에게 경고하는 무인 수상 드론 AI 솔루션을 개발했습니다.</li></ul></li></ol><p id="86224097-e3cd-40ed-aa82-05d08d66531a" class="">
+</p><h3 id="96c3cdc9-76dd-44e4-9ce0-313e4fae9569" class=""><strong>연구 관심분야</strong></h3><p id="dc279a5f-7c30-4035-95dd-d81c95e51bd9" class=""><strong>• </strong>Deep Learning for Image Processing and Computer Vision</p><p id="c1d2ca83-6e5f-4229-b82e-f754196e8b0f" class=""><strong>• </strong>Machine Learning</p><p id="99677097-b514-4cca-a74a-449f79d5cd09" class=""><strong>• </strong>Artificial Intelligence</p><h3 id="0417057c-234c-4ee8-82ad-e63dc2cffb31" class="">수상내역</h3><p id="fcf9922b-999b-420f-88f8-bd5d09068683" class="">2016 대한민국정부초청외국인장학생(GKS) 수상자(학사)</p><hr id="aa4b7596-275b-432f-8ef3-046b4a50a1c5"/><h1 id="0abeabe3-6bcf-4b21-9172-417ad941b0ee" class="">🗣 Languages</h1><p id="3dca018d-ed0e-4698-8d28-35aa1f5981ee" class="">English 🇺🇸 (Fluent) [TOEFL: 82]</p><p id="5312155d-27b7-457c-a6c6-3c5b67e193e3" class="">Korean 🇰🇷 (Advanced) [TOPIK 5]</p><hr id="b4edd54a-11c9-43a9-b9b5-3e75129a3036"/><h1 id="4073d4af-e1ba-4372-8cf2-952f45b66b71" class="">📚 Education</h1><h2 id="76fcf6ea-30a1-4560-b801-07da0c34715a" class=""><strong>Bachelor&#x27;s Degree in Computer Science and Engineering </strong></h2><p id="54449a05-36b6-497c-b7a6-5c9eaf66fe20" class="block-color-gray"><em>2017~2021 (대학졸업)</em></p><p id="e4910847-1984-43ec-b265-a59d61717a79" class="">전북대학교 - 전주</p></div></article><span class="sans" style="font-size:14px;padding-top:2em"></span></body></html>
