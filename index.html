@@ -259,7 +259,7 @@
     </main>
   </div>
 
-  <!-- html2pdf (for https auto-download path) -->
+  <!-- html2pdf (for https auto-download path if needed later) -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
 <script>
@@ -285,6 +285,7 @@
 
   const KR_URL = './KOREAN_AUNTU.html';
   let krLoaded = false;
+  let pdfRetried = false; // ensure we retry only once
 
   // Toasts
   const toastBox = (function(){
@@ -302,7 +303,7 @@
     setTimeout(()=>{
       t.classList.remove('show');
       setTimeout(()=> t.remove(), 250);
-    }, 1600);
+    }, 1500);
   }
 
   // Language / Theme
@@ -382,6 +383,7 @@
   themeDark.addEventListener('click', function(){ applyViewerTheme('dark'); toast('Dark theme'); });
 
   if(pdfFrame){
+    // Time-out fallback if viewer stays blank
     let pdfReadyTimer = setTimeout(() => {
       if (!pdfFrame.classList.contains('ready')) {
         if (pdfLoader) pdfLoader.classList.remove('show');
@@ -394,13 +396,28 @@
       clearTimeout(pdfReadyTimer);
       pdfFrame.classList.add('ready');
       if(pdfLoader) pdfLoader.classList.remove('show');
+      toast('CV loaded');
     });
-    pdfFrame.addEventListener('error', (e) => {
+
+    pdfFrame.addEventListener('error', ()=>{
+      // Retry once after a short delay (cache-bust to avoid stale 404 from CDN)
+      if (!pdfRetried) {
+        pdfRetried = true;
+        setTimeout(()=>{
+          const src = pdfFrame.getAttribute('src') || './CV_AUNTU_GAIN.pdf';
+          const bust = src + (src.includes('?') ? '&' : '?') + 't=' + Date.now();
+          console.warn('Retrying PDF load after delay with cache-bust...');
+          if (pdfLoader) pdfLoader.classList.add('show');
+          pdfFrame.setAttribute('src', bust);
+        }, 1500);
+        return;
+      }
       if (pdfLoader) pdfLoader.classList.remove('show');
       if (pdfFallback) pdfFallback.style.display = 'block';
-      console.error('PDF iframe error:', e);
+      console.error('PDF iframe error: giving up after one retry.');
     });
   }
+
   if(krFrame){
     krFrame.addEventListener('load', function(){
       if(krLoader) krLoader.classList.remove('show');
@@ -413,6 +430,7 @@
       console.error('KR iframe error:', e);
     });
   }
+
   window.addEventListener('resize', resizeKR);
 
   // Copy email
