@@ -66,10 +66,10 @@
       box-shadow:0 0 0 1px rgba(0,0,0,.25) inset;text-shadow:0 1px 0 rgba(255,255,255,.25);
     }
 
-    .actions{display:flex;gap:8px;}
+    .actions{display:flex;gap:8px;flex-wrap:wrap}
     .btn{appearance:none;border:1px solid var(--border);background:var(--chip);color:var(--text);
       padding:8px 12px;border-radius:10px;cursor:pointer;font-weight:600;font-size:13px;
-      transition:transform .12s ease,box-shadow .15s ease,background .2s ease;}
+      transition:transform .12s ease,box-shadow .15s ease,background .2s ease;text-decoration:none;display:inline-flex;align-items:center;gap:6px}
     .btn:hover{transform:translateY(-1px);}
     .btn-accent{background:linear-gradient(135deg,rgba(77,163,255,.9),rgba(0,230,184,.9));color:#001428;}
 
@@ -162,9 +162,17 @@
             <button id="theme-dark" aria-pressed="true">🌙</button>
           </div>
         </div>
+
         <div class="actions">
           <button id="btn-copy-email" class="btn">Copy Email</button>
-          <a id="btn-download-pdf" class="btn btn-accent" href="CV_AUNTU_GAIN.pdf" download>Download PDF</a>
+
+          <!-- EN: direct PDF -->
+          <a id="btn-download-en" class="btn btn-accent" href="CV_AUNTU_GAIN.pdf" download>Download EN PDF</a>
+
+          <!-- KO: HTML actions -->
+          <a id="btn-open-kr" class="btn" href="KOREAN_AUNTU.html" target="_blank" rel="noopener">Open Korean HTML</a>
+          <a id="btn-save-kr" class="btn" href="KOREAN_AUNTU.html" download>Download Korean HTML</a>
+          <button id="btn-print-kr" class="btn btn-accent">Print / Save KO as PDF</button>
         </div>
       </div>
 
@@ -187,7 +195,10 @@
         </div>
         <div class="drawer-row actions">
           <button id="m-btn-copy-email" class="btn">Copy Email</button>
-          <a id="m-btn-download-pdf" class="btn btn-accent" href="CV_AUNTU_GAIN.pdf" download>Download PDF</a>
+          <a id="m-btn-download-en" class="btn btn-accent" href="CV_AUNTU_GAIN.pdf" download>Download EN PDF</a>
+          <a id="m-btn-open-kr" class="btn" href="KOREAN_AUNTU.html" target="_blank" rel="noopener">Open KO HTML</a>
+          <a id="m-btn-save-kr" class="btn" href="KOREAN_AUNTU.html" download>Download KO HTML</a>
+          <button id="m-btn-print-kr" class="btn btn-accent">Print / Save KO as PDF</button>
         </div>
       </div>
     </div>
@@ -204,7 +215,7 @@
           </div>
         </section>
 
-        <!-- Korean -->
+        <!-- Korean (HTML) -->
         <section data-lang="ko" data-show="false" id="kr">
           <div class="iframe-shell">
             <div class="loader" id="krLoader"><div class="ring"></div></div>
@@ -215,12 +226,6 @@
       <div class="foot">© <span id="y"></span> GAIN AUNTU</div>
     </main>
   </div>
-
-  <!-- Hidden target for KO PDF rendering (preloaded via src) -->
-  <iframe id="krPdfIF" style="position:fixed;left:-10000px;top:0;width:794px;height:1123px;border:0;visibility:hidden;"></iframe>
-
-  <!-- html2pdf -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
   <script>
   (function(){
@@ -235,17 +240,16 @@
           mThemeDark  = document.getElementById('m-theme-dark'),
           btnCopyEmail = document.getElementById('btn-copy-email'),
           mBtnCopyEmail = document.getElementById('m-btn-copy-email'),
-          btnDownloadPDF = document.getElementById('btn-download-pdf'),
-          mBtnDownloadPDF = document.getElementById('m-btn-download-pdf'),
           btnMenu = document.getElementById('btn-menu'),
           drawer  = document.getElementById('m-drawer'),
           viewer = document.getElementById('viewer'),
           pdfFrame = document.getElementById('pdfFrame'),
-          krFrame = document.getElementById('krFrame'),
           pdfLoader = document.getElementById('pdfLoader'),
+          krFrame = document.getElementById('krFrame'),
           krLoader  = document.getElementById('krLoader'),
-          yearEl = document.getElementById('y'),
-          krPdfIF = document.getElementById('krPdfIF');
+          btnPrintKR = document.getElementById('btn-print-kr'),
+          mBtnPrintKR = document.getElementById('m-btn-print-kr'),
+          yearEl = document.getElementById('y');
 
     const KR_URL = new URL('KOREAN_AUNTU.html', location.href).href;
     let krVisibleLoaded = false;
@@ -260,20 +264,6 @@
     window.addEventListener('resize',()=>{ if(window.matchMedia('(min-width:821px)').matches) toggleDrawer(false); });
 
     // Lang + Theme
-    function setDownloadLabel(lang){
-      const txt = (lang==='ko') ? 'Download Korean PDF' : 'Download PDF';
-      btnDownloadPDF && (btnDownloadPDF.textContent = txt);
-      mBtnDownloadPDF && (mBtnDownloadPDF.textContent = txt);
-    }
-
-    function ensureVisibleKRLoaded(){
-      if (!krVisibleLoaded){
-        krLoader?.classList.add('show');
-        krFrame.src = KR_URL;
-        krVisibleLoaded = true;
-      }
-    }
-
     function showLang(lang){
       localStorage.setItem('ga_lang', lang);
       [btnEn,mBtnEn].forEach(b=>b&&b.classList.toggle('active', lang==='en'));
@@ -281,9 +271,8 @@
       document.querySelectorAll('[data-lang]').forEach(e=>{
         e.setAttribute('data-show', String(e.dataset.lang===lang));
       });
-      if(lang==='en'){ reloadPDF(); }
-      else { ensureVisibleKRLoaded(); preloadHiddenKR(); }
-      setDownloadLabel(lang);
+      if(lang==='en'){ reloadEN(); }
+      else { ensureKRLoaded(); }
     }
 
     function applyTheme(theme){
@@ -299,7 +288,15 @@
       }catch(_){}
     }
 
-    function reloadPDF(){ const s = pdfFrame.getAttribute('src'); if(s) pdfFrame.setAttribute('src', s); }
+    function reloadEN(){ const s = pdfFrame.getAttribute('src'); if(s) pdfFrame.setAttribute('src', s); }
+
+    function ensureKRLoaded(){
+      if(!krVisibleLoaded){
+        krLoader?.classList.add('show');
+        krFrame.src = KR_URL;
+        krVisibleLoaded = true;
+      }
+    }
 
     btnEn?.addEventListener('click', ()=>showLang('en'));
     btnKo?.addEventListener('click', ()=>showLang('ko'));
@@ -318,37 +315,14 @@
     btnCopyEmail?.addEventListener('click', ()=>doCopy(btnCopyEmail));
     mBtnCopyEmail?.addEventListener('click', ()=>doCopy(mBtnCopyEmail));
 
-    // EN PDF loader: retry + fallback
+    // EN PDF load feedback
     if(pdfFrame){
-      let retried=false;
-      const fallback=document.createElement('div');
-      fallback.style='display:none;text-align:center;margin-top:10px;';
-      fallback.innerHTML=`<a href="CV_AUNTU_GAIN.pdf" target="_blank" rel="noopener">Open PDF in a new tab</a>`;
-      pdfFrame.parentElement.appendChild(fallback);
-      const finish=()=>{ clearTimeout(timer); pdfLoader?.classList.remove('show'); pdfFrame.classList.add('ready'); };
+      const finish=()=>{ pdfLoader?.classList.remove('show'); pdfFrame.classList.add('ready'); };
       pdfFrame.addEventListener('load', finish);
-      let timer=setTimeout(()=>{
-        if(!pdfFrame.classList.contains('ready')){
-          if(!retried){
-            retried=true;
-            const s=pdfFrame.getAttribute('src');
-            pdfFrame.removeAttribute('src');
-            setTimeout(()=>{ pdfFrame.setAttribute('src',s); },500);
-            timer=setTimeout(()=>{
-              if(!pdfFrame.classList.contains('ready')){
-                pdfLoader?.classList.remove('show');
-                fallback.style.display='block';
-              }
-            },10000);
-          }else{
-            pdfLoader?.classList.remove('show');
-            fallback.style.display='block';
-          }
-        }
-      },10000);
+      setTimeout(()=>{ if(!pdfFrame.classList.contains('ready')) finish(); }, 4000);
     }
 
-    // KR iframe sizing + theme
+    // KR iframe events
     krFrame?.addEventListener('load', ()=>{
       krLoader?.classList.remove('show');
       try{
@@ -357,6 +331,7 @@
         doc?.documentElement?.classList.toggle('theme-dark', dark);
         doc?.documentElement?.classList.toggle('theme-light', !dark);
       }catch(_){}
+      // auto-height
       try{
         const d=krFrame.contentDocument||krFrame.contentWindow.document;
         const h=Math.max(d.body.scrollHeight,d.documentElement.scrollHeight);
@@ -372,204 +347,56 @@
       }catch(_){}
     });
 
-    // Helpers
-    function preloadHiddenKR(){ try{ if (!krPdfIF.getAttribute('src')) krPdfIF.setAttribute('src', KR_URL); }catch(_){} }
-    preloadHiddenKR();
-
-    function waitForIframeLoad(iframe, timeoutMs = 30000) {
-      return new Promise((resolve, reject) => {
-        try {
-          const d = iframe.contentDocument || iframe.contentWindow?.document;
-          if (d && d.readyState === 'complete') return resolve(d);
-        } catch (_){}
-        let settled = false;
-        const onload = () => { if (!settled){ settled = true; cleanup(); resolve(iframe.contentDocument || iframe.contentWindow?.document); } };
-        const onerror = () => { if (!settled){ settled = true; cleanup(); reject(new Error('iframe load error')); } };
-        iframe.addEventListener('load', onload, { once:true });
-        iframe.addEventListener('error', onerror, { once:true });
-        const t = setTimeout(() => { if (!settled){ settled = true; cleanup(); reject(new Error('iframe load timeout')); } }, timeoutMs);
-        function cleanup(){ clearTimeout(t); iframe.removeEventListener('load', onload); iframe.removeEventListener('error', onerror); }
-      });
-    }
-
-    async function waitForFonts(doc, timeoutMs = 5000) {
-      try {
-        const fonts = doc?.fonts;
-        if (fonts && 'ready' in fonts) {
-          await Promise.race([ fonts.ready, new Promise((_, rj) => setTimeout(()=>rj(new Error('fonts timeout')), timeoutMs)) ]);
-        }
-      } catch (_) {}
-    }
-
-    // Inject ultra-strong light export CSS (and strip backgrounds)
-    function injectPrintStyles(doc) {
-      const style = doc.createElement('style');
-      style.setAttribute('data-export-style', 'true');
-      style.textContent = `
+    // Print / Save-as-PDF (native print) for KO
+    function injectPrintCSSForKR(doc){
+      const s = doc.createElement('style');
+      s.setAttribute('data-print-style','true');
+      s.textContent = `
+        /* Force light, paper-friendly print */
         :root, html, body {
+          background:#fff !important; color:#000 !important;
           color-scheme: light !important;
-          --bg:#ffffff !important; --card:#ffffff !important; --chip:#ffffff !important;
-          --text:#000000 !important; --muted:#111111 !important; --accent:#000000 !important;
-          background:#ffffff !important; color:#000000 !important;
-          print-color-adjust: exact !important; -webkit-print-color-adjust: exact !important;
+          -webkit-print-color-adjust: exact !important;
+          print-color-adjust: exact !important;
         }
-        html, body {
-          margin:0 !important; padding:0 !important; width:794px !important; max-width:794px !important;
-          transform:none !important; zoom:1 !important;
-        }
-        /* Kill anything that can trigger CORS or dark cast */
+        /* A4 content width */
+        @page { size: A4; margin: 12mm; }
+        html, body { margin:0 !important; padding:0 !important; }
+        /* Remove dark-mode artifacts & effects */
         *, *::before, *::after {
           filter:none !important; mix-blend-mode:normal !important; box-shadow:none !important;
-          backdrop-filter:none !important; -webkit-tap-highlight-color:transparent !important;
-          text-shadow:none !important; transition:none !important;
-          background-image:none !important; /* removes cross-origin background-image URLs */
+          backdrop-filter:none !important; text-shadow:none !important; transition:none !important;
         }
-        a, a:visited { color:#000 !important; text-decoration:none !important; }
         mark, ::selection { background:transparent !important; color:inherit !important; }
-        img, svg, canvas, video { background:transparent !important; }
-        @page { size:A4; margin:12mm; }
+        a, a:visited { color:#000 !important; text-decoration:none !important; }
       `;
-      doc.head?.appendChild(style);
+      doc.head.appendChild(s);
+      return s;
+    }
+
+    async function printKorean(){
+      ensureKRLoaded();
       try{
-        doc.documentElement.classList.remove('theme-dark');
-        doc.documentElement.classList.add('theme-light');
-      }catch(_){}
-      return style;
-    }
-    function removePrintStyles(doc) {
-      const s = doc.head?.querySelector('style[data-export-style="true"]');
-      if (s) s.remove();
-    }
-
-    // Inline same-origin <img> and hide failing ones; background-images are already disabled above
-    async function inlineImage(img, doc) {
-      const src = img.getAttribute('src') || '';
-      if (!src) return { ok: true };
-      try {
-        const abs = new URL(src, doc.baseURI).href;
-        const same = new URL(abs).origin === location.origin;
-        if (same) return { ok: true };
-        // Remote -> try to fetch; if blocked, hide
-        const res = await fetch(abs, { mode:'cors', credentials:'omit' });
-        if(!res.ok) throw new Error('status '+res.status);
-        const blob = await res.blob();
-        const reader = new FileReader();
-        const dataUrl = await new Promise((resolve, reject) => { reader.onload = ()=>resolve(reader.result); reader.onerror = reject; reader.readAsDataURL(blob); });
-        img.setAttribute('data-prev-src', src);
-        img.src = dataUrl;
-        return { ok:true, inlined:true };
-      } catch(e){
-        img.setAttribute('data-prev-display', img.style.display || '');
-        img.style.display = 'none';
-        return { ok:false };
-      }
-    }
-    async function sanitizeImagesForExport(doc) {
-      const imgs = Array.from(doc.images || []);
-      const changed = [], hidden = [];
-      for (const img of imgs) {
-        // Skip obvious offenders early
-        const src = img?.src || '';
-        if (src.includes('github.com') || src.includes('notion.so')) { img.style.display='none'; hidden.push(img); continue; }
-        const res = await inlineImage(img, doc);
-        if (res.inlined) changed.push(img);
-        else if (!res.ok) hidden.push(img);
-      }
-      return function cleanup(){
-        for (const img of changed) {
-          const prev = img.getAttribute('data-prev-src');
-          if (prev!=null) { img.src = prev; img.removeAttribute('data-prev-src'); }
-        }
-        for (const img of hidden) {
-          const prev = img.getAttribute('data-prev-display');
-          img.style.display = prev || '';
-          img.removeAttribute('data-prev-display');
-        }
-      };
-    }
-
-    async function exportKRPdf(){
-      const lang = localStorage.getItem('ga_lang') || 'en';
-      if(lang!=='ko') return true;
-
-      const targets = [btnDownloadPDF, mBtnDownloadPDF].filter(Boolean);
-      setBusy(targets, 'Generating…');
-      try{
-        preloadHiddenKR();
-        let doc = await waitForIframeLoad(krPdfIF, 30000).catch(()=>null)
-                  || await waitForIframeLoad(krFrame, 30000);
-        if(!doc) throw new Error('Korean page did not load');
-
-        await waitForFonts(doc, 5000);
-        await new Promise(r=>setTimeout(r,150));
-
-        const cleanupImgs = await sanitizeImagesForExport(doc);
-        const style = injectPrintStyles(doc);
-
-        try{
-          const opt = {
-            margin:[0.5,0.5],
-            filename:'GAIN_AUNTU_KR.pdf',
-            image:{type:'jpeg',quality:0.98},
-            html2canvas:{
-              scale: 2,
-              useCORS: true,
-              backgroundColor:'#ffffff',
-              allowTaint: false,
-              scrollX: 0, scrollY: 0,
-              // Skip any remaining external <img> safety net
-              ignoreElements: (el) => {
-                try{
-                  const src = el?.src || '';
-                  return src.includes('github.com') || src.includes('notion.so');
-                }catch(_){ return false; }
-              }
-            },
-            jsPDF:{unit:'in',format:'a4',orientation:'portrait'}
-          };
-          await html2pdf().set(opt).from(doc.body).save();
-          return false;
-        } finally {
-          removePrintStyles(doc);
-          cleanupImgs?.();
-        }
-      } catch (err){
-        console.error('KR PDF export error (details):', err);
-        alert('⚠️ Could not generate Korean PDF. Open the 한 tab first, then try again.');
-        return false;
-      } finally {
-        clearBusy(targets);
+        const doc = krFrame.contentDocument || krFrame.contentWindow.document;
+        if(!doc) throw new Error('KO iframe not ready');
+        const st = injectPrintCSSForKR(doc);
+        // small delay so styles apply
+        setTimeout(()=>{
+          krFrame.contentWindow.focus();
+          krFrame.contentWindow.print();
+          // remove after print (some browsers fire afterprint)
+          const cleanup = ()=>{ st.remove(); window.removeEventListener('afterprint', cleanup); };
+          window.addEventListener('afterprint', cleanup);
+          setTimeout(()=>st.remove(), 2000);
+        }, 150);
+      }catch(err){
+        alert('Open the Korean tab (한) first, let it load, then press Print again.');
+        console.error(err);
       }
     }
 
-    function onDownloadClick(e){
-      const lang = localStorage.getItem('ga_lang') || 'en';
-      if(lang==='ko'){
-        e.preventDefault();
-        exportKRPdf();
-      }
-    }
-    btnDownloadPDF?.addEventListener('click', onDownloadClick);
-    mBtnDownloadPDF?.addEventListener('click', (e)=>{ onDownloadClick(e); toggleDrawer(false); });
-
-    // Busy helpers
-    function setBusy(targets, txt){
-      targets.forEach(b=>{
-        if(!b) return;
-        b.dataset.original = b.textContent || '';
-        b.textContent = txt;
-        b.style.opacity='0.7';
-        b.style.pointerEvents='none';
-      });
-    }
-    function clearBusy(targets, fallback='Download Korean PDF'){
-      targets.forEach(b=>{
-        if(!b) return;
-        b.textContent = b.dataset.original || fallback;
-        b.style.opacity='';
-        b.style.pointerEvents='';
-      });
-    }
+    btnPrintKR?.addEventListener('click', printKorean);
+    mBtnPrintKR?.addEventListener('click', ()=>{ printKorean(); toggleDrawer(false); });
 
     // Init
     const savedTheme = localStorage.getItem('ga_viewer_theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
