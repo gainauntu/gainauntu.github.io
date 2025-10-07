@@ -89,7 +89,7 @@
     .viewer.viewer-dark .kr{filter:invert(0.92) hue-rotate(180deg)}
     .loader{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none;opacity:0;transform:scale(.98);transition:opacity .25s ease,transform .25s ease;}
     .loader.show{opacity:1;transform:scale(1);}
-    .ring{width:36px;height:36px;border-radius:50%;background:conic-gradient(from 0deg,var(--accent),var(--accent-2),var(--accent-3),var(--accent));-webkit-mask:radial-gradient(farthest-side,transparent 55%,#000 56%);mask:radial-gradient(farthest-side,transparent 55%,#000 56%);animation:spin 1s linear infinite;filter:var(--ring);}
+    .ring{width:36px;height:36px;border-radius:50%;background:conic-gradient(from 0deg,var(--accent),var(--accent-2),var(--accent-3),var(--accent));-webkit-mask:radial-gradient(farthest-side,transparent 55%,#000 56%);mask:radial-gradient(farthest-side,transparent 55%);animation:spin 1s linear infinite;filter:var(--ring);}
     @keyframes spin{to{transform:rotate(1turn)}}
     .foot{margin-top:24px;color:var(--muted);font-size:12px;text-align:center}
 
@@ -247,23 +247,17 @@
           yearEl = document.getElementById('y'),
           krPdfIF = document.getElementById('krPdfIF');
 
-    // Absolute URL (works on GH Pages subpaths)
+    // Absolute URL for KO page
     const KR_URL = new URL('KOREAN_AUNTU.html', location.href).href;
-    console.log('[KR export] KR_URL →', KR_URL);
     let krVisibleLoaded = false;
 
     // ---------- Drawer ----------
     function toggleDrawer(force){
       const open = (typeof force === 'boolean') ? force : drawer.hasAttribute('hidden');
       if(open){
-        drawer.removeAttribute('hidden');
-        btnMenu?.setAttribute('aria-expanded','true');
-        const focusable = drawer.querySelector('button, a, [tabindex]');
-        (focusable || drawer).focus?.();
+        drawer.removeAttribute('hidden'); btnMenu?.setAttribute('aria-expanded','true');
       } else {
-        drawer.setAttribute('hidden','');
-        btnMenu?.setAttribute('aria-expanded','false');
-        btnMenu?.focus?.();
+        drawer.setAttribute('hidden','');  btnMenu?.setAttribute('aria-expanded','false');
       }
     }
     btnMenu?.addEventListener('click',()=>toggleDrawer());
@@ -272,8 +266,8 @@
     // ---------- Lang + Theme ----------
     function setDownloadLabel(lang){
       const txt = (lang==='ko') ? 'Download Korean PDF' : 'Download PDF';
-      if(btnDownloadPDF) btnDownloadPDF.textContent = txt;
-      if(mBtnDownloadPDF) mBtnDownloadPDF.textContent = txt;
+      btnDownloadPDF && (btnDownloadPDF.textContent = txt);
+      mBtnDownloadPDF && (mBtnDownloadPDF.textContent = txt);
     }
 
     function ensureVisibleKRLoaded(){
@@ -306,8 +300,6 @@
       viewer.classList.toggle('viewer-dark', dark);
       [themeLight,mThemeLight].forEach(b=>b&&b.classList.toggle('active', !dark));
       [themeDark,mThemeDark].forEach(b=>b&&b.classList.toggle('active', dark));
-      [themeLight,mThemeLight].forEach(b=>b&&b.setAttribute('aria-pressed', String(!dark)));
-      [themeDark ,mThemeDark ].forEach(b=>b&&b.setAttribute('aria-pressed', String(dark)));
       try{
         const doc = krFrame.contentDocument || krFrame.contentWindow.document;
         doc?.documentElement?.classList.toggle('theme-dark', dark);
@@ -338,7 +330,7 @@
     btnCopyEmail?.addEventListener('click', ()=>doCopy(btnCopyEmail));
     mBtnCopyEmail?.addEventListener('click', ()=>doCopy(mBtnCopyEmail));
 
-    // ---------- EN PDF loader: retry + fallback link ----------
+    // ---------- EN PDF loader: retry + fallback ----------
     if(pdfFrame){
       let retried=false;
       const fallback=document.createElement('div');
@@ -392,16 +384,9 @@
       }catch(_){}
     });
 
-    // ---------- Robust KO PDF export ----------
+    // ---------- KO PDF export core ----------
     function preloadHiddenKR(){
-      try{
-        if (!krPdfIF.getAttribute('src')) {
-          krPdfIF.setAttribute('src', KR_URL);
-          console.log('[KR export] hidden iframe src set →', krPdfIF.src);
-        }
-      }catch(e){
-        console.warn('[KR export] preloadHiddenKR error', e);
-      }
+      try{ if (!krPdfIF.getAttribute('src')) krPdfIF.setAttribute('src', KR_URL); }catch(_){}
     }
     preloadHiddenKR();
 
@@ -411,23 +396,13 @@
           const doc = iframe.contentDocument || iframe.contentWindow?.document;
           if (doc && doc.readyState === 'complete') return resolve(doc);
         } catch (_){}
-
         let settled = false;
         const onload = () => { if (!settled){ settled = true; cleanup(); resolve(iframe.contentDocument || iframe.contentWindow?.document); } };
         const onerror = () => { if (!settled){ settled = true; cleanup(); reject(new Error('iframe load error')); } };
-
         iframe.addEventListener('load', onload, { once:true });
         iframe.addEventListener('error', onerror, { once:true });
-
-        const t = setTimeout(() => {
-          if (!settled){ settled = true; cleanup(); reject(new Error('iframe load timeout')); }
-        }, timeoutMs);
-
-        function cleanup(){
-          clearTimeout(t);
-          iframe.removeEventListener('load', onload);
-          iframe.removeEventListener('error', onerror);
-        }
+        const t = setTimeout(() => { if (!settled){ settled = true; cleanup(); reject(new Error('iframe load timeout')); } }, timeoutMs);
+        function cleanup(){ clearTimeout(t); iframe.removeEventListener('load', onload); iframe.removeEventListener('error', onerror); }
       });
     }
 
@@ -435,25 +410,45 @@
       try {
         const fonts = doc?.fonts;
         if (fonts && 'ready' in fonts) {
-          await Promise.race([
-            fonts.ready,
-            new Promise((_, reject) => setTimeout(() => reject(new Error('fonts timeout')), timeoutMs))
-          ]);
+          await Promise.race([ fonts.ready, new Promise((_, rj) => setTimeout(()=>rj(new Error('fonts timeout')), timeoutMs)) ]);
         }
       } catch (_) {}
     }
 
+    // >>> This is the upgraded export stylesheet <<<
     function injectPrintStyles(doc) {
       const style = doc.createElement('style');
       style.setAttribute('data-export-style', 'true');
       style.textContent = `
-        html,body{background:#fff!important;color:#000!important;margin:0;padding:0;}
-        body{width:794px;margin:0 auto;line-height:1.5;}
-        img{max-width:100%;height:auto;display:block;}
-        a{text-decoration:none;color:#000;}
-        @page{size:A4;margin:12mm;}
+        /* Force light scheme + exact colors for rasterization */
+        :root{ color-scheme: light; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+        html,body{ background:#ffffff !important; color:#111 !important; margin:0; padding:0; }
+        /* Remove any visual filters/inversions/mixes that darken output */
+        *, *::before, *::after{
+          filter:none !important;
+          mix-blend-mode:normal !important;
+          text-shadow:none !important;
+          box-shadow:none !important;
+          -webkit-tap-highlight-color: transparent !important;
+        }
+        /* Images and media */
+        img,svg,canvas,video{ filter:none !important; background:transparent !important; }
+        /* Links should look like plain text in the raster (no blue/purple) */
+        a, a:visited, a:active{ color:inherit !important; text-decoration:none !important; }
+        /* No yellow highlight or selection */
+        ::selection{ background:transparent !important; color:inherit !important; }
+        mark{ background:transparent !important; color:inherit !important; }
+        /* Optional: ensure consistent text rendering */
+        body{ -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
+        @page{ size:A4; margin:12mm; }
       `;
       doc.head?.appendChild(style);
+
+      // Also force theme-light class and remove theme-dark if present
+      try{
+        doc.documentElement.classList.remove('theme-dark');
+        doc.documentElement.classList.add('theme-light');
+      }catch(_){}
       return style;
     }
     function removePrintStyles(doc) {
@@ -461,19 +456,14 @@
       if (s) s.remove();
     }
 
-    // ---- CORS helpers: avoid canvas taint from external images ----
-    function isSameOrigin(url) {
-      try {
-        const u = new URL(url, location.href);
-        return u.origin === location.origin;
-      } catch (_) { return false; }
-    }
+    // CORS-safety. Keep it — but it usually won’t trigger if your KR page uses local images.
     async function inlineImage(img, doc) {
       const src = img.getAttribute('src') || '';
-      if (!src) return { ok: true, prevSrc: src };
+      if (!src) return { ok: true };
       try {
         const abs = new URL(src, doc.baseURI).href;
-        if (isSameOrigin(abs)) return { ok: true, prevSrc: src };
+        const same = new URL(abs).origin === location.origin;
+        if (same) return { ok: true };
         const res = await fetch(abs, { mode:'cors', credentials:'omit' });
         if (!res.ok) throw new Error('status '+res.status);
         const blob = await res.blob();
@@ -485,40 +475,27 @@
         });
         img.setAttribute('data-prev-src', src);
         img.src = dataUrl;
-        return { ok:true, prevSrc:src, inlined:true };
+        return { ok:true, inlined:true };
       } catch(e){
-        console.warn('[KR export] Could not inline image (will hide):', src, e);
-        return { ok:false, prevSrc:src };
+        img.setAttribute('data-prev-display', img.style.display || '');
+        img.style.display = 'none';
+        return { ok:false };
       }
     }
     async function sanitizeImagesForExport(doc) {
       const imgs = Array.from(doc.images || []);
       const changed = [], hidden = [];
-      const externals = imgs
-        .map(i => i.getAttribute('src') || '')
-        .filter(src => src && !isSameOrigin(new URL(src, doc.baseURI).href));
-      if (externals.length) console.warn('[KR export] External images:', externals);
       for (const img of imgs) {
         const res = await inlineImage(img, doc);
         if (res.inlined) changed.push(img);
-        else if (!res.ok) {
-          img.setAttribute('data-prev-display', img.style.display || '');
-          img.style.display = 'none';
-          hidden.push(img);
-        }
+        else if (!res.ok) hidden.push(img);
       }
       return function cleanup(){
         for (const img of changed) {
-          const prev = img.getAttribute('data-prev-src');
-          if (prev != null) {
-            img.src = prev;
-            img.removeAttribute('data-prev-src');
-          }
+          const prev = img.getAttribute('data-prev-src'); if (prev!=null) { img.src = prev; img.removeAttribute('data-prev-src'); }
         }
         for (const img of hidden) {
-          const prev = img.getAttribute('data-prev-display');
-          img.style.display = prev || '';
-          img.removeAttribute('data-prev-display');
+          const prev = img.getAttribute('data-prev-display'); img.style.display = prev || ''; img.removeAttribute('data-prev-display');
         }
       };
     }
@@ -531,46 +508,16 @@
       setBusy(targets, 'Generating…');
 
       try{
-        // Probe KR file so 404/path errors are explicit
-        let probeOk = false;
-        try {
-          const res = await fetch(KR_URL, { cache:'no-store', credentials:'same-origin' });
-          probeOk = res.ok;
-          if (!res.ok) console.error('[KR export] KR_URL fetch failed →', KR_URL, 'status:', res.status);
-        } catch (e) {
-          console.error('[KR export] KR_URL fetch threw →', KR_URL, e);
-        }
-        if (!probeOk) throw new Error('KR_URL not reachable. Check path/case and location.');
-
-        // Prefer hidden iframe
         preloadHiddenKR();
-        console.log('[KR export] waiting for hidden iframe:', krPdfIF.src);
         let doc = null;
-        try {
-          doc = await waitForIframeLoad(krPdfIF, 30000);
-        } catch (e) {
-          console.warn('[KR export] hidden iframe not ready:', e?.message);
-        }
-
-        // Fallback to visible iframe
-        if (!doc) {
+        try { doc = await waitForIframeLoad(krPdfIF, 30000); } catch (_){}
+        if(!doc){
           ensureVisibleKRLoaded();
-          console.log('[KR export] waiting for VISIBLE iframe:', krFrame.src || '(pending)');
-          try {
-            doc = await waitForIframeLoad(krFrame, 30000);
-          } catch (e2) {
-            console.error('[KR export] visible iframe also failed:', e2?.message);
-            throw new Error('Korean page did not load into either iframe.');
-          }
+          try { doc = await waitForIframeLoad(krFrame, 30000); } catch (_){}
         }
+        if(!doc) throw new Error('Korean page did not load into either iframe.');
 
-        // Theme parity (not critical for export)
-        try{
-          const dark = viewer.classList.contains('viewer-dark');
-          doc.documentElement.classList.toggle('theme-dark', dark);
-          doc.documentElement.classList.toggle('theme-light', !dark);
-        }catch(_){}
-
+        // fonts + tiny idle
         await waitForFonts(doc, 5000);
         await new Promise(r=>setTimeout(r, 150));
 
@@ -581,7 +528,7 @@
             margin:[0.5,0.5],
             filename:'GAIN_AUNTU_KR.pdf',
             image:{type:'jpeg',quality:0.98},
-            html2canvas:{ scale:2, useCORS:true, backgroundColor:'#ffffff' },
+            html2canvas:{ scale:2, useCORS:true, backgroundColor:'#ffffff', removeContainer:true },
             jsPDF:{unit:'in',format:'a4',orientation:'portrait'}
           };
           await html2pdf().set(opt).from(doc.body).save();
