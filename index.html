@@ -533,43 +533,60 @@
     async function exportKRPdf(){
       const lang = localStorage.getItem('ga_lang') || 'en';
       if(lang!=='ko') return true;
+
       const targets = [btnDownloadPDF, mBtnDownloadPDF].filter(Boolean);
       setBusy(targets, 'Generating…');
-      try{
+      try {
+        // Ensure KO iframe ready
         preloadHiddenKR();
         let doc = await waitForIframeLoad(krPdfIF, 30000).catch(()=>null)
                   || await waitForIframeLoad(krFrame, 30000);
         if(!doc) throw new Error('Korean page did not load');
-    
+
         await waitForFonts(doc, 5000);
-        await new Promise(r=>setTimeout(r,150));
-        const cleanupImgs = await sanitizeImagesForExport(doc);
-        injectPrintStyles(doc);
-    
-        try{
-          const opt = {
-            margin: [0.5,0.5],
-            filename: 'GAIN_AUNTU_KR.pdf',
-            image: { type: 'jpeg', quality: 0.98 },
-            html2canvas: {
-              scale: window.devicePixelRatio || 2,
-              useCORS: true,
-              backgroundColor: '#ffffff',
-              removeContainer: true,
-              allowTaint: false,
-              scrollX: 0, scrollY: 0
-            },
-            jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
-          };
-          await html2pdf().set(opt).from(doc.body).save();
-        } finally {
-          removePrintStyles(doc);
-          cleanupImgs?.();
-        }
+        await new Promise(r=>setTimeout(r,200));
+
+        // --- STEP 1: CLONE DOCUMENT INTO WHITE SANDBOX ---
+        const clone = document.createElement('div');
+        clone.id = 'krSnapshot';
+        clone.style.cssText = `
+          position:fixed; left:-9999px; top:0;
+          width:794px; max-width:794px; background:#fff; color:#000;
+          font-family: inherit; line-height:1.5;
+          padding:24px; box-sizing:border-box;`;
+        const bodyHTML = doc.body.cloneNode(true);
+        clone.appendChild(bodyHTML);
+        document.body.appendChild(clone);
+
+        // --- STEP 2: REMOVE DARK EFFECTS ---
+        clone.querySelectorAll('*').forEach(el=>{
+          el.style.background='transparent';
+          el.style.filter='none';
+          el.style.boxShadow='none';
+          el.style.mixBlendMode='normal';
+          el.style.color=el.style.color || '#000';
+        });
+
+        // --- STEP 3: GENERATE PDF ---
+        const opt = {
+          margin:[0.5,0.5],
+          filename:'GAIN_AUNTU_KR.pdf',
+          image:{type:'jpeg',quality:0.98},
+          html2canvas:{
+            scale:2,
+            useCORS:true,
+            backgroundColor:'#ffffff',
+            allowTaint:false
+          },
+          jsPDF:{unit:'in',format:'a4',orientation:'portrait'}
+        };
+        await html2pdf().set(opt).from(clone).save();
+
       } catch (err) {
-        console.error('KR PDF export error:', err);
-        alert('⚠️ Could not generate Korean PDF. Please open the 한 tab first, wait a moment, and try again.');
+        console.error('KR PDF export error (sandboxed version):', err);
+        alert('⚠️ Could not generate Korean PDF. Try opening the 한 tab first, then download again.');
       } finally {
+        document.getElementById('krSnapshot')?.remove();
         clearBusy(targets);
       }
     }
