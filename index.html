@@ -420,35 +420,49 @@
       const style = doc.createElement('style');
       style.setAttribute('data-export-style', 'true');
       style.textContent = `
-        /* Force light scheme + exact colors for rasterization */
-        :root{ color-scheme: light; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
-        html,body{ background:#ffffff !important; color:#111 !important; margin:0; padding:0; }
-        /* Remove any visual filters/inversions/mixes that darken output */
-        *, *::before, *::after{
-          filter:none !important;
-          mix-blend-mode:normal !important;
-          text-shadow:none !important;
-          box-shadow:none !important;
-          -webkit-tap-highlight-color: transparent !important;
+        :root {
+          color-scheme: light !important;
+          --bg: #ffffff !important;
+          --card: #ffffff !important;
+          --text: #000000 !important;
+          --muted: #222 !important;
+          background: #ffffff !important;
+          print-color-adjust: exact;
+          -webkit-print-color-adjust: exact;
         }
-        /* Images and media */
-        img,svg,canvas,video{ filter:none !important; background:transparent !important; }
-        /* Links should look like plain text in the raster (no blue/purple) */
-        a, a:visited, a:active{ color:inherit !important; text-decoration:none !important; }
-        /* No yellow highlight or selection */
-        ::selection{ background:transparent !important; color:inherit !important; }
-        mark{ background:transparent !important; color:inherit !important; }
-        /* Optional: ensure consistent text rendering */
-        body{ -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
-        @page{ size:A4; margin:12mm; }
+        html,body {
+          background:#ffffff !important;
+          color:#000 !important;
+          margin:0!important;
+          padding:0!important;
+          width:794px!important;
+          transform:none!important;
+          zoom:1!important;
+        }
+        *,*::before,*::after {
+          filter:none!important;
+          mix-blend-mode:normal!important;
+          box-shadow:none!important;
+          backdrop-filter:none!important;
+          -webkit-tap-highlight-color:transparent!important;
+          text-shadow:none!important;
+        }
+        mark,::selection {
+          background:transparent!important;
+          color:inherit!important;
+        }
+        a,a:visited {
+          color:#000!important;
+          text-decoration:none!important;
+        }
+        img,svg,canvas,video {
+          background:transparent!important;
+        }
+        @page { size:A4; margin:12mm; }
       `;
       doc.head?.appendChild(style);
-
-      // Also force theme-light class and remove theme-dark if present
-      try{
-        doc.documentElement.classList.remove('theme-dark');
-        doc.documentElement.classList.add('theme-light');
-      }catch(_){}
+      doc.documentElement.classList.remove('theme-dark');
+      doc.documentElement.classList.add('theme-light');
       return style;
     }
     function removePrintStyles(doc) {
@@ -503,44 +517,42 @@
     async function exportKRPdf(){
       const lang = localStorage.getItem('ga_lang') || 'en';
       if(lang!=='ko') return true;
-
       const targets = [btnDownloadPDF, mBtnDownloadPDF].filter(Boolean);
       setBusy(targets, 'Generating…');
-
       try{
         preloadHiddenKR();
-        let doc = null;
-        try { doc = await waitForIframeLoad(krPdfIF, 30000); } catch (_){}
-        if(!doc){
-          ensureVisibleKRLoaded();
-          try { doc = await waitForIframeLoad(krFrame, 30000); } catch (_){}
-        }
-        if(!doc) throw new Error('Korean page did not load into either iframe.');
-
-        // fonts + tiny idle
+        let doc = await waitForIframeLoad(krPdfIF, 30000).catch(()=>null)
+                  || await waitForIframeLoad(krFrame, 30000);
+        if(!doc) throw new Error('Korean page did not load');
+    
         await waitForFonts(doc, 5000);
-        await new Promise(r=>setTimeout(r, 150));
-
+        await new Promise(r=>setTimeout(r,150));
         const cleanupImgs = await sanitizeImagesForExport(doc);
         injectPrintStyles(doc);
+    
         try{
           const opt = {
-            margin:[0.5,0.5],
-            filename:'GAIN_AUNTU_KR.pdf',
-            image:{type:'jpeg',quality:0.98},
-            html2canvas:{ scale:2, useCORS:true, backgroundColor:'#ffffff', removeContainer:true },
-            jsPDF:{unit:'in',format:'a4',orientation:'portrait'}
+            margin: [0.5,0.5],
+            filename: 'GAIN_AUNTU_KR.pdf',
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: {
+              scale: window.devicePixelRatio || 2,
+              useCORS: true,
+              backgroundColor: '#ffffff',
+              removeContainer: true,
+              allowTaint: false,
+              scrollX: 0, scrollY: 0
+            },
+            jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
           };
           await html2pdf().set(opt).from(doc.body).save();
-          return false;
         } finally {
           removePrintStyles(doc);
           cleanupImgs?.();
         }
-      } catch (err){
-        console.error('KR PDF export error (details):', err);
-        alert('⚠️ Could not generate Korean PDF. Open the Korean tab (한) first, wait a second, and try again.');
-        return false;
+      } catch (err) {
+        console.error('KR PDF export error:', err);
+        alert('⚠️ Could not generate Korean PDF. Please open the 한 tab first, wait a moment, and try again.');
       } finally {
         clearBusy(targets);
       }
