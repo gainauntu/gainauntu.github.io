@@ -416,55 +416,71 @@
     }
 
     // >>> This is the upgraded export stylesheet <<<
-    function injectPrintStyles(doc) {
+   function injectPrintStyles(doc) {
       const style = doc.createElement('style');
       style.setAttribute('data-export-style', 'true');
       style.textContent = `
-        :root {
+        /* Reset everything dark-related */
+        :root, html, body {
           color-scheme: light !important;
           --bg: #ffffff !important;
           --card: #ffffff !important;
+          --chip: #ffffff !important;
+          --border: #cccccc !important;
           --text: #000000 !important;
-          --muted: #222 !important;
+          --muted: #111111 !important;
+          --accent: #000000 !important;
+          --accent-2: #000000 !important;
+          --accent-3: #000000 !important;
           background: #ffffff !important;
-          print-color-adjust: exact;
-          -webkit-print-color-adjust: exact;
+          color: #000000 !important;
+          print-color-adjust: exact !important;
+          -webkit-print-color-adjust: exact !important;
+          image-rendering: optimizeQuality !important;
         }
-        html,body {
-          background:#ffffff !important;
-          color:#000 !important;
-          margin:0!important;
-          padding:0!important;
-          width:794px!important;
-          transform:none!important;
-          zoom:1!important;
+    
+        html, body {
+          margin: 0 !important;
+          padding: 0 !important;
+          width: 794px !important;   /* A4 width at 96dpi */
+          max-width: 794px !important;
+          transform: none !important;
+          zoom: 1 !important;
         }
-        *,*::before,*::after {
-          filter:none!important;
-          mix-blend-mode:normal!important;
-          box-shadow:none!important;
-          backdrop-filter:none!important;
-          -webkit-tap-highlight-color:transparent!important;
-          text-shadow:none!important;
+    
+        *, *::before, *::after {
+          filter: none !important;
+          mix-blend-mode: normal !important;
+          box-shadow: none !important;
+          backdrop-filter: none !important;
+          -webkit-tap-highlight-color: transparent !important;
+          text-shadow: none !important;
+          transition: none !important;
         }
-        mark,::selection {
-          background:transparent!important;
-          color:inherit!important;
+    
+        mark, ::selection {
+          background: transparent !important;
+          color: inherit !important;
         }
-        a,a:visited {
-          color:#000!important;
-          text-decoration:none!important;
+    
+        a, a:visited {
+          color: #000000 !important;
+          text-decoration: none !important;
         }
-        img,svg,canvas,video {
-          background:transparent!important;
+    
+        img, svg, canvas, video {
+          background: transparent !important;
+          box-shadow: none !important;
         }
-        @page { size:A4; margin:12mm; }
+    
+        @page { size: A4; margin: 12mm; }
       `;
       doc.head?.appendChild(style);
       doc.documentElement.classList.remove('theme-dark');
       doc.documentElement.classList.add('theme-light');
       return style;
     }
+
     function removePrintStyles(doc) {
       const s = doc.head?.querySelector('style[data-export-style="true"]');
       if (s) s.remove();
