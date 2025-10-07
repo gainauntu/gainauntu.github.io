@@ -162,17 +162,9 @@
             <button id="theme-dark" aria-pressed="true">🌙</button>
           </div>
         </div>
-
         <div class="actions">
           <button id="btn-copy-email" class="btn">Copy Email</button>
-
-          <!-- EN: direct PDF -->
-          <a id="btn-download-en" class="btn btn-accent" href="CV_AUNTU_GAIN.pdf" download>Download EN PDF</a>
-
-          <!-- KO: HTML actions -->
-          <a id="btn-open-kr" class="btn" href="KOREAN_AUNTU.html" target="_blank" rel="noopener">Open Korean HTML</a>
-          <a id="btn-save-kr" class="btn" href="KOREAN_AUNTU.html" download>Download Korean HTML</a>
-          <button id="btn-print-kr" class="btn btn-accent">Print / Save KO as PDF</button>
+          <button id="btn-primary" class="btn btn-accent">Download PDF</button>
         </div>
       </div>
 
@@ -195,10 +187,7 @@
         </div>
         <div class="drawer-row actions">
           <button id="m-btn-copy-email" class="btn">Copy Email</button>
-          <a id="m-btn-download-en" class="btn btn-accent" href="CV_AUNTU_GAIN.pdf" download>Download EN PDF</a>
-          <a id="m-btn-open-kr" class="btn" href="KOREAN_AUNTU.html" target="_blank" rel="noopener">Open KO HTML</a>
-          <a id="m-btn-save-kr" class="btn" href="KOREAN_AUNTU.html" download>Download KO HTML</a>
-          <button id="m-btn-print-kr" class="btn btn-accent">Print / Save KO as PDF</button>
+          <button id="m-btn-primary" class="btn btn-accent">Download PDF</button>
         </div>
       </div>
     </div>
@@ -240,15 +229,15 @@
           mThemeDark  = document.getElementById('m-theme-dark'),
           btnCopyEmail = document.getElementById('btn-copy-email'),
           mBtnCopyEmail = document.getElementById('m-btn-copy-email'),
+          btnPrimary = document.getElementById('btn-primary'),
+          mBtnPrimary = document.getElementById('m-btn-primary'),
           btnMenu = document.getElementById('btn-menu'),
           drawer  = document.getElementById('m-drawer'),
           viewer = document.getElementById('viewer'),
           pdfFrame = document.getElementById('pdfFrame'),
-          pdfLoader = document.getElementById('pdfLoader'),
           krFrame = document.getElementById('krFrame'),
+          pdfLoader = document.getElementById('pdfLoader'),
           krLoader  = document.getElementById('krLoader'),
-          btnPrintKR = document.getElementById('btn-print-kr'),
-          mBtnPrintKR = document.getElementById('m-btn-print-kr'),
           yearEl = document.getElementById('y');
 
     const KR_URL = new URL('KOREAN_AUNTU.html', location.href).href;
@@ -263,7 +252,45 @@
     btnMenu?.addEventListener('click',()=>toggleDrawer());
     window.addEventListener('resize',()=>{ if(window.matchMedia('(min-width:821px)').matches) toggleDrawer(false); });
 
-    // Lang + Theme
+    // Language + Theme
+    function ensureKRLoaded(){
+      if(!krVisibleLoaded){
+        krLoader?.classList.add('show');
+        krFrame.src = KR_URL;
+        krVisibleLoaded = true;
+      }
+    }
+
+    function reloadEN(){ const s = pdfFrame.getAttribute('src'); if(s) pdfFrame.setAttribute('src', s); }
+
+    function setLangLabels(lang){
+      const isKO = lang==='ko';
+      // labels
+      btnPrimary.textContent = isKO ? '이력서 출력하기' : 'Download PDF';
+      mBtnPrimary.textContent = btnPrimary.textContent;
+      btnCopyEmail.textContent = isKO ? '이메일 복사' : 'Copy Email';
+      mBtnCopyEmail.textContent = btnCopyEmail.textContent;
+      // action handlers
+      [btnPrimary, mBtnPrimary].forEach(b=>{
+        b.onclick = null;
+        if(isKO){
+          b.onclick = (e)=>{ e.preventDefault(); printKorean(); toggleDrawer(false); };
+        }else{
+          b.onclick = (e)=>{
+            e.preventDefault();
+            // programmatic download
+            const a = document.createElement('a');
+            a.href = 'CV_AUNTU_GAIN.pdf';
+            a.download = 'CV_AUNTU_GAIN.pdf';
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            toggleDrawer(false);
+          };
+        }
+      });
+    }
+
     function showLang(lang){
       localStorage.setItem('ga_lang', lang);
       [btnEn,mBtnEn].forEach(b=>b&&b.classList.toggle('active', lang==='en'));
@@ -273,6 +300,7 @@
       });
       if(lang==='en'){ reloadEN(); }
       else { ensureKRLoaded(); }
+      setLangLabels(lang);
     }
 
     function applyTheme(theme){
@@ -288,16 +316,6 @@
       }catch(_){}
     }
 
-    function reloadEN(){ const s = pdfFrame.getAttribute('src'); if(s) pdfFrame.setAttribute('src', s); }
-
-    function ensureKRLoaded(){
-      if(!krVisibleLoaded){
-        krLoader?.classList.add('show');
-        krFrame.src = KR_URL;
-        krVisibleLoaded = true;
-      }
-    }
-
     btnEn?.addEventListener('click', ()=>showLang('en'));
     btnKo?.addEventListener('click', ()=>showLang('ko'));
     mBtnEn?.addEventListener('click', ()=>{ showLang('en'); toggleDrawer(false); });
@@ -309,11 +327,15 @@
     mThemeDark ?.addEventListener('click', ()=>applyTheme('dark'));
 
     function doCopy(btn){
+      const isKO = (localStorage.getItem('ga_lang')||'en') === 'ko';
       try{ navigator.clipboard.writeText('gainauntu@gmail.com'); }catch(_){}
-      if(btn){ btn.textContent = 'Copied!'; setTimeout(()=>btn.textContent='Copy Email', 1200); }
+      if(btn){
+        btn.textContent = isKO ? '복사됨!' : 'Copied!';
+        setTimeout(()=>{ btn.textContent = isKO ? '이메일 복사' : 'Copy Email'; }, 1200);
+      }
     }
     btnCopyEmail?.addEventListener('click', ()=>doCopy(btnCopyEmail));
-    mBtnCopyEmail?.addEventListener('click', ()=>doCopy(mBtnCopyEmail));
+    mBtnCopyEmail?.addEventListener('click', ()=>{ doCopy(mBtnCopyEmail); toggleDrawer(false); });
 
     // EN PDF load feedback
     if(pdfFrame){
@@ -322,7 +344,7 @@
       setTimeout(()=>{ if(!pdfFrame.classList.contains('ready')) finish(); }, 4000);
     }
 
-    // KR iframe events
+    // KR iframe loaded
     krFrame?.addEventListener('load', ()=>{
       krLoader?.classList.remove('show');
       try{
@@ -331,7 +353,7 @@
         doc?.documentElement?.classList.toggle('theme-dark', dark);
         doc?.documentElement?.classList.toggle('theme-light', !dark);
       }catch(_){}
-      // auto-height
+      // auto height
       try{
         const d=krFrame.contentDocument||krFrame.contentWindow.document;
         const h=Math.max(d.body.scrollHeight,d.documentElement.scrollHeight);
@@ -347,22 +369,19 @@
       }catch(_){}
     });
 
-    // Print / Save-as-PDF (native print) for KO
+    // Print Korean (native print) with light-print CSS
     function injectPrintCSSForKR(doc){
       const s = doc.createElement('style');
       s.setAttribute('data-print-style','true');
       s.textContent = `
-        /* Force light, paper-friendly print */
         :root, html, body {
           background:#fff !important; color:#000 !important;
           color-scheme: light !important;
           -webkit-print-color-adjust: exact !important;
           print-color-adjust: exact !important;
         }
-        /* A4 content width */
         @page { size: A4; margin: 12mm; }
         html, body { margin:0 !important; padding:0 !important; }
-        /* Remove dark-mode artifacts & effects */
         *, *::before, *::after {
           filter:none !important; mix-blend-mode:normal !important; box-shadow:none !important;
           backdrop-filter:none !important; text-shadow:none !important; transition:none !important;
@@ -373,30 +392,24 @@
       doc.head.appendChild(s);
       return s;
     }
-
-    async function printKorean(){
+    function printKorean(){
       ensureKRLoaded();
       try{
         const doc = krFrame.contentDocument || krFrame.contentWindow.document;
         if(!doc) throw new Error('KO iframe not ready');
         const st = injectPrintCSSForKR(doc);
-        // small delay so styles apply
         setTimeout(()=>{
           krFrame.contentWindow.focus();
           krFrame.contentWindow.print();
-          // remove after print (some browsers fire afterprint)
           const cleanup = ()=>{ st.remove(); window.removeEventListener('afterprint', cleanup); };
           window.addEventListener('afterprint', cleanup);
           setTimeout(()=>st.remove(), 2000);
-        }, 150);
+        }, 120);
       }catch(err){
-        alert('Open the Korean tab (한) first, let it load, then press Print again.');
+        alert('한국어 탭을 먼저 열고 로딩된 후 다시 시도하세요.');
         console.error(err);
       }
     }
-
-    btnPrintKR?.addEventListener('click', printKorean);
-    mBtnPrintKR?.addEventListener('click', ()=>{ printKorean(); toggleDrawer(false); });
 
     // Init
     const savedTheme = localStorage.getItem('ga_viewer_theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
