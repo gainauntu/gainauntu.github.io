@@ -4,9 +4,13 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>GAIN AUNTU — Profile & CV</title>
+
+  <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;600;700&display=swap" rel="stylesheet">
+
   <style>
     :root{
       --bg:#0b0f14; --card:#121922; --text:#e6edf3; --muted:#9fb2c7;
@@ -14,49 +18,43 @@
       --accent-2:#8a7dff; --accent-3:#00e6b8;
       --ring: drop-shadow(0 0 8px rgba(77,163,255,.35)) drop-shadow(0 0 22px rgba(0,230,184,.18));
       --focus: 0 0 0 3px rgba(77,163,255,.45);
+      --header-pad: 18px;
+      --radius: 16px;
     }
     *{box-sizing:border-box}
     html,body{height:100%}
     body{
       margin:0; font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
-      color:var(--text);
-      background:#0b0f14;
-      overflow-x:hidden;
-      position:relative;
+      color:var(--text); background:#0b0f14; overflow-x:hidden; position:relative;
     }
-    /* Subtle 3D parallax glow layer */
-    body::before{
-      content:"";position:fixed;inset:-50%;z-index:-1;
-      background:radial-gradient(800px 600px at 20% 15%, rgba(77,163,255,.12), transparent 70%),
-                 radial-gradient(800px 600px at 80% 85%, rgba(0,230,184,.1), transparent 70%);
-      transform:translate3d(0,0,0);
-      transition:background 1.2s ease;
-    }
-    @supports (zoom:1){body{zoom:1.07}} 
+    @supports (zoom:1){body{zoom:1.07}}
     @supports not (zoom:1){.wrap{transform:scale(1.07);transform-origin:top center;width:calc(100%/1.07)}}
+
     .wrap{max-width:980px;margin:0 auto;padding:24px 18px 64px;position:relative;}
 
     header{
-      display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px;
+      display:flex;align-items:center;justify-content:space-between;gap:12px;
+      padding:var(--header-pad);
       background:linear-gradient(180deg, rgba(18,25,34,.7), rgba(18,25,34,.6));
-      border:1px solid var(--border);border-radius:16px;position:sticky;top:10px;z-index:5;
+      border:1px solid var(--border);border-radius:var(--radius);position:sticky;top:10px;z-index:10;
       backdrop-filter:saturate(140%) blur(8px);
       box-shadow:0 10px 30px rgba(0,0,0,.35);
     }
-    .id{display:flex;align-items:center;gap:14px;}
+    .id{display:flex;align-items:center;gap:14px;min-width:0;}
     .avatar{width:48px;height:48px;border-radius:12px;
       background:conic-gradient(from 0deg, rgba(77,163,255,.35), rgba(0,230,184,.25), rgba(138,125,255,.3), rgba(77,163,255,.35)),
                  linear-gradient(135deg,#2a3a4f,#1f2a38);
       display:grid;place-items:center;font-weight:700;filter:var(--ring);
-      animation: spinAccent 8s linear infinite;
+      animation: spinAccent 8s linear infinite; flex:0 0 auto;
     }
     @keyframes spinAccent{to{transform:rotate(1turn)}}
-    .id h1{font-size:20px;line-height:1.2;margin:0}
+    .id h1{font-size:20px;line-height:1.2;margin:0;white-space:nowrap}
     .id p{margin:0;color:var(--muted);font-size:13px}
+    .links{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
     .links a{color:var(--accent)}
+
     .right-rail{display:flex;flex-direction:column;gap:10px;align-items:flex-end}
     .lang-group{display:flex;flex-direction:column;align-items:flex-start;gap:10px;}
-
     .lang-switch,.theme-switch{display:inline-flex;border:1px solid var(--border);background:var(--chip);
       border-radius:14px;padding:5px;gap:5px;position:relative;overflow:hidden;}
     .lang-switch button,.theme-switch button{appearance:none;border:0;padding:9px 13px;border-radius:10px;
@@ -76,9 +74,10 @@
     .btn-accent{background:linear-gradient(135deg,rgba(77,163,255,.9),rgba(0,230,184,.9));color:#001428;}
 
     main{margin-top:18px;display:grid;gap:16px}
-    section{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:12px}
+    section{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:12px}
     [data-lang]{display:none;opacity:0;transform:translateY(6px);transition:opacity .28s ease,transform .28s ease;}
     [data-lang][data-show="true"]{display:block;opacity:1;transform:translateY(0);}
+
     .viewer .pdf-wrap{position:relative;border-radius:12px;overflow:hidden;background:transparent}
     .viewer .pdf-frame{width:100%;height:84vh;border:0;display:block;opacity:0;transition:opacity .25s ease}
     .viewer .pdf-frame.ready{opacity:1}
@@ -93,7 +92,43 @@
     .ring{width:36px;height:36px;border-radius:50%;background:conic-gradient(from 0deg,var(--accent),var(--accent-2),var(--accent-3),var(--accent));-webkit-mask:radial-gradient(farthest-side,transparent 55%,#000 56%);mask:radial-gradient(farthest-side,transparent 55%,#000 56%);animation:spin 1s linear infinite;filter:var(--ring);}
     @keyframes spin{to{transform:rotate(1turn)}}
     .foot{margin-top:24px;color:var(--muted);font-size:12px;text-align:center}
+
+    /* Mobile drawer */
+    .hamburger{display:none; appearance:none; border:1px solid var(--border); background:var(--chip);
+      color:var(--text); padding:8px 10px; border-radius:10px; cursor:pointer; font-weight:700;}
+    .hamburger:focus-visible{outline:none; box-shadow: var(--focus);}
+    .drawer{display:none;}
+    .drawer-panel{margin-top:10px;border:1px solid var(--border);background:var(--card);border-radius:12px;padding:12px;display:grid;gap:10px;}
+    .drawer-row{display:flex; flex-wrap:wrap; gap:10px; align-items:center; justify-content:center;}
+    .drawer .actions{justify-content:center;}
+
+    @media (max-width: 820px){
+      header{padding:12px;gap:10px}
+      .id{flex:1 1 auto;min-width:0;}
+      .id h1{font-size:18px}
+      .id p{font-size:12px}
+      .links{font-size:12px}
+      .right-rail{display:none;}
+      .hamburger{display:inline-flex;}
+      .drawer{display:block;}
+      .viewer .pdf-frame, .viewer .kr{height:72vh;}
+    }
+    @media (max-width: 480px){
+      :root{ --header-pad: 12px; }
+      .avatar{width:42px;height:42px}
+      .links{display:block;white-space:normal}
+      .btn{padding:8px 10px; font-size:12px}
+      .lang-switch button,.theme-switch button{padding:8px 10px; font-size:12px}
+      .drawer-panel{padding:10px}
+    }
+
+    /* Reduced motion */
+    @media (prefers-reduced-motion: reduce){
+      .avatar{animation:none}
+      .ring{animation:none}
+    }
   </style>
+
   <style id="han-font-fix">
     #btn-ko {font-family:'Noto Sans KR',system-ui,sans-serif!important;line-height:1;position:relative;top:-1px;}
   </style>
@@ -103,27 +138,28 @@
     <header>
       <div class="id">
         <div class="avatar">AG</div>
-        <div>
+        <div style="min-width:0">
           <h1>GAIN AUNTU</h1>
           <p>Embedded Systems & Computer Vision • Suwon, Korea</p>
           <div class="links" style="margin-top:6px; font-size:13px">
             <a href="mailto:gainauntu@gmail.com">gainauntu@gmail.com</a> ·
             <a href="tel:+821028186879">(+82) 10-2818-6879</a> ·
-            <a href="https://github.com/gainauntu" target="_blank" rel="noreferrer">GitHub</a> ·
-            <a href="https://www.linkedin.com/in/gainauntu/">LinkedIn</a>
+            <a href="https://github.com/gainauntu" target="_blank" rel="noopener">GitHub</a> ·
+            <a href="https://www.linkedin.com/in/gainauntu/" target="_blank" rel="noopener">LinkedIn</a>
           </div>
         </div>
       </div>
 
+      <!-- Desktop controls -->
       <div class="right-rail">
         <div class="lang-group">
-          <div class="lang-switch">
-            <button id="btn-en" class="active" data-target="en">EN</button>
-            <button id="btn-ko" data-target="ko">한</button>
+          <div class="lang-switch" role="tablist" aria-label="Language">
+            <button id="btn-en" class="active" data-target="en" role="tab" aria-selected="true">EN</button>
+            <button id="btn-ko" data-target="ko" role="tab" aria-selected="false">한</button>
           </div>
-          <div class="theme-switch">
-            <button id="theme-light">☀️</button>
-            <button id="theme-dark">🌙</button>
+          <div class="theme-switch" aria-label="Theme">
+            <button id="theme-light" aria-pressed="false">☀️</button>
+            <button id="theme-dark" aria-pressed="true">🌙</button>
           </div>
         </div>
         <div class="actions">
@@ -131,7 +167,30 @@
           <a id="btn-download-pdf" class="btn btn-accent" href="CV_AUNTU_GAIN.pdf" download>Download PDF</a>
         </div>
       </div>
+
+      <!-- Mobile hamburger -->
+      <button id="btn-menu" class="hamburger" aria-expanded="false" aria-controls="m-drawer" aria-label="Menu">☰</button>
     </header>
+
+    <!-- Mobile drawer -->
+    <div id="m-drawer" class="drawer" hidden>
+      <div class="drawer-panel">
+        <div class="drawer-row">
+          <div class="lang-switch">
+            <button id="m-btn-en" data-target="en">EN</button>
+            <button id="m-btn-ko" data-target="ko">한</button>
+          </div>
+          <div class="theme-switch">
+            <button id="m-theme-light">☀️</button>
+            <button id="m-theme-dark">🌙</button>
+          </div>
+        </div>
+        <div class="drawer-row actions">
+          <button id="m-btn-copy-email" class="btn">Copy Email</button>
+          <a id="m-btn-download-pdf" class="btn btn-accent" href="CV_AUNTU_GAIN.pdf" download>Download PDF</a>
+        </div>
+      </div>
+    </div>
 
     <main>
       <div id="viewer" class="viewer">
@@ -157,106 +216,425 @@
     </main>
   </div>
 
-<script>
-(function(){
-  const btnEn=document.getElementById('btn-en'),btnKo=document.getElementById('btn-ko'),
-  themeLight=document.getElementById('theme-light'),themeDark=document.getElementById('theme-dark'),
-  viewer=document.getElementById('viewer'),pdfFrame=document.getElementById('pdfFrame'),
-  krFrame=document.getElementById('krFrame'),pdfLoader=document.getElementById('pdfLoader'),
-  krLoader=document.getElementById('krLoader'),btnCopyEmail=document.getElementById('btn-copy-email'),
-  btnDownloadPDF=document.getElementById('btn-download-pdf');
-  const KR_URL='KOREAN_AUNTU.html';
-  let krLoaded=false;
+  <!-- Hidden target for KO PDF rendering (preloaded via src) -->
+  <iframe id="krPdfIF" style="position:fixed;left:-10000px;top:0;width:794px;height:1123px;border:0;visibility:hidden;"></iframe>
 
-  function showLang(lang){
-    localStorage.setItem('ga_lang',lang);
-    btnEn.classList.toggle('active',lang==='en');btnKo.classList.toggle('active',lang==='ko');
-    document.querySelectorAll('[data-lang]').forEach(e=>e.setAttribute('data-show',String(e.dataset.lang===lang)));
-    if(lang==='en') tryReloadPDF();
-    if(lang==='ko'&&!krLoaded){
-      if(krLoader)krLoader.classList.add('show');
-      krFrame.src=KR_URL;krLoaded=true;
-      setTimeout(()=>{syncKRTheme();resizeKR();},250);
-    }
-  }
+  <!-- html2pdf -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
-  function applyViewerTheme(theme){
-    localStorage.setItem('ga_viewer_theme',theme);
-    const dark=theme==='dark';
-    viewer.classList.toggle('viewer-dark',dark);
-    themeLight.classList.toggle('active',!dark);
-    themeDark.classList.toggle('active',dark);
-    syncKRTheme();
-  }
+  <script>
+  (function(){
+    // Elements
+    const btnEn = document.getElementById('btn-en'),
+          btnKo = document.getElementById('btn-ko'),
+          mBtnEn = document.getElementById('m-btn-en'),
+          mBtnKo = document.getElementById('m-btn-ko'),
+          themeLight = document.getElementById('theme-light'),
+          themeDark  = document.getElementById('theme-dark'),
+          mThemeLight = document.getElementById('m-theme-light'),
+          mThemeDark  = document.getElementById('m-theme-dark'),
+          btnCopyEmail = document.getElementById('btn-copy-email'),
+          mBtnCopyEmail = document.getElementById('m-btn-copy-email'),
+          btnDownloadPDF = document.getElementById('btn-download-pdf'),
+          mBtnDownloadPDF = document.getElementById('m-btn-download-pdf'),
+          btnMenu = document.getElementById('btn-menu'),
+          drawer  = document.getElementById('m-drawer'),
+          viewer = document.getElementById('viewer'),
+          pdfFrame = document.getElementById('pdfFrame'),
+          krFrame = document.getElementById('krFrame'),
+          pdfLoader = document.getElementById('pdfLoader'),
+          krLoader  = document.getElementById('krLoader'),
+          yearEl = document.getElementById('y'),
+          krPdfIF = document.getElementById('krPdfIF');
 
-  function tryReloadPDF(){
-    const s=pdfFrame.getAttribute('src');if(s)pdfFrame.setAttribute('src',s);
-  }
+    // Absolute URL (works on GH Pages subpaths)
+    const KR_URL = new URL('KOREAN_AUNTU.html', location.href).href;
+    console.log('[KR export] KR_URL →', KR_URL);
+    let krVisibleLoaded = false;
 
-  function syncKRTheme(){
-    try{
-      const dark=viewer.classList.contains('viewer-dark');
-      const doc=krFrame.contentDocument||krFrame.contentWindow.document;
-      if(doc&&doc.documentElement){
-        doc.documentElement.classList.toggle('theme-dark',dark);
-        doc.documentElement.classList.toggle('theme-light',!dark);
+    // ---------- Drawer ----------
+    function toggleDrawer(force){
+      const open = (typeof force === 'boolean') ? force : drawer.hasAttribute('hidden');
+      if(open){
+        drawer.removeAttribute('hidden');
+        btnMenu?.setAttribute('aria-expanded','true');
+        const focusable = drawer.querySelector('button, a, [tabindex]');
+        (focusable || drawer).focus?.();
+      } else {
+        drawer.setAttribute('hidden','');
+        btnMenu?.setAttribute('aria-expanded','false');
+        btnMenu?.focus?.();
       }
-    }catch(e){}
-  }
-  function resizeKR(){
-    try{
-      const d=krFrame.contentDocument||krFrame.contentWindow.document;
-      const h=Math.max(d.body.scrollHeight,d.documentElement.scrollHeight);
-      if(h>600)krFrame.style.height=Math.min(h+20,window.innerHeight*1.5)+'px';
-    }catch(e){}
-  }
+    }
+    btnMenu?.addEventListener('click',()=>toggleDrawer());
+    window.addEventListener('resize',()=>{ if(window.matchMedia('(min-width:821px)').matches) toggleDrawer(false); });
 
-  btnEn.onclick=()=>showLang('en');
-  btnKo.onclick=()=>showLang('ko');
-  themeLight.onclick=()=>applyViewerTheme('light');
-  themeDark.onclick=()=>applyViewerTheme('dark');
-  if(krFrame)krFrame.addEventListener('load',()=>{if(krLoader)krLoader.classList.remove('show');syncKRTheme();resizeKR();});
-  window.addEventListener('resize',resizeKR);
+    // ---------- Lang + Theme ----------
+    function setDownloadLabel(lang){
+      const txt = (lang==='ko') ? 'Download Korean PDF' : 'Download PDF';
+      if(btnDownloadPDF) btnDownloadPDF.textContent = txt;
+      if(mBtnDownloadPDF) mBtnDownloadPDF.textContent = txt;
+    }
 
-  if(btnCopyEmail)btnCopyEmail.onclick=()=>{navigator.clipboard.writeText('gainauntu@gmail.com');btnCopyEmail.textContent='Copied!';setTimeout(()=>btnCopyEmail.textContent='Copy Email',1200);};
+    function ensureVisibleKRLoaded(){
+      if (!krVisibleLoaded){
+        krLoader?.classList.add('show');
+        krFrame.src = KR_URL;
+        krVisibleLoaded = true;
+      }
+    }
 
-  // === Enhanced PDF loader with retry & fallback ===
-  if(pdfFrame){
-    let retried=false;
-    const fallback=document.createElement('div');
-    fallback.style='display:none;text-align:center;margin-top:10px;';
-    fallback.innerHTML=`<a href="CV_AUNTU_GAIN.pdf" target="_blank">Open PDF manually</a>`;
-    pdfFrame.parentElement.appendChild(fallback);
-    const finish=()=>{clearTimeout(timer);if(pdfLoader)pdfLoader.classList.remove('show');pdfFrame.classList.add('ready');};
-    pdfFrame.addEventListener('load',finish);
-    let timer=setTimeout(()=>{
-      if(!pdfFrame.classList.contains('ready')){
-        if(!retried){
-          retried=true;
-          console.warn('PDF viewer not ready — retrying once...');
-          const s=pdfFrame.getAttribute('src');
-          pdfFrame.removeAttribute('src');
-          setTimeout(()=>{pdfFrame.setAttribute('src',s);},500);
-          timer=setTimeout(()=>{
-            if(!pdfFrame.classList.contains('ready')){
-              console.warn('PDF inline render still timed out; showing fallback link.');
-              if(pdfLoader)pdfLoader.classList.remove('show');
-              fallback.style.display='block';
-            }
-          },10000);
-        }else{
-          if(pdfLoader)pdfLoader.classList.remove('show');
-          fallback.style.display='block';
+    function showLang(lang){
+      localStorage.setItem('ga_lang', lang);
+      [btnEn,mBtnEn].forEach(b=>b&&b.classList.toggle('active', lang==='en'));
+      [btnKo,mBtnKo].forEach(b=>b&&b.classList.toggle('active', lang==='ko'));
+      document.querySelectorAll('[data-lang]').forEach(e=>{
+        e.setAttribute('data-show', String(e.dataset.lang===lang));
+      });
+      if(lang==='en'){
+        reloadPDF();
+      } else {
+        ensureVisibleKRLoaded();
+        preloadHiddenKR();
+      }
+      setDownloadLabel(lang);
+    }
+
+    function applyTheme(theme){
+      localStorage.setItem('ga_viewer_theme', theme);
+      const dark = theme==='dark';
+      viewer.classList.toggle('viewer-dark', dark);
+      [themeLight,mThemeLight].forEach(b=>b&&b.classList.toggle('active', !dark));
+      [themeDark,mThemeDark].forEach(b=>b&&b.classList.toggle('active', dark));
+      [themeLight,mThemeLight].forEach(b=>b&&b.setAttribute('aria-pressed', String(!dark)));
+      [themeDark ,mThemeDark ].forEach(b=>b&&b.setAttribute('aria-pressed', String(dark)));
+      try{
+        const doc = krFrame.contentDocument || krFrame.contentWindow.document;
+        doc?.documentElement?.classList.toggle('theme-dark', dark);
+        doc?.documentElement?.classList.toggle('theme-light', !dark);
+      }catch(_){}
+    }
+
+    function reloadPDF(){
+      const s = pdfFrame.getAttribute('src');
+      if(s) pdfFrame.setAttribute('src', s);
+    }
+
+    // Wire clicks
+    btnEn?.addEventListener('click', ()=>showLang('en'));
+    btnKo?.addEventListener('click', ()=>showLang('ko'));
+    mBtnEn?.addEventListener('click', ()=>{ showLang('en'); toggleDrawer(false); });
+    mBtnKo?.addEventListener('click', ()=>{ showLang('ko'); toggleDrawer(false); });
+
+    themeLight?.addEventListener('click', ()=>applyTheme('light'));
+    themeDark ?.addEventListener('click', ()=>applyTheme('dark'));
+    mThemeLight?.addEventListener('click', ()=>applyTheme('light'));
+    mThemeDark ?.addEventListener('click', ()=>applyTheme('dark'));
+
+    function doCopy(btn){
+      try{ navigator.clipboard.writeText('gainauntu@gmail.com'); }catch(_){}
+      if(btn){ btn.textContent = 'Copied!'; setTimeout(()=>btn.textContent='Copy Email', 1200); }
+    }
+    btnCopyEmail?.addEventListener('click', ()=>doCopy(btnCopyEmail));
+    mBtnCopyEmail?.addEventListener('click', ()=>doCopy(mBtnCopyEmail));
+
+    // ---------- EN PDF loader: retry + fallback link ----------
+    if(pdfFrame){
+      let retried=false;
+      const fallback=document.createElement('div');
+      fallback.style='display:none;text-align:center;margin-top:10px;';
+      fallback.innerHTML=`<a href="CV_AUNTU_GAIN.pdf" target="_blank" rel="noopener">Open PDF in a new tab</a>`;
+      pdfFrame.parentElement.appendChild(fallback);
+      const finish=()=>{ clearTimeout(timer); pdfLoader?.classList.remove('show'); pdfFrame.classList.add('ready'); };
+      pdfFrame.addEventListener('load', finish);
+      let timer=setTimeout(()=>{
+        if(!pdfFrame.classList.contains('ready')){
+          if(!retried){
+            retried=true;
+            const s=pdfFrame.getAttribute('src');
+            pdfFrame.removeAttribute('src');
+            setTimeout(()=>{ pdfFrame.setAttribute('src',s); },500);
+            timer=setTimeout(()=>{
+              if(!pdfFrame.classList.contains('ready')){
+                pdfLoader?.classList.remove('show');
+                fallback.style.display='block';
+              }
+            },10000);
+          }else{
+            pdfLoader?.classList.remove('show');
+            fallback.style.display='block';
+          }
+        }
+      },10000);
+    }
+
+    // ---------- Visible KO iframe events ----------
+    krFrame?.addEventListener('load', ()=>{
+      krLoader?.classList.remove('show');
+      try{
+        const dark = viewer.classList.contains('viewer-dark');
+        const doc  = krFrame.contentDocument || krFrame.contentWindow.document;
+        doc?.documentElement?.classList.toggle('theme-dark', dark);
+        doc?.documentElement?.classList.toggle('theme-light', !dark);
+      }catch(_){}
+      try{
+        const d=krFrame.contentDocument||krFrame.contentWindow.document;
+        const h=Math.max(d.body.scrollHeight,d.documentElement.scrollHeight);
+        if(h>600) krFrame.style.height=Math.min(h+20,window.innerHeight*1.5)+'px';
+      }catch(_){}
+    });
+
+    window.addEventListener('resize', ()=>{
+      try{
+        const d=krFrame.contentDocument||krFrame.contentWindow.document;
+        const h=Math.max(d.body.scrollHeight,d.documentElement.scrollHeight);
+        if(h>600) krFrame.style.height=Math.min(h+20,window.innerHeight*1.5)+'px';
+      }catch(_){}
+    });
+
+    // ---------- Robust KO PDF export ----------
+    function preloadHiddenKR(){
+      try{
+        if (!krPdfIF.getAttribute('src')) {
+          krPdfIF.setAttribute('src', KR_URL);
+          console.log('[KR export] hidden iframe src set →', krPdfIF.src);
+        }
+      }catch(e){
+        console.warn('[KR export] preloadHiddenKR error', e);
+      }
+    }
+    preloadHiddenKR();
+
+    function waitForIframeLoad(iframe, timeoutMs = 30000) {
+      return new Promise((resolve, reject) => {
+        try {
+          const doc = iframe.contentDocument || iframe.contentWindow?.document;
+          if (doc && doc.readyState === 'complete') return resolve(doc);
+        } catch (_){}
+
+        let settled = false;
+        const onload = () => { if (!settled){ settled = true; cleanup(); resolve(iframe.contentDocument || iframe.contentWindow?.document); } };
+        const onerror = () => { if (!settled){ settled = true; cleanup(); reject(new Error('iframe load error')); } };
+
+        iframe.addEventListener('load', onload, { once:true });
+        iframe.addEventListener('error', onerror, { once:true });
+
+        const t = setTimeout(() => {
+          if (!settled){ settled = true; cleanup(); reject(new Error('iframe load timeout')); }
+        }, timeoutMs);
+
+        function cleanup(){
+          clearTimeout(t);
+          iframe.removeEventListener('load', onload);
+          iframe.removeEventListener('error', onerror);
+        }
+      });
+    }
+
+    async function waitForFonts(doc, timeoutMs = 5000) {
+      try {
+        const fonts = doc?.fonts;
+        if (fonts && 'ready' in fonts) {
+          await Promise.race([
+            fonts.ready,
+            new Promise((_, reject) => setTimeout(() => reject(new Error('fonts timeout')), timeoutMs))
+          ]);
+        }
+      } catch (_) {}
+    }
+
+    function injectPrintStyles(doc) {
+      const style = doc.createElement('style');
+      style.setAttribute('data-export-style', 'true');
+      style.textContent = `
+        html,body{background:#fff!important;color:#000!important;margin:0;padding:0;}
+        body{width:794px;margin:0 auto;line-height:1.5;}
+        img{max-width:100%;height:auto;display:block;}
+        a{text-decoration:none;color:#000;}
+        @page{size:A4;margin:12mm;}
+      `;
+      doc.head?.appendChild(style);
+      return style;
+    }
+    function removePrintStyles(doc) {
+      const s = doc.head?.querySelector('style[data-export-style="true"]');
+      if (s) s.remove();
+    }
+
+    // ---- CORS helpers: avoid canvas taint from external images ----
+    function isSameOrigin(url) {
+      try {
+        const u = new URL(url, location.href);
+        return u.origin === location.origin;
+      } catch (_) { return false; }
+    }
+    async function inlineImage(img, doc) {
+      const src = img.getAttribute('src') || '';
+      if (!src) return { ok: true, prevSrc: src };
+      try {
+        const abs = new URL(src, doc.baseURI).href;
+        if (isSameOrigin(abs)) return { ok: true, prevSrc: src };
+        const res = await fetch(abs, { mode:'cors', credentials:'omit' });
+        if (!res.ok) throw new Error('status '+res.status);
+        const blob = await res.blob();
+        const reader = new FileReader();
+        const dataUrl = await new Promise((resolve, reject) => {
+          reader.onload = ()=>resolve(reader.result);
+          reader.onerror = reject;
+          reader.readAsDataURL(blob);
+        });
+        img.setAttribute('data-prev-src', src);
+        img.src = dataUrl;
+        return { ok:true, prevSrc:src, inlined:true };
+      } catch(e){
+        console.warn('[KR export] Could not inline image (will hide):', src, e);
+        return { ok:false, prevSrc:src };
+      }
+    }
+    async function sanitizeImagesForExport(doc) {
+      const imgs = Array.from(doc.images || []);
+      const changed = [], hidden = [];
+      const externals = imgs
+        .map(i => i.getAttribute('src') || '')
+        .filter(src => src && !isSameOrigin(new URL(src, doc.baseURI).href));
+      if (externals.length) console.warn('[KR export] External images:', externals);
+      for (const img of imgs) {
+        const res = await inlineImage(img, doc);
+        if (res.inlined) changed.push(img);
+        else if (!res.ok) {
+          img.setAttribute('data-prev-display', img.style.display || '');
+          img.style.display = 'none';
+          hidden.push(img);
         }
       }
-    },10000);
-  }
+      return function cleanup(){
+        for (const img of changed) {
+          const prev = img.getAttribute('data-prev-src');
+          if (prev != null) {
+            img.src = prev;
+            img.removeAttribute('data-prev-src');
+          }
+        }
+        for (const img of hidden) {
+          const prev = img.getAttribute('data-prev-display');
+          img.style.display = prev || '';
+          img.removeAttribute('data-prev-display');
+        }
+      };
+    }
 
-  const savedTheme=localStorage.getItem('ga_viewer_theme')||(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
-  applyViewerTheme(savedTheme);
-  const savedLang=localStorage.getItem('ga_lang')||'en';showLang(savedLang);
-  document.getElementById('y').textContent=new Date().getFullYear();
-})();
-</script>
+    async function exportKRPdf(){
+      const lang = localStorage.getItem('ga_lang') || 'en';
+      if(lang!=='ko') return true;
+
+      const targets = [btnDownloadPDF, mBtnDownloadPDF].filter(Boolean);
+      setBusy(targets, 'Generating…');
+
+      try{
+        // Probe KR file so 404/path errors are explicit
+        let probeOk = false;
+        try {
+          const res = await fetch(KR_URL, { cache:'no-store', credentials:'same-origin' });
+          probeOk = res.ok;
+          if (!res.ok) console.error('[KR export] KR_URL fetch failed →', KR_URL, 'status:', res.status);
+        } catch (e) {
+          console.error('[KR export] KR_URL fetch threw →', KR_URL, e);
+        }
+        if (!probeOk) throw new Error('KR_URL not reachable. Check path/case and location.');
+
+        // Prefer hidden iframe
+        preloadHiddenKR();
+        console.log('[KR export] waiting for hidden iframe:', krPdfIF.src);
+        let doc = null;
+        try {
+          doc = await waitForIframeLoad(krPdfIF, 30000);
+        } catch (e) {
+          console.warn('[KR export] hidden iframe not ready:', e?.message);
+        }
+
+        // Fallback to visible iframe
+        if (!doc) {
+          ensureVisibleKRLoaded();
+          console.log('[KR export] waiting for VISIBLE iframe:', krFrame.src || '(pending)');
+          try {
+            doc = await waitForIframeLoad(krFrame, 30000);
+          } catch (e2) {
+            console.error('[KR export] visible iframe also failed:', e2?.message);
+            throw new Error('Korean page did not load into either iframe.');
+          }
+        }
+
+        // Theme parity (not critical for export)
+        try{
+          const dark = viewer.classList.contains('viewer-dark');
+          doc.documentElement.classList.toggle('theme-dark', dark);
+          doc.documentElement.classList.toggle('theme-light', !dark);
+        }catch(_){}
+
+        await waitForFonts(doc, 5000);
+        await new Promise(r=>setTimeout(r, 150));
+
+        const cleanupImgs = await sanitizeImagesForExport(doc);
+        injectPrintStyles(doc);
+        try{
+          const opt = {
+            margin:[0.5,0.5],
+            filename:'GAIN_AUNTU_KR.pdf',
+            image:{type:'jpeg',quality:0.98},
+            html2canvas:{ scale:2, useCORS:true, backgroundColor:'#ffffff' },
+            jsPDF:{unit:'in',format:'a4',orientation:'portrait'}
+          };
+          await html2pdf().set(opt).from(doc.body).save();
+          return false;
+        } finally {
+          removePrintStyles(doc);
+          cleanupImgs?.();
+        }
+      } catch (err){
+        console.error('KR PDF export error (details):', err);
+        alert('⚠️ Could not generate Korean PDF. Open the Korean tab (한) first, wait a second, and try again.');
+        return false;
+      } finally {
+        clearBusy(targets);
+      }
+    }
+
+    function onDownloadClick(e){
+      const lang = localStorage.getItem('ga_lang') || 'en';
+      if(lang==='ko'){
+        e.preventDefault();
+        exportKRPdf();
+      }
+    }
+    btnDownloadPDF?.addEventListener('click', onDownloadClick);
+    mBtnDownloadPDF?.addEventListener('click', (e)=>{ onDownloadClick(e); toggleDrawer(false); });
+
+    // Busy state helpers
+    function setBusy(targets, txt){
+      targets.forEach(b=>{
+        if(!b) return;
+        b.dataset.original = b.textContent || '';
+        b.textContent = txt;
+        b.style.opacity='0.7';
+        b.style.pointerEvents='none';
+      });
+    }
+    function clearBusy(targets, fallback='Download Korean PDF'){
+      targets.forEach(b=>{
+        if(!b) return;
+        b.textContent = b.dataset.original || fallback;
+        b.style.opacity='';
+        b.style.pointerEvents='';
+      });
+    }
+
+    // ---------- Init ----------
+    const savedTheme = localStorage.getItem('ga_viewer_theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    applyTheme(savedTheme);
+    const savedLang  = localStorage.getItem('ga_lang') || 'en';
+    showLang(savedLang);
+    yearEl.textContent = new Date().getFullYear();
+  })();
+  </script>
 </body>
 </html>
