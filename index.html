@@ -5,11 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>GAIN AUNTU — Profile & CV</title>
 
-  <!-- Fonts -->
+  <!-- Fonts (Korean font removed on purpose) -->
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;600;700&display=swap" rel="stylesheet">
 
   <style>
     :root{
@@ -129,8 +128,9 @@
     }
   </style>
 
+  <!-- Remove the KR font override so it uses the same stack as “한” -->
   <style id="han-font-fix">
-    #btn-ko {font-family:'Noto Sans KR',system-ui,sans-serif!important;line-height:1;position:relative;top:-1px;}
+    #btn-ko {font-family:inherit!important;line-height:1;position:relative;top:-1px;}
   </style>
 </head>
 <body>
@@ -260,17 +260,16 @@
         krVisibleLoaded = true;
       }
     }
-
     function reloadEN(){ const s = pdfFrame.getAttribute('src'); if(s) pdfFrame.setAttribute('src', s); }
 
     function setLangLabels(lang){
       const isKO = lang==='ko';
-      // labels
-      btnPrimary.textContent = isKO ? '이력서 출력하기' : 'Download PDF';
+      // labels (as requested)
+      btnPrimary.textContent = isKO ? '이력서 출력/저장하기' : 'Download PDF';
       mBtnPrimary.textContent = btnPrimary.textContent;
       btnCopyEmail.textContent = isKO ? '이메일 복사' : 'Copy Email';
       mBtnCopyEmail.textContent = btnCopyEmail.textContent;
-      // action handlers
+      // actions
       [btnPrimary, mBtnPrimary].forEach(b=>{
         b.onclick = null;
         if(isKO){
@@ -278,13 +277,10 @@
         }else{
           b.onclick = (e)=>{
             e.preventDefault();
-            // programmatic download
             const a = document.createElement('a');
             a.href = 'CV_AUNTU_GAIN.pdf';
             a.download = 'CV_AUNTU_GAIN.pdf';
-            document.body.appendChild(a);
-            a.click();
-            a.remove();
+            document.body.appendChild(a); a.click(); a.remove();
             toggleDrawer(false);
           };
         }
@@ -298,8 +294,7 @@
       document.querySelectorAll('[data-lang]').forEach(e=>{
         e.setAttribute('data-show', String(e.dataset.lang===lang));
       });
-      if(lang==='en'){ reloadEN(); }
-      else { ensureKRLoaded(); }
+      if(lang==='en'){ reloadEN(); } else { ensureKRLoaded(); }
       setLangLabels(lang);
     }
 
@@ -353,7 +348,6 @@
         doc?.documentElement?.classList.toggle('theme-dark', dark);
         doc?.documentElement?.classList.toggle('theme-light', !dark);
       }catch(_){}
-      // auto height
       try{
         const d=krFrame.contentDocument||krFrame.contentWindow.document;
         const h=Math.max(d.body.scrollHeight,d.documentElement.scrollHeight);
