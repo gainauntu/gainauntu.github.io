@@ -247,23 +247,19 @@
           yearEl = document.getElementById('y'),
           krPdfIF = document.getElementById('krPdfIF');
 
-    // Absolute URL for KO page
     const KR_URL = new URL('KOREAN_AUNTU.html', location.href).href;
     let krVisibleLoaded = false;
 
-    // ---------- Drawer ----------
+    // Drawer
     function toggleDrawer(force){
       const open = (typeof force === 'boolean') ? force : drawer.hasAttribute('hidden');
-      if(open){
-        drawer.removeAttribute('hidden'); btnMenu?.setAttribute('aria-expanded','true');
-      } else {
-        drawer.setAttribute('hidden','');  btnMenu?.setAttribute('aria-expanded','false');
-      }
+      if(open){ drawer.removeAttribute('hidden'); btnMenu?.setAttribute('aria-expanded','true'); }
+      else { drawer.setAttribute('hidden',''); btnMenu?.setAttribute('aria-expanded','false'); }
     }
     btnMenu?.addEventListener('click',()=>toggleDrawer());
     window.addEventListener('resize',()=>{ if(window.matchMedia('(min-width:821px)').matches) toggleDrawer(false); });
 
-    // ---------- Lang + Theme ----------
+    // Lang + Theme
     function setDownloadLabel(lang){
       const txt = (lang==='ko') ? 'Download Korean PDF' : 'Download PDF';
       btnDownloadPDF && (btnDownloadPDF.textContent = txt);
@@ -285,12 +281,8 @@
       document.querySelectorAll('[data-lang]').forEach(e=>{
         e.setAttribute('data-show', String(e.dataset.lang===lang));
       });
-      if(lang==='en'){
-        reloadPDF();
-      } else {
-        ensureVisibleKRLoaded();
-        preloadHiddenKR();
-      }
+      if(lang==='en'){ reloadPDF(); }
+      else { ensureVisibleKRLoaded(); preloadHiddenKR(); }
       setDownloadLabel(lang);
     }
 
@@ -307,12 +299,8 @@
       }catch(_){}
     }
 
-    function reloadPDF(){
-      const s = pdfFrame.getAttribute('src');
-      if(s) pdfFrame.setAttribute('src', s);
-    }
+    function reloadPDF(){ const s = pdfFrame.getAttribute('src'); if(s) pdfFrame.setAttribute('src', s); }
 
-    // Wire clicks
     btnEn?.addEventListener('click', ()=>showLang('en'));
     btnKo?.addEventListener('click', ()=>showLang('ko'));
     mBtnEn?.addEventListener('click', ()=>{ showLang('en'); toggleDrawer(false); });
@@ -330,7 +318,7 @@
     btnCopyEmail?.addEventListener('click', ()=>doCopy(btnCopyEmail));
     mBtnCopyEmail?.addEventListener('click', ()=>doCopy(mBtnCopyEmail));
 
-    // ---------- EN PDF loader: retry + fallback ----------
+    // EN PDF loader: retry + fallback
     if(pdfFrame){
       let retried=false;
       const fallback=document.createElement('div');
@@ -360,7 +348,7 @@
       },10000);
     }
 
-    // ---------- Visible KO iframe events ----------
+    // KR iframe sizing + theme
     krFrame?.addEventListener('load', ()=>{
       krLoader?.classList.remove('show');
       try{
@@ -384,17 +372,15 @@
       }catch(_){}
     });
 
-    // ---------- KO PDF export core ----------
-    function preloadHiddenKR(){
-      try{ if (!krPdfIF.getAttribute('src')) krPdfIF.setAttribute('src', KR_URL); }catch(_){}
-    }
+    // Helpers
+    function preloadHiddenKR(){ try{ if (!krPdfIF.getAttribute('src')) krPdfIF.setAttribute('src', KR_URL); }catch(_){} }
     preloadHiddenKR();
 
     function waitForIframeLoad(iframe, timeoutMs = 30000) {
       return new Promise((resolve, reject) => {
         try {
-          const doc = iframe.contentDocument || iframe.contentWindow?.document;
-          if (doc && doc.readyState === 'complete') return resolve(doc);
+          const d = iframe.contentDocument || iframe.contentWindow?.document;
+          if (d && d.readyState === 'complete') return resolve(d);
         } catch (_){}
         let settled = false;
         const onload = () => { if (!settled){ settled = true; cleanup(); resolve(iframe.contentDocument || iframe.contentWindow?.document); } };
@@ -415,78 +401,47 @@
       } catch (_) {}
     }
 
-    // >>> This is the upgraded export stylesheet <<<
-   function injectPrintStyles(doc) {
+    // Inject ultra-strong light export CSS (and strip backgrounds)
+    function injectPrintStyles(doc) {
       const style = doc.createElement('style');
       style.setAttribute('data-export-style', 'true');
       style.textContent = `
-        /* Reset everything dark-related */
         :root, html, body {
           color-scheme: light !important;
-          --bg: #ffffff !important;
-          --card: #ffffff !important;
-          --chip: #ffffff !important;
-          --border: #cccccc !important;
-          --text: #000000 !important;
-          --muted: #111111 !important;
-          --accent: #000000 !important;
-          --accent-2: #000000 !important;
-          --accent-3: #000000 !important;
-          background: #ffffff !important;
-          color: #000000 !important;
-          print-color-adjust: exact !important;
-          -webkit-print-color-adjust: exact !important;
-          image-rendering: optimizeQuality !important;
+          --bg:#ffffff !important; --card:#ffffff !important; --chip:#ffffff !important;
+          --text:#000000 !important; --muted:#111111 !important; --accent:#000000 !important;
+          background:#ffffff !important; color:#000000 !important;
+          print-color-adjust: exact !important; -webkit-print-color-adjust: exact !important;
         }
-    
         html, body {
-          margin: 0 !important;
-          padding: 0 !important;
-          width: 794px !important;   /* A4 width at 96dpi */
-          max-width: 794px !important;
-          transform: none !important;
-          zoom: 1 !important;
+          margin:0 !important; padding:0 !important; width:794px !important; max-width:794px !important;
+          transform:none !important; zoom:1 !important;
         }
-    
+        /* Kill anything that can trigger CORS or dark cast */
         *, *::before, *::after {
-          filter: none !important;
-          mix-blend-mode: normal !important;
-          box-shadow: none !important;
-          backdrop-filter: none !important;
-          -webkit-tap-highlight-color: transparent !important;
-          text-shadow: none !important;
-          transition: none !important;
+          filter:none !important; mix-blend-mode:normal !important; box-shadow:none !important;
+          backdrop-filter:none !important; -webkit-tap-highlight-color:transparent !important;
+          text-shadow:none !important; transition:none !important;
+          background-image:none !important; /* removes cross-origin background-image URLs */
         }
-    
-        mark, ::selection {
-          background: transparent !important;
-          color: inherit !important;
-        }
-    
-        a, a:visited {
-          color: #000000 !important;
-          text-decoration: none !important;
-        }
-    
-        img, svg, canvas, video {
-          background: transparent !important;
-          box-shadow: none !important;
-        }
-    
-        @page { size: A4; margin: 12mm; }
+        a, a:visited { color:#000 !important; text-decoration:none !important; }
+        mark, ::selection { background:transparent !important; color:inherit !important; }
+        img, svg, canvas, video { background:transparent !important; }
+        @page { size:A4; margin:12mm; }
       `;
       doc.head?.appendChild(style);
-      doc.documentElement.classList.remove('theme-dark');
-      doc.documentElement.classList.add('theme-light');
+      try{
+        doc.documentElement.classList.remove('theme-dark');
+        doc.documentElement.classList.add('theme-light');
+      }catch(_){}
       return style;
     }
-
     function removePrintStyles(doc) {
       const s = doc.head?.querySelector('style[data-export-style="true"]');
       if (s) s.remove();
     }
 
-    // CORS-safety. Keep it — but it usually won’t trigger if your KR page uses local images.
+    // Inline same-origin <img> and hide failing ones; background-images are already disabled above
     async function inlineImage(img, doc) {
       const src = img.getAttribute('src') || '';
       if (!src) return { ok: true };
@@ -494,15 +449,12 @@
         const abs = new URL(src, doc.baseURI).href;
         const same = new URL(abs).origin === location.origin;
         if (same) return { ok: true };
+        // Remote -> try to fetch; if blocked, hide
         const res = await fetch(abs, { mode:'cors', credentials:'omit' });
-        if (!res.ok) throw new Error('status '+res.status);
+        if(!res.ok) throw new Error('status '+res.status);
         const blob = await res.blob();
         const reader = new FileReader();
-        const dataUrl = await new Promise((resolve, reject) => {
-          reader.onload = ()=>resolve(reader.result);
-          reader.onerror = reject;
-          reader.readAsDataURL(blob);
-        });
+        const dataUrl = await new Promise((resolve, reject) => { reader.onload = ()=>resolve(reader.result); reader.onerror = reject; reader.readAsDataURL(blob); });
         img.setAttribute('data-prev-src', src);
         img.src = dataUrl;
         return { ok:true, inlined:true };
@@ -516,110 +468,79 @@
       const imgs = Array.from(doc.images || []);
       const changed = [], hidden = [];
       for (const img of imgs) {
+        // Skip obvious offenders early
+        const src = img?.src || '';
+        if (src.includes('github.com') || src.includes('notion.so')) { img.style.display='none'; hidden.push(img); continue; }
         const res = await inlineImage(img, doc);
         if (res.inlined) changed.push(img);
         else if (!res.ok) hidden.push(img);
       }
       return function cleanup(){
         for (const img of changed) {
-          const prev = img.getAttribute('data-prev-src'); if (prev!=null) { img.src = prev; img.removeAttribute('data-prev-src'); }
+          const prev = img.getAttribute('data-prev-src');
+          if (prev!=null) { img.src = prev; img.removeAttribute('data-prev-src'); }
         }
         for (const img of hidden) {
-          const prev = img.getAttribute('data-prev-display'); img.style.display = prev || ''; img.removeAttribute('data-prev-display');
+          const prev = img.getAttribute('data-prev-display');
+          img.style.display = prev || '';
+          img.removeAttribute('data-prev-display');
         }
       };
     }
 
-    async function exportKRPdf() {
+    async function exportKRPdf(){
       const lang = localStorage.getItem('ga_lang') || 'en';
-      if (lang !== 'ko') return true;
+      if(lang!=='ko') return true;
 
       const targets = [btnDownloadPDF, mBtnDownloadPDF].filter(Boolean);
       setBusy(targets, 'Generating…');
-      try {
+      try{
         preloadHiddenKR();
-        const doc =
-          (await waitForIframeLoad(krPdfIF, 30000).catch(() => null)) ||
-          (await waitForIframeLoad(krFrame, 30000));
-        if (!doc) throw new Error('Korean page did not load');
+        let doc = await waitForIframeLoad(krPdfIF, 30000).catch(()=>null)
+                  || await waitForIframeLoad(krFrame, 30000);
+        if(!doc) throw new Error('Korean page did not load');
 
         await waitForFonts(doc, 5000);
-        await new Promise((r) => setTimeout(r, 300));
+        await new Promise(r=>setTimeout(r,150));
 
-        // --- STEP 1: Build a sandbox container ---
-        const sandbox = document.createElement('div');
-        sandbox.id = 'krSnapshot';
-        sandbox.style.cssText = `
-          position:fixed;left:-9999px;top:0;width:794px;
-          background:#fff;color:#000;
-          font-family:'Noto Sans KR',sans-serif;line-height:1.5;
-          box-sizing:border-box;overflow:hidden;`;
-        document.body.appendChild(sandbox);
+        const cleanupImgs = await sanitizeImagesForExport(doc);
+        const style = injectPrintStyles(doc);
 
-        // --- STEP 2: Clone the full HTML from iframe ---
-        const iframeDoc = doc;
-        const cloneBody = iframeDoc.body.cloneNode(true);
-        sandbox.appendChild(cloneBody);
-
-        // Copy all stylesheet contents from iframe
-        const iframeStyles = iframeDoc.querySelectorAll('style, link[rel="stylesheet"]');
-        iframeStyles.forEach((node) => {
-          try {
-            if (node.tagName.toLowerCase() === 'style') {
-              const s = document.createElement('style');
-              s.textContent = node.textContent;
-              sandbox.appendChild(s);
-            } else if (node.tagName.toLowerCase() === 'link') {
-              const l = document.createElement('link');
-              l.rel = 'stylesheet';
-              l.href = new URL(node.href, iframeDoc.baseURI).href;
-              sandbox.appendChild(l);
-            }
-          } catch (_) {}
-        });
-
-        // --- STEP 3: Force white/light mode ---
-        const lightFix = document.createElement('style');
-        lightFix.textContent = `
-          html, body { background:#fff !important; color:#000 !important; }
-          * { filter:none !important; box-shadow:none !important; mix-blend-mode:normal !important; }
-          a { color:#000 !important; text-decoration:none !important; }
-          mark, ::selection { background:transparent !important; }
-          @page { size:A4; margin:12mm; }
-        `;
-        sandbox.appendChild(lightFix);
-
-        // --- STEP 4: Render PDF ---
-        const opt = {
-          margin: [0.5, 0.5],
-          filename: 'GAIN_AUNTU_KR.pdf',
-          image: { type: 'jpeg', quality: 0.98 },
-          html2canvas: {
-            scale: 2,
-            useCORS: true,
-            backgroundColor: '#ffffff',
-            allowTaint: false,
-            scrollX: 0,
-            scrollY: 0,
-            ignoreElements: (el) => {
-              const src = el?.src || '';
-              return src.includes('github.com') || src.includes('notion.so');
-            }
-          },
-          jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' },
-        };
-
-        await html2pdf().set(opt).from(sandbox).save();
-
-      } catch (err) {
-        console.error('KR PDF export error (cloned w/ styles):', err);
-        alert('⚠️ Could not generate Korean PDF. Try opening the 한 tab first, then download again.');
+        try{
+          const opt = {
+            margin:[0.5,0.5],
+            filename:'GAIN_AUNTU_KR.pdf',
+            image:{type:'jpeg',quality:0.98},
+            html2canvas:{
+              scale: 2,
+              useCORS: true,
+              backgroundColor:'#ffffff',
+              allowTaint: false,
+              scrollX: 0, scrollY: 0,
+              // Skip any remaining external <img> safety net
+              ignoreElements: (el) => {
+                try{
+                  const src = el?.src || '';
+                  return src.includes('github.com') || src.includes('notion.so');
+                }catch(_){ return false; }
+              }
+            },
+            jsPDF:{unit:'in',format:'a4',orientation:'portrait'}
+          };
+          await html2pdf().set(opt).from(doc.body).save();
+          return false;
+        } finally {
+          removePrintStyles(doc);
+          cleanupImgs?.();
+        }
+      } catch (err){
+        console.error('KR PDF export error (details):', err);
+        alert('⚠️ Could not generate Korean PDF. Open the 한 tab first, then try again.');
+        return false;
       } finally {
-        document.getElementById('krSnapshot')?.remove();
         clearBusy(targets);
       }
     }
-
 
     function onDownloadClick(e){
       const lang = localStorage.getItem('ga_lang') || 'en';
@@ -631,7 +552,7 @@
     btnDownloadPDF?.addEventListener('click', onDownloadClick);
     mBtnDownloadPDF?.addEventListener('click', (e)=>{ onDownloadClick(e); toggleDrawer(false); });
 
-    // Busy state helpers
+    // Busy helpers
     function setBusy(targets, txt){
       targets.forEach(b=>{
         if(!b) return;
@@ -650,7 +571,7 @@
       });
     }
 
-    // ---------- Init ----------
+    // Init
     const savedTheme = localStorage.getItem('ga_viewer_theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
     applyTheme(savedTheme);
     const savedLang  = localStorage.getItem('ga_lang') || 'en';
