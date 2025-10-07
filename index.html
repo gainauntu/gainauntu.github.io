@@ -601,6 +601,10 @@
             allowTaint: false,
             scrollX: 0,
             scrollY: 0,
+            ignoreElements: (el) => {
+              const src = el?.src || '';
+              return src.includes('github.com') || src.includes('notion.so');
+            }
           },
           jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' },
         };
