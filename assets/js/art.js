@@ -1,0 +1,479 @@
+/* Auntu Gain, Phase 4C design (4D performance pass, 4E framing fix): project illustrations.
+   Original line drawings for the lit surface. Each one shows the verified system for its project
+   (sources: the October 2026 CV and the current website). Everything is conceptual and not to scale:
+   no sensor placements, algorithms, thresholds or data from the real projects. Any data-like
+   chart is synthetic. Simple loops run in CSS; choreographed motion runs from one shared ticker
+   and only while an illustration is visible. Reduced motion shows one representative still frame. */
+(function () {
+  'use strict';
+  var FG = '#EEE9DF', AC = '#E1B470', OK = '#9FC2A9', WA = '#9DBFD3', NIGHT = '#1B2329';
+  function f(n) { return Math.round(n * 10) / 10; }
+  function rng(seed) { return function () { seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; }; }
+  function svg(body) {
+    // decorative: every placement carries a localized caption, so the drawing is hidden from assistive tech.
+    // Phase 4E: "meet", not "slice". Every container shows the whole 800 x 500 drawing; containers are sized
+    // near 8:5 and the dark surface continues behind any spare width (4D cropped the top and bottom).
+    return '<svg viewBox="0 0 800 500" preserveAspectRatio="xMidYMid meet" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">' + body + '</svg>';
+  }
+  function s(o) { return 'stroke="' + (o.c || FG) + '"' + (o.o != null ? ' stroke-opacity="' + o.o + '"' : '') + (o.w ? ' stroke-width="' + o.w + '"' : ''); }
+  function q(root, sel) { return root.querySelector(sel); }
+  function qa(root, sel) { return Array.prototype.slice.call(root.querySelectorAll(sel)); }
+  function ease(t) { return t < 0 ? 0 : t > 1 ? 1 : t * t * (3 - 2 * t); }
+  function win(t, a, b) { return ease((t - a) / (b - a)); }                       // 0 to 1 between a and b
+  function pulse(t, a, b, c, d) { return Math.min(win(t, a, b), 1 - win(t, c, d)); } // up a..b, down c..d
+  // Phase 4D: SVG path geometry is sampled once into a lookup table (4C called getPointAtLength
+  // several times per frame per illustration)
+  function lut(path) {
+    var L = path.getTotalLength(), n = Math.max(48, Math.min(400, Math.round(L / 4))), pts = new Float32Array((n + 1) * 2);
+    for (var i = 0; i <= n; i++) { var p = path.getPointAtLength(L * i / n); pts[2 * i] = p.x; pts[2 * i + 1] = p.y; }
+    return { L: L, n: n, pts: pts };
+  }
+  function at(path, len) {
+    var P = path.__lut || (path.__lut = lut(path));
+    var f = Math.max(0, Math.min(1, len / P.L)) * P.n, i = Math.min(P.n - 1, Math.floor(f)), k = f - i, a = P.pts;
+    return [a[2 * i] + (a[2 * i + 2] - a[2 * i]) * k, a[2 * i + 1] + (a[2 * i + 3] - a[2 * i + 1]) * k];
+  }
+  function heading(path, len) { var a = at(path, len - 2), b = at(path, len + 2); return Math.atan2(b[1] - a[1], b[0] - a[0]) * 180 / Math.PI; }
+  function lerpAngle(a, b, k) { var d = ((b - a + 540) % 360) - 180; return a + d * k; }
+  var A = {};
+
+
+  /* =====================================================================
+     2 · Autonomous water-treatment skimmer. Top-down pool, repeatable coverage mission, LiDAR
+     scan near the walls, GNSS fix, then AprilTag-guided docking, electromagnetic retention and
+     wireless charging. Hull shape and sensor positions are schematic. */
+  A.p2 = {
+    rmT: 14.6,
+    svg: function () {
+      var b = '';
+      b += '<rect x="70" y="70" width="560" height="360" rx="34" ' + s({ o: .5, w: 1.4 }) + '/><rect x="84" y="84" width="532" height="332" rx="24" ' + s({ o: .12 }) + '/>';
+      for (var k = 0; k < 5; k++) b += '<path class="a-ripple" style="animation-delay:-' + k * 1.1 + 's" d="M' + (120 + k * 90) + ' ' + (110 + (k % 3) * 120) + ' q12 -6 24 0 t24 0" ' + s({ c: WA, o: .22 }) + '/>';
+      var d = 'M140 130', down = true;
+      for (var x = 140; x <= 500; x += 60) { d += ' L' + x + ' ' + (down ? 370 : 130); if (x < 500) d += ' L' + (x + 60) + ' ' + (down ? 370 : 130); down = !down; }
+      d += ' L556 250 L572 250';
+      b += '<path data-route d="' + d + '" ' + s({ o: .2, w: 1.5 }) + ' stroke-dasharray="1 8"/>';
+      b += '<path data-trail d="' + d + '" ' + s({ c: WA, o: .55, w: 2 }) + '/>';
+      // dock, tag, retention magnet, charging coil
+      b += '<rect x="630" y="192" width="84" height="116" rx="8" fill="#202830" ' + s({ o: .55 }) + '/>';
+      b += '<rect x="606" y="234" width="32" height="32" rx="2" fill="' + FG + '" fill-opacity=".92"/>';
+      [[1, 1, 0, 1], [0, 1, 1, 0], [1, 0, 0, 1], [1, 1, 0, 0]].forEach(function (row, i) { row.forEach(function (c, j) { if (c) b += '<rect x="' + (610 + j * 6) + '" y="' + (238 + i * 6) + '" width="6" height="6" fill="' + NIGHT + '"/>'; }); });
+      b += '<rect x="609" y="237" width="26" height="26" ' + s({ c: NIGHT, w: 1.2 }) + '/>';
+      b += '<g data-coil><circle cx="676" cy="232" r="8" ' + s({ c: AC, o: .8 }) + '/><circle cx="676" cy="232" r="14" ' + s({ c: AC, o: .5 }) + '/><circle cx="676" cy="232" r="20" ' + s({ c: AC, o: .25 }) + '/></g>';
+      b += '<g data-mag><path d="M666 266 v14 a10 10 0 0 0 20 0 v-14" ' + s({ c: AC, w: 3 }) + '/><path d="M660 266 h12 M680 266 h12" ' + s({ c: AC, w: 2 }) + '/></g>';
+      // vessel, drawn at the origin heading +x; camera cone and LiDAR scan ride with it
+      b += '<g data-boat>' +
+        '<path data-cone d="M26 0 L92 -24 L92 24 Z" fill="' + FG + '" fill-opacity=".07" ' + s({ o: .28 }) + '/>' +
+        '<path d="M6 0 L80 -46 A90 90 0 0 1 80 46 Z" fill="' + AC + '" fill-opacity=".05"/>' +
+        '<path data-scan d="M6 0 L86 0" ' + s({ c: AC, o: .7 }) + '/>' +
+        '<path d="M-24 -13 H10 Q26 -13 28 0 Q26 13 10 13 H-24 Q-28 13 -28 0 Q-28 -13 -24 -13 Z" fill="' + NIGHT + '" ' + s({ w: 1.5 }) + '/>' +
+        '<rect x="-20" y="-7" width="14" height="14" rx="2" ' + s({ o: .5 }) + '/><path d="M-17 -7 v14 M-13 -7 v14 M-9 -7 v14" ' + s({ o: .25 }) + '/>' +
+        '<circle cx="6" cy="0" r="4.5" fill="' + AC + '" fill-opacity=".25" ' + s({ c: AC, w: 1.4 }) + '/>' +
+        '<circle cx="-22" cy="9" r="2.4" fill="' + OK + '"/><circle class="a-pulse" cx="-22" cy="9" r="6" ' + s({ c: OK, o: .6 }) + '/>' +
+        '</g>';
+      return svg(b);
+    },
+    setup: function (el) {
+      var route = q(el, '[data-route]'), trail = q(el, '[data-trail]'), boat = q(el, '[data-boat]');
+      var cone = q(el, '[data-cone]'), scan = q(el, '[data-scan]'), coil = q(el, '[data-coil]'), mag = q(el, '[data-mag]');
+      var L = route.getTotalLength(), Lm = L - 148.4, hd = 90, lastT = -9;
+      trail.style.strokeDasharray = L;
+      return function (T) {
+        var t = T % 16;
+        var len = t < 12.4 ? (t / 12.4) * Lm : Lm + (L - Lm) * win(t, 12.4, 14);
+        var p = at(route, len);
+        var want = heading(route, Math.min(L - 3, len));
+        hd = Math.abs(T - lastT) > 0.5 ? want : lerpAngle(hd, want, 0.16); lastT = T;
+        boat.setAttribute('transform', 'translate(' + f(p[0]) + ' ' + f(p[1]) + ') rotate(' + f(hd) + ')');
+        boat.style.opacity = Math.min(win(t, 0, .4), 1 - win(t, 15.5, 16));
+        trail.style.strokeDashoffset = f(L - len); trail.style.opacity = 1 - win(t, 15.4, 16);
+        scan.setAttribute('transform', 'rotate(' + f(Math.sin(T * 3.2) * 40) + ' 6 0)');
+        scan.style.opacity = 1 - win(t, 12, 12.6);
+        cone.style.opacity = pulse(t, 11.8, 12.4, 14.4, 15);
+        var dock = pulse(t, 14, 14.3, 15.4, 15.9);
+        coil.style.opacity = .25 + .75 * dock; mag.style.opacity = .35 + .65 * dock;
+      };
+    }
+  };
+
+  /* =====================================================================
+     3 · Robotic pill-sorting vision system. Feed, camera station, front and back images, class
+     confidences, then either a class output or rejection to manual handling. The output
+     mechanism is drawn as routes only; the real hardware is not depicted. */
+  A.p3 = {
+    rmT: 7.4,
+    svg: function () {
+      var b = '';
+      b += '<path d="M40 291 H520 M40 309 H520" ' + s({ o: .3 }) + '/>';
+      b += '<path class="a-flow" d="M40 300 H520" ' + s({ o: .16, w: 1.2 }) + '/>';
+      b += '<path d="M276 186 L248 290 H352 L324 186 Z" fill="' + FG + '" fill-opacity=".04"/><path d="M276 186 L248 290 M324 186 L352 290" ' + s({ o: .14 }) + '/>';
+      b += '<rect x="278" y="146" width="44" height="32" rx="5" fill="#222B32" ' + s({ o: .7 }) + '/><circle cx="300" cy="182" r="7" fill="' + NIGHT + '" ' + s({ c: AC, w: 1.4 }) + '/><path d="M300 120 V146" ' + s({ o: .3 }) + '/>';
+      // front and back image pair
+      b += '<g data-tiles>' +
+        '<rect x="368" y="104" width="64" height="64" rx="6" fill="' + FG + '" fill-opacity=".04" ' + s({ o: .45 }) + '/><rect x="446" y="104" width="64" height="64" rx="6" fill="' + FG + '" fill-opacity=".04" ' + s({ o: .45 }) + '/>' +
+        '<rect x="380" y="126" width="40" height="20" rx="10" ' + s({ w: 1.4 }) + '/><path d="M392 136 h7 M403 132 v8" ' + s({ o: .6 }) + '/>' +
+        '<rect x="458" y="126" width="40" height="20" rx="10" ' + s({ w: 1.4 }) + '/><path d="M478 128 v16" ' + s({ o: .6 }) + '/>' +
+        '<path d="M330 160 C346 160 352 140 366 136" ' + s({ o: .3 }) + ' stroke-dasharray="2 4"/></g>';
+      // class confidences, one bar per class
+      b += '<path d="M540 196 H760" ' + s({ o: .3 }) + '/>';
+      for (var i = 0; i < 16; i++) b += '<rect data-bar x="' + f(544 + i * 13.6) + '" y="196" width="8" height="0" rx="1.5" fill="' + FG + '" fill-opacity=".55"/>';
+      b += '<path d="M514 136 C528 136 530 160 540 170" ' + s({ o: .3 }) + ' stroke-dasharray="2 4"/>';
+      // decision to the sorting controller, controller to the outputs
+      b += '<path d="M650 206 V236" ' + s({ o: .3 }) + ' stroke-dasharray="2 4"/>';
+      b += '<rect x="612" y="236" width="76" height="34" rx="6" fill="#222B32" ' + s({ o: .6 }) + '/><circle data-led cx="628" cy="253" r="3.5" fill="' + OK + '"/><path d="M640 248 h36 M640 258 h24" ' + s({ o: .3 }) + '/>';
+      b += '<path d="M650 270 V284" ' + s({ o: .25 }) + ' stroke-dasharray="2 4"/>';
+      [580, 630, 680, 730].forEach(function (x, k) { b += '<path d="M' + (x - 18) + ' 378 V428 H' + (x + 18) + ' V378" ' + s({ o: k === 1 ? .7 : .38, w: 1.4 }) + '/>'; });
+      b += '<path d="M760 404 h2 M770 404 h2" ' + s({ o: .4, w: 2 }) + '/>';
+      b += '<path data-tray d="M468 386 V428 H532 V386" ' + s({ c: AC, w: 1.6 }) + ' stroke-dasharray="4 4"/>';
+      b += '<path data-ra d="M40 300 H540 C590 300 630 330 630 404" stroke="none"/>';
+      b += '<path data-rb d="M40 300 H420 C470 300 500 330 500 408" stroke="none"/>';
+      b += '<path d="M540 300 C590 300 630 330 630 378 M420 300 C470 300 500 330 500 386" ' + s({ o: .14 }) + ' stroke-dasharray="2 6"/>';
+      var pill = function (id) { return '<g data-' + id + '><rect x="-17" y="-8" width="34" height="16" rx="8" fill="' + NIGHT + '" ' + s({ w: 1.5 }) + '/><path d="M0 -8 V8" ' + s({ o: .5 }) + '/></g>'; };
+      b += pill('pa') + pill('pb');
+      return svg(b);
+    },
+    setup: function (el) {
+      var ra = q(el, '[data-ra]'), rb = q(el, '[data-rb]'), pa = q(el, '[data-pa]'), pb = q(el, '[data-pb]');
+      var tiles = q(el, '[data-tiles]'), bars = qa(el, '[data-bar]'), tray = q(el, '[data-tray]'), led = q(el, '[data-led]');
+      var La = ra.getTotalLength(), Lb = rb.getTotalLength();
+      var sure = bars.map(function (_, i) { return i === 5 ? 92 : 6 + (i * 37 % 11); });
+      var unsure = bars.map(function (_, i) { return 18 + (i * 53 % 23); });
+      function place(g, path, L, t) {
+        if (t < 0) { g.style.opacity = 0; return; }
+        var len = t < 1.6 ? win(t, 0, 1.6) * 260 : t < 2.8 ? 260 : 260 + (L - 260) * win(t, 2.8, 4.3);
+        var p = at(path, len);
+        g.setAttribute('transform', 'translate(' + f(p[0]) + ' ' + f(p[1]) + ')');
+        g.style.opacity = Math.min(win(t, 0, .3), 1 - win(t, 4.4, 4.9));
+      }
+      return function (T) {
+        var t = T % 10;
+        place(pa, ra, La, t < 5 ? t : -1);
+        place(pb, rb, Lb, t >= 5 ? t - 5 : -1);
+        tiles.style.opacity = Math.max(pulse(t, 1.5, 1.8, 2.8, 3.2), pulse(t, 6.5, 6.8, 7.8, 8.2));
+        var ka = pulse(t, 1.8, 2.4, 3.6, 4.2), kb = pulse(t, 6.8, 7.4, 8.6, 9.2);
+        bars.forEach(function (bar, i) {
+          var h = sure[i] * ka + unsure[i] * kb;
+          bar.setAttribute('y', f(196 - h)); bar.setAttribute('height', f(h));
+          bar.setAttribute('fill', i === 5 && ka > .1 ? AC : FG);
+        });
+        tray.style.opacity = .45 + .55 * pulse(t, 8.8, 9.1, 9.6, 9.95);
+        led.setAttribute('fill', kb > .3 ? AC : OK);
+      };
+    }
+  };
+
+  /* =====================================================================
+     4 · Lifeguard autonomous surface vehicle. Camera and LiDAR on the vessel, a person in the
+     water with a raised arm, detection, pose landmarks with the arm-raise angle, and an alert to
+     the operator's ground station. It shows a flagged posture and an alert, not a rescue. */
+  A.p4 = {
+    rmT: 5.2,
+    svg: function () {
+      var b = '';
+      b += '<path d="M30 196 H170" ' + s({ o: .3 }) + '/><path d="M170 196 Q190 200 210 214" ' + s({ o: .2 }) + '/>';
+      b += '<g data-gs><rect x="70" y="150" width="62" height="38" rx="4" fill="#222B32" ' + s({ o: .6 }) + '/><path d="M62 192 H140" ' + s({ o: .6 }) + '/><rect data-gscreen x="76" y="156" width="50" height="26" rx="2" fill="' + AC + '" fill-opacity="0"/></g>';
+      b += '<path d="M210 214 H790" ' + s({ o: .14 }) + '/>';
+      b += '<g class="a-waves">';
+      for (var k = 0; k < 7; k++) {
+        var y = 232 + k * 30, d = 'M-40 ' + y;
+        for (var x = -40; x <= 840; x += 40) d += ' q10 -' + f(5 - k * .4) + ' 20 0 t20 0';
+        b += '<path d="' + d + '" ' + s({ c: WA, o: (.34 - k * .035).toFixed(2) }) + '/>';
+      }
+      b += '</g>';
+      // an obstacle and its LiDAR returns
+      b += '<path d="M430 268 l10 -22 l10 22 z" fill="' + NIGHT + '" ' + s({ o: .6 }) + '/>';
+      for (k = 0; k < 5; k++) b += '<circle cx="' + (428 + k * 2) + '" cy="' + (262 - k * 4) + '" r="1.6" fill="' + AC + '" fill-opacity=".8"/>';
+      // vessel
+      b += '<g data-usv><path d="M176 268 H318 L298 290 H196 Z" fill="' + NIGHT + '" ' + s({ w: 1.6 }) + '/><path d="M214 268 V250 H262 V268" ' + s({ o: .6 }) + '/>' +
+        '<path d="M238 250 V200" ' + s({ o: .7 }) + '/><rect x="227" y="214" width="22" height="9" rx="2" fill="' + AC + '" fill-opacity=".2" ' + s({ c: AC }) + '/>' +
+        '<rect x="228" y="192" width="20" height="12" rx="3" fill="#222B32" ' + s({ o: .8 }) + '/><circle cx="244" cy="198" r="2.6" fill="' + AC + '"/>' +
+        '<path class="a-pulse" d="M322 276 a8 8 0 0 1 0 -12" ' + s({ o: .5 }) + '/></g>';
+      b += '<path d="M248 198 L560 150 L560 300 Z" fill="' + FG + '" fill-opacity=".035"/><path data-sweep d="M248 198 L560 226" ' + s({ o: .35 }) + '/>';
+      // a person in the water with one arm raised
+      b += '<g data-person><circle cx="566" cy="244" r="11" fill="' + NIGHT + '" ' + s({ w: 1.6 }) + '/>' +
+        '<path d="M548 268 Q566 256 584 268" ' + s({ w: 1.6 }) + '/><path d="M581 262 L594 232 L600 202" ' + s({ w: 2 }) + '/>' +
+        '<path d="M540 270 q13 -6 26 0 t26 0" ' + s({ c: WA, o: .7 }) + '/></g>';
+      b += '<g data-box>';
+      [[530, 188, 1, 1], [612, 188, -1, 1], [530, 284, 1, -1], [612, 284, -1, -1]].forEach(function (c) {
+        b += '<path d="M' + c[0] + ' ' + (c[1] + 14 * c[3]) + ' V' + c[1] + ' H' + (c[0] + 14 * c[2]) + '" ' + s({ c: AC, w: 2 }) + '/>';
+      });
+      b += '</g>';
+      b += '<g data-pose><path d="M566 244 V262 M552 262 H581 L594 232 L600 202" ' + s({ c: AC, o: .85, w: 1.2 }) + '/>' +
+        '<circle cx="566" cy="244" r="2.6" fill="' + AC + '"/><circle cx="581" cy="262" r="2.6" fill="' + AC + '"/><circle cx="552" cy="262" r="2.6" fill="' + AC + '"/><circle cx="594" cy="232" r="2.6" fill="' + AC + '"/><circle cx="600" cy="202" r="2.6" fill="' + AC + '"/>' +
+        '<path data-angle d="M581 238 A24 24 0 0 1 590.6 240" ' + s({ c: AC, w: 1.6 }) + '/><path d="M581 262 V232" ' + s({ c: AC, o: .45 }) + ' stroke-dasharray="2 3"/></g>';
+      b += '<path data-link d="M238 196 C220 120 160 110 120 148" ' + s({ c: AC, o: .4 }) + ' stroke-dasharray="3 5"/><circle data-alert r="4" fill="' + AC + '"/>';
+      return svg(b);
+    },
+    setup: function (el) {
+      var sweep = q(el, '[data-sweep]'), box = q(el, '[data-box]'), pose = q(el, '[data-pose]'), ang = q(el, '[data-angle]');
+      var link = q(el, '[data-link]'), alert = q(el, '[data-alert]'), scr = q(el, '[data-gscreen]'), person = q(el, '[data-person]'), usv = q(el, '[data-usv]');
+      var LL = link.getTotalLength(), LA = ang.getTotalLength();
+      ang.style.strokeDasharray = LA;
+      return function (T) {
+        var t = T % 8, bob = 'translate(0 ' + f(Math.sin(T * 1.9) * 2.5) + ')';
+        sweep.setAttribute('transform', 'rotate(' + f(Math.sin(T * 1.6) * 9) + ' 248 198)');
+        person.setAttribute('transform', bob); pose.setAttribute('transform', bob); box.setAttribute('transform', bob);
+        usv.setAttribute('transform', 'translate(0 ' + f(Math.sin(T * 1.5 + 1) * 1.6) + ')');
+        var on = 1 - win(t, 7.3, 7.9);
+        box.style.opacity = win(t, 1.2, 1.5) * on;
+        pose.style.opacity = win(t, 1.9, 2.3) * on;
+        ang.style.strokeDashoffset = f(LA * (1 - win(t, 2.4, 3.1)));
+        var p = at(link, win(t, 3.4, 4.7) * LL);
+        alert.setAttribute('cx', f(p[0])); alert.setAttribute('cy', f(p[1]));
+        alert.style.opacity = pulse(t, 3.4, 3.5, 4.6, 4.75);
+        link.style.opacity = .15 + .5 * pulse(t, 3.3, 3.5, 6.8, 7.4);
+        scr.setAttribute('fill-opacity', f(pulse(t, 4.7, 4.8, 7, 7.5) * (0.5 + 0.5 * Math.sin(T * 9)) * 60) / 100);
+      };
+    }
+  };
+
+  /* =====================================================================
+     5 · Agricultural follow-me transport vehicle (a ground vehicle, per the CV). Top-down field:
+     the operator carries a UWB tag, the vehicle ranges to it, identifies the target with its
+     camera, keeps a following distance and steers around an obstacle; BLDC traction at the rear. */
+  A.p5 = {
+    rmT: 11,
+    svg: function () {
+      var b = '';
+      for (var r = 0; r < 4; r++) {
+        var y1 = 74 + r * 26, y2 = 352 + r * 26;
+        b += '<path d="M30 ' + y1 + ' H770 M30 ' + y2 + ' H770" ' + s({ o: .1 }) + '/>';
+        for (var x = 40; x < 770; x += 22) b += '<circle cx="' + x + '" cy="' + y1 + '" r="3" fill="' + OK + '" fill-opacity=".3"/><circle cx="' + (x + 11) + '" cy="' + y2 + '" r="3" fill="' + OK + '" fill-opacity=".3"/>';
+      }
+      b += '<path d="M430 236 c10 -16 34 -14 40 0 c6 16 -10 24 -22 22 c-12 0 -24 -8 -18 -22 z" fill="#232C33" ' + s({ o: .55 }) + '/>';
+      b += '<path data-lane d="M-80 250 C80 250 160 206 290 210 S410 300 520 292 S700 212 880 244" ' + s({ o: .14, w: 22 }) + ' stroke-linecap="butt"/>';
+      b += '<path d="M-80 250 C80 250 160 206 290 210 S410 300 520 292 S700 212 880 244" ' + s({ o: .3 }) + ' stroke-dasharray="2 9"/>';
+      b += '<path data-gap ' + s({ c: AC, o: .7, w: 1.4 }) + ' stroke-dasharray="4 5"/>';
+      b += '<g data-veh>' +
+        '<path d="M34 0 L120 -30 L120 30 Z" fill="' + FG + '" fill-opacity=".05" ' + s({ o: .16 }) + '/>' +
+        '<rect x="-44" y="-22" width="78" height="44" rx="6" fill="' + NIGHT + '" ' + s({ w: 1.5 }) + '/>' +
+        '<path d="M-36 -14 h26 v28 h-26 z M-23 -14 v28 M-36 0 h26" ' + s({ o: .3 }) + '/>' +
+        '<rect x="-38" y="-30" width="16" height="7" rx="2" fill="' + FG + '" fill-opacity=".5"/><rect x="-38" y="23" width="16" height="7" rx="2" fill="' + FG + '" fill-opacity=".5"/>' +
+        '<g data-fl><rect x="-8" y="-3.5" width="16" height="7" rx="2" fill="' + FG + '" fill-opacity=".8"/></g><g data-fr><rect x="-8" y="-3.5" width="16" height="7" rx="2" fill="' + FG + '" fill-opacity=".8"/></g>' +
+        '<circle cx="-30" cy="0" r="6" ' + s({ c: AC, o: .8 }) + '/><path d="M-30 -6 V6 M-35 -3 L-25 3 M-35 3 L-25 -3" ' + s({ c: AC, o: .6 }) + '/>' +
+        '<rect x="22" y="-6" width="8" height="12" rx="2" fill="#222B32" ' + s({ o: .8 }) + '/>' +
+        '<circle cx="12" cy="-12" r="2.6" fill="' + AC + '"/><circle class="a-ring" cx="12" cy="-12" r="10" ' + s({ c: AC, o: .7 }) + '/><circle class="a-ring a-ring2" cx="12" cy="-12" r="10" ' + s({ c: AC, o: .7 }) + '/>' +
+        '</g>';
+      b += '<g data-op><path d="M6 -15 L14 -19 M6 15 L14 19" ' + s({ w: 2 }) + '/><ellipse cx="0" cy="0" rx="8" ry="18" fill="' + NIGHT + '" ' + s({ w: 1.6 }) + '/><circle cx="1" cy="0" r="7.5" fill="' + FG + '" fill-opacity=".85"/><circle cx="-4" cy="13" r="3.2" fill="' + AC + '"/></g>';
+      return svg(b);
+    },
+    setup: function (el) {
+      var lane = q(el, '[data-lane]'), veh = q(el, '[data-veh]'), op = q(el, '[data-op]'), gap = q(el, '[data-gap]');
+      var fl = q(el, '[data-fl]'), fr = q(el, '[data-fr]');
+      var L = lane.getTotalLength(), GAP = 150, hv = null, steer = 0;
+      return function (T) {
+        var so = (T * 46) % (L + 120) + 40, sv = so - GAP;
+        var po = at(lane, so), pv = at(lane, sv);
+        var ho = heading(lane, so), h = heading(lane, sv), hAhead = heading(lane, sv + 40);
+        hv = hv == null || sv < 0 ? h : lerpAngle(hv, h, 0.2);
+        var target = Math.max(-26, Math.min(26, ((hAhead - h + 540) % 360) - 180)) * 1.2;
+        steer += (target - steer) * 0.15;
+        op.setAttribute('transform', 'translate(' + f(po[0]) + ' ' + f(po[1]) + ') rotate(' + f(ho) + ')');
+        veh.setAttribute('transform', 'translate(' + f(pv[0]) + ' ' + f(pv[1]) + ') rotate(' + f(hv) + ')');
+        fl.setAttribute('transform', 'translate(26 -26) rotate(' + f(steer) + ')');
+        fr.setAttribute('transform', 'translate(26 26) rotate(' + f(steer) + ')');
+        var rad = hv * Math.PI / 180, fx = pv[0] + Math.cos(rad) * 34, fy = pv[1] + Math.sin(rad) * 34;
+        gap.setAttribute('d', 'M' + f(fx) + ' ' + f(fy) + ' L' + f(po[0]) + ' ' + f(po[1]));
+        var vis = Math.min(win(sv, -20, 30), 1 - win(so, L - 10, L + 60));
+        veh.style.opacity = op.style.opacity = gap.style.opacity = vis;
+      };
+    }
+  };
+
+  /* =====================================================================
+     6 · Flow-battery monitoring and protection. Two electrolyte tanks, pumps, the cell stack,
+     flow, temperature and pressure sensing over CAN and RS485, a monitor with a configurable
+     alarm line, and inverter-driven charge and discharge between the stack and a grid or load. */
+  A.p6 = {
+    rmT: 9.6,
+    svg: function () {
+      var b = '';
+      var tank = function (x, c) {
+        return '<rect x="' + x + '" y="84" width="112" height="196" rx="14" ' + s({ o: .55, w: 1.4 }) + '/>' +
+          '<rect data-level="' + c + '" x="' + (x + 8) + '" y="180" width="96" height="92" rx="8" fill="' + (c === 'a' ? WA : AC) + '" fill-opacity=".14"/>';
+      };
+      b += tank(56, 'a') + tank(632, 'b');
+      b += '<rect x="330" y="104" width="140" height="160" rx="8" fill="#202830" ' + s({ o: .55 }) + '/>';
+      for (var i = 0; i < 9; i++) b += '<rect data-plate x="' + f(342 + i * 13.4) + '" y="116" width="7" height="136" rx="2" ' + s({ o: .45 }) + '/>';
+      b += '<path d="M168 110 H330 M168 256 H222 M262 256 H330 M470 110 H632 M470 256 H538 M578 256 H632" ' + s({ o: .4, w: 1.4 }) + '/>';
+      b += '<path class="a-flow" d="M168 256 H330 M330 110 H168" ' + s({ c: WA, o: .8, w: 2 }) + '/>';
+      b += '<path class="a-flow" d="M632 256 H470 M470 110 H632" ' + s({ c: AC, o: .8, w: 2 }) + '/>';
+      b += '<circle cx="242" cy="256" r="16" fill="' + NIGHT + '" ' + s({ o: .8 }) + '/><g data-imp="a"><path d="M242 244 V268 M230 256 H254" ' + s({ o: .7 }) + '/></g>';
+      b += '<circle cx="558" cy="256" r="16" fill="' + NIGHT + '" ' + s({ o: .8 }) + '/><g data-imp="b"><path d="M558 244 V268 M546 256 H570" ' + s({ o: .7 }) + '/></g>';
+      var sensor = function (x, y, kind) {
+        var g = '<circle cx="' + x + '" cy="' + y + '" r="11" fill="' + NIGHT + '" ' + s({ o: .7 }) + '/>';
+        if (kind === 't') g += '<path d="M' + x + ' ' + (y - 6) + ' V' + (y + 2) + '" ' + s({ w: 1.6 }) + '/><circle cx="' + x + '" cy="' + (y + 4) + '" r="2.6" fill="' + FG + '"/>';
+        if (kind === 'p') g += '<path d="M' + (x - 6) + ' ' + (y + 3) + ' A6 6 0 1 1 ' + (x + 6) + ' ' + (y + 3) + ' M' + x + ' ' + (y + 2) + ' L' + (x + 4) + ' ' + (y - 4) + '" ' + s({ w: 1.3 }) + '/>';
+        if (kind === 'f') g += '<path d="M' + (x - 6) + ' ' + y + ' H' + (x + 6) + ' M' + (x + 2) + ' ' + (y - 4) + ' L' + (x + 6) + ' ' + y + ' L' + (x + 2) + ' ' + (y + 4) + '" ' + s({ w: 1.3 }) + '/>';
+        return g + '<path d="M' + x + ' ' + (y + 11) + ' V312" ' + s({ o: .22 }) + ' stroke-dasharray="2 4"/>';
+      };
+      b += sensor(200, 110, 't') + sensor(296, 256, 'f') + sensor(504, 256, 'p') + sensor(600, 110, 't');
+      b += '<path d="M40 312 H780 M40 320 H780" ' + s({ o: .28 }) + '/><path class="a-flow" d="M40 316 H780" ' + s({ c: AC, o: .35, w: 1 }) + '/>';
+      // inverter between the stack and a grid or load
+      b += '<path d="M400 264 V340" ' + s({ o: .5, w: 1.4 }) + '/><path data-arrow d="M392 302 L400 292 L408 302" ' + s({ c: AC, w: 1.6 }) + '/>';
+      b += '<rect x="352" y="340" width="96" height="62" rx="8" fill="#222B32" ' + s({ o: .6 }) + '/><path d="M368 372 q8 -14 16 0 t16 0 t16 0" ' + s({ c: OK, w: 1.4 }) + '/>';
+      b += '<path d="M352 371 H296" ' + s({ o: .45, w: 1.4 }) + '/><rect x="200" y="346" width="96" height="50" rx="6" ' + s({ o: .4 }) + '/><path d="M252 354 l-10 16 h12 l-8 16" ' + s({ c: AC, o: .8, w: 1.4 }) + '/>';
+      // monitor with a configurable alarm line
+      b += '<rect x="500" y="336" width="268" height="100" rx="10" fill="#202830" ' + s({ o: .5 }) + '/>';
+      b += '<path d="M512 362 H756" ' + s({ c: AC, o: .6 }) + ' stroke-dasharray="4 5"/><polyline data-trend ' + s({ o: .85, w: 1.4 }) + '/>';
+      b += '<g data-bell><path d="M736 352 h14 l-3 -4 v-6 a4.5 4.5 0 0 0 -9 0 v6 z" fill="' + AC + '" fill-opacity=".2" ' + s({ c: AC, w: 1.2 }) + '/></g>';
+      return svg(b);
+    },
+    setup: function (el) {
+      var la = q(el, '[data-level="a"]'), lb = q(el, '[data-level="b"]'), ia = q(el, '[data-imp="a"]'), ib = q(el, '[data-imp="b"]');
+      var trend = q(el, '[data-trend]'), bell = q(el, '[data-bell]'), arrow = q(el, '[data-arrow]'), plates = qa(el, '[data-plate]');
+      var flows = qa(el, '.a-flow');
+      return function (T) {
+        var ph = Math.sin(T * 0.45), charge = Math.cos(T * 0.45) > 0;
+        var ha = 92 + ph * 46, hb = 92 - ph * 46;
+        la.setAttribute('y', f(272 - ha)); la.setAttribute('height', f(ha));
+        lb.setAttribute('y', f(272 - hb)); lb.setAttribute('height', f(hb));
+        arrow.setAttribute('transform', charge ? '' : 'rotate(180 400 297)');
+        var c = T % 9, alarm = c > 6.2 && c < 7.6;
+        ia.setAttribute('transform', 'rotate(' + f((alarm ? 0 : T * 260) % 360) + ' 242 256)');
+        ib.setAttribute('transform', 'rotate(' + f((alarm ? 0 : -T * 260) % 360) + ' 558 256)');
+        flows.forEach(function (p) { p.style.animationPlayState = alarm ? 'paused' : ''; });
+        plates.forEach(function (p, i) { p.setAttribute('stroke', i % 2 ? (charge ? WA : AC) : FG); });
+        var pts = [];
+        for (var x = 0; x <= 236; x += 4) {
+          var u = T * 30 + x, spike = Math.max(0, 1 - Math.abs(((u % 270) - 200) / 14));
+          pts.push((514 + x) + ',' + f(396 - Math.sin(u / 23) * 9 - Math.sin(u / 7.3) * 3 - spike * 46));
+        }
+        trend.setAttribute('points', pts.join(' '));
+        bell.style.opacity = alarm ? (Math.sin(T * 14) > 0 ? 1 : .35) : .35;
+      };
+    }
+  };
+
+  /* =====================================================================
+     7 · Instrument-cluster software and test automation. A commercial vehicle's CAN and LIN
+     signals, the Yocto-based software stack with the Qt/QML HMI on top, the cluster display, and
+     host-side automation over ADB that sets parameters, captures the display and checks it.
+     Original artwork; no OEM design or screens. */
+  A.p7 = {
+    rmT: 4.4,
+    svg: function () {
+      var b = '';
+      b += '<path d="M40 344 H230" ' + s({ o: .25 }) + '/><path d="M52 330 V244 Q52 232 64 232 H118 L132 262 V330 Z" fill="#202830" ' + s({ o: .6, w: 1.4 }) + '/>';
+      b += '<path d="M62 242 H112 L122 262 H62 Z" ' + s({ o: .35 }) + '/><path d="M132 286 H224 V330 H132" ' + s({ o: .45 }) + '/>';
+      b += '<circle cx="84" cy="334" r="15" fill="' + NIGHT + '" ' + s({ o: .7 }) + '/><circle cx="196" cy="334" r="15" fill="' + NIGHT + '" ' + s({ o: .7 }) + '/>';
+      b += '<path d="M150 302 H360 M150 310 H360" ' + s({ o: .4 }) + '/>';
+      b += '<path data-can d="M150 306 H360" stroke="none"/>';
+      for (var i = 0; i < 3; i++) b += '<rect data-frame x="-9" y="-6" width="18" height="12" rx="2" fill="' + AC + '" fill-opacity=".25" ' + s({ c: AC }) + '/>';
+      b += '<path d="M190 310 V386 H300" ' + s({ o: .3 }) + ' stroke-dasharray="5 4"/><rect x="300" y="374" width="34" height="24" rx="4" ' + s({ o: .45 }) + '/><circle class="a-blink-slow" cx="317" cy="386" r="3" fill="' + OK + '"/>';
+      b += '<rect x="360" y="232" width="112" height="140" rx="10" fill="#202830" ' + s({ o: .6 }) + '/>';
+      [[340, .35], [316, .45], [292, .55]].forEach(function (l) { b += '<rect x="374" y="' + l[0] + '" width="84" height="18" rx="3" ' + s({ o: l[1] }) + '/>'; });
+      b += '<rect x="374" y="246" width="84" height="38" rx="4" fill="' + AC + '" fill-opacity=".12" ' + s({ c: AC, o: .8 }) + '/><path d="M386 258 h30 M386 268 h48 M386 276 h20" ' + s({ c: AC, o: .55 }) + '/>';
+      b += '<path d="M472 270 C500 270 494 220 520 214" ' + s({ o: .35 }) + '/><path class="a-flow" d="M472 270 C500 270 494 220 520 214" ' + s({ c: AC, o: .7, w: 1.6 }) + '/>';
+      b += '<rect x="500" y="92" width="276" height="160" rx="26" fill="#151B20" ' + s({ o: .7, w: 1.5 }) + '/>';
+      [[572, 172], [704, 172]].forEach(function (c, n) {
+        b += '<path d="M' + (c[0] - 44) + ' ' + (c[1] + 26) + ' A52 52 0 1 1 ' + (c[0] + 44) + ' ' + (c[1] + 26) + '" ' + s({ o: .4 }) + '/>';
+        for (var k = 0; k <= 12; k++) {
+          var a = (150 + k * 20) * Math.PI / 180;
+          b += '<line x1="' + f(c[0] + Math.cos(a) * 46) + '" y1="' + f(c[1] + Math.sin(a) * 46) + '" x2="' + f(c[0] + Math.cos(a) * (k % 3 ? 41 : 38)) + '" y2="' + f(c[1] + Math.sin(a) * (k % 3 ? 41 : 38)) + '" ' + s({ o: k % 3 ? .3 : .6 }) + '/>';
+        }
+        b += '<g data-needle="' + n + '"><line x1="' + c[0] + '" y1="' + c[1] + '" x2="' + (c[0] + 36) + '" y2="' + c[1] + '" ' + s({ c: AC, w: 2 }) + '/></g><circle cx="' + c[0] + '" cy="' + c[1] + '" r="4" fill="' + AC + '"/>';
+      });
+      b += '<rect x="626" y="128" width="24" height="58" rx="3" ' + s({ o: .3 }) + '/><rect data-fuel x="630" y="160" width="16" height="22" rx="2" fill="' + OK + '" fill-opacity=".6"/>';
+      [[590, 'c'], [616, 't'], [662, 'c'], [688, 't']].forEach(function (tt, k) {
+        b += tt[1] === 'c' ? '<circle class="a-blink" style="animation-delay:-' + k * .7 + 's" cx="' + tt[0] + '" cy="226" r="5" ' + s({ c: k % 2 ? OK : AC, w: 1.4 }) + '/>'
+          : '<path class="a-blink" style="animation-delay:-' + k * .5 + 's" d="M' + tt[0] + ' 221 l6 10 h-12 z" ' + s({ c: AC, w: 1.4 }) + '/>';
+      });
+      b += '<g data-cap>' + [[492, 84, 1, 1], [784, 84, -1, 1], [492, 260, 1, -1], [784, 260, -1, -1]].map(function (c) {
+        return '<path d="M' + c[0] + ' ' + (c[1] + 16 * c[3]) + ' V' + c[1] + ' H' + (c[0] + 16 * c[2]) + '" ' + s({ c: AC, w: 1.6 }) + '/>';
+      }).join('') + '</g>';
+      // host-side automation over ADB
+      b += '<rect x="500" y="300" width="96" height="62" rx="5" fill="#202830" ' + s({ o: .6 }) + '/><path d="M490 368 H606" ' + s({ o: .6 }) + '/><path d="M512 316 h40 M512 328 h60 M512 340 h30" ' + s({ o: .35 }) + '/>';
+      b += '<path d="M548 300 V266" ' + s({ o: .4 }) + ' stroke-dasharray="3 4"/>';
+      for (var r = 0; r < 4; r++) for (var cc = 0; cc < 8; cc++) {
+        var x = 626 + cc * 19, y = 300 + r * 19;
+        b += '<rect x="' + x + '" y="' + y + '" width="13" height="13" rx="2" ' + s({ o: .25 }) + '/><path data-chk d="M' + (x + 3) + ' ' + (y + 7) + ' l3 3 l5 -6" ' + s({ c: OK, w: 1.6 }) + '/>';
+      }
+      return svg(b);
+    },
+    setup: function (el) {
+      var can = q(el, '[data-can]'), frames = qa(el, '[data-frame]'), n0 = q(el, '[data-needle="0"]'), n1 = q(el, '[data-needle="1"]');
+      var fuel = q(el, '[data-fuel]'), cap = q(el, '[data-cap]'), chk = qa(el, '[data-chk]');
+      var L = can.getTotalLength();
+      return function (T) {
+        frames.forEach(function (fr, i) {
+          var k = (T * 0.55 + i / 3) % 1, p = at(can, k * L);
+          fr.setAttribute('transform', 'translate(' + f(p[0]) + ' ' + f(p[1]) + ')'); fr.style.opacity = Math.min(win(k, 0, .1), 1 - win(k, .9, 1));
+        });
+        var sp = 0.5 + 0.45 * Math.sin(T * 0.7), rpm = 0.45 + 0.4 * Math.sin(T * 1.3 + 1);
+        n0.setAttribute('transform', 'rotate(' + f(150 + sp * 240) + ' 572 172)');
+        n1.setAttribute('transform', 'rotate(' + f(150 + rpm * 240) + ' 704 172)');
+        var fh = 14 + 8 * Math.sin(T * 0.3); fuel.setAttribute('y', f(182 - fh)); fuel.setAttribute('height', f(fh));
+        var t = T % 7, n = Math.floor(win(t, 0.4, 5.6) * chk.length + 0.0001), out = 1 - win(t, 6.4, 7);
+        chk.forEach(function (c, i) { c.style.opacity = i < n ? out : 0; c.setAttribute('stroke', i === 13 ? AC : OK); });
+        cap.style.opacity = .2 + .8 * ((T * 0.6) % 1 < 0.12 ? 1 : 0);
+      };
+    }
+  };
+
+  /* ---------------- mounting and live control ---------------- */
+  var RMQ = window.matchMedia('(prefers-reduced-motion: reduce)');
+  var live = [], subscribed = false;
+  /* labelled version for case studies: the compact preview stays unlabelled so it reads at small sizes */
+  var LABELS = {
+    p2: [[350, 56, 'lbl.p2.mission'], [672, 182, 'lbl.p2.dock'], [622, 284, 'lbl.p2.tag']],
+    p3: [[300, 116, 'lbl.p3.camera'], [439, 94, 'lbl.p3.pair'], [650, 92, 'lbl.p3.conf'], [650, 296, 'lbl.p3.ctrl'], [500, 452, 'lbl.p3.manual'], [655, 452, 'lbl.p3.out']],
+    p4: [[101, 140, 'lbl.p4.gs'], [247, 314, 'lbl.p4.usv'], [566, 172, 'lbl.p4.pose'], [440, 292, 'lbl.p4.obs']],
+    p5: [[400, 40, 'lbl.p5.legend'], [450, 286, 'lbl.p5.obs']],
+    p6: [[112, 72, 'lbl.p6.tank'], [688, 72, 'lbl.p6.tank'], [400, 92, 'lbl.p6.stack'], [120, 336, 'lbl.p6.bus'], [400, 422, 'lbl.p6.inv'], [634, 456, 'lbl.p6.mon']],
+    p7: [[92, 222, 'lbl.p7.veh'], [416, 222, 'lbl.p7.stack'], [638, 80, 'lbl.p7.cluster'], [548, 386, 'lbl.p7.host'], [702, 386, 'lbl.p7.checks']]
+  };
+  function labels(el) {
+    var key = el.getAttribute('data-art'), svgEl = el.querySelector('svg'), L = LABELS[key];
+    if (!L || !svgEl || !window.AG) return;
+    var old = svgEl.querySelector('.art-labels'); if (old) old.remove();
+    var g = document.createElementNS('http://www.w3.org/2000/svg', 'g'); g.setAttribute('class', 'art-labels');
+    L.forEach(function (l) {
+      var tx = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      tx.setAttribute('x', l[0]); tx.setAttribute('y', l[1]); tx.setAttribute('text-anchor', 'middle');
+      tx.textContent = window.AG.t(l[2]); g.appendChild(tx);
+    });
+    svgEl.appendChild(g);
+  }
+  function mount(el) {
+    var def = A[el.getAttribute('data-art')]; if (!def || el.__art) return;
+    el.insertAdjacentHTML('afterbegin', def.svg());
+    if (el.hasAttribute('data-art-labels')) { labels(el); document.addEventListener('ag:lang', function () { labels(el); }); }
+    el.__art = { tick: null, t: def.rmT * 0.35, def: def };
+    arm(el);
+  }
+  // path geometry can be unavailable while an element is not rendered (some browsers throw); retry when shown
+  function arm(el) {
+    var a = el.__art; if (a.tick || !a.def.setup) return;
+    try { a.tick = a.def.setup(el.querySelector('svg')); a.tick(RMQ.matches ? a.def.rmT : a.t); } catch (e) { a.tick = null; }
+  }
+  // decorative loops are drawn at 30 fps: half the SVG repaints of 4C, no visible difference at this speed
+  var acc = 0;
+  function step(dt) {
+    acc += dt;
+    if (acc >= 1 / 31) {
+      var d = acc; acc = 0;
+      for (var i = 0; i < live.length; i++) { var a = live[i].__art; a.t += d; a.tick(a.t); }
+    }
+    return live.length > 0;
+  }
+  function setLive(el, on) {
+    if (!el.__art) return;
+    if (on) arm(el);
+    el.classList.toggle('is-live', on);
+    var i = live.indexOf(el);
+    if (RMQ.matches || !el.__art.tick) { if (i > -1) live.splice(i, 1); if (el.__art.tick) el.__art.tick(el.__art.def.rmT); return; }
+    if (on && i < 0) live.push(el); else if (!on && i > -1) live.splice(i, 1);
+    var M = window.AG && window.AG.motion;
+    if (M) { if (!subscribed) { subscribed = true; M.add(step); } else M.wake(); }
+  }
+  var io = 'IntersectionObserver' in window ? new IntersectionObserver(function (es) {
+    es.forEach(function (en) { setLive(en.target, en.isIntersecting); });
+  }, { rootMargin: '60px 0px' }) : null;
+
+  Array.prototype.forEach.call(document.querySelectorAll('[data-art]'), function (el) {
+    mount(el);
+    if (io && !el.closest('.preview')) io.observe(el);
+  });
+  if (RMQ.addEventListener) RMQ.addEventListener('change', function () { live.slice().forEach(function (el) { setLive(el, true); }); });
+  window.AG_ART = { defs: A, setLive: setLive, mount: mount };
+})();
