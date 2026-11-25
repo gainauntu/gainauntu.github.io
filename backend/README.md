@@ -44,7 +44,7 @@ storage and email outcome separately. No endpoint looks inquiries up by referenc
 | Cloudflare Workers | Free: 100,000 requests/day | $0 | [Workers pricing](https://developers.cloudflare.com/workers/platform/pricing/) |
 | Cloudflare D1 | Free: 5 M rows read/day, 100 k rows written/day, 5 GB | $0 | [D1 pricing](https://developers.cloudflare.com/d1/platform/pricing/) |
 | Cloudflare Turnstile | Free: up to 20 widgets | $0 | [Turnstile plans](https://developers.cloudflare.com/turnstile/plans/) |
-| Cloudflare Access (Zero Trust) | Free: up to 50 users | $0, **but Cloudflare requires a payment card on file for the free plan** | [Zero Trust free plan](https://www.cloudflare.com/zero-trust/trial), [one-click Access for Workers](https://developers.cloudflare.com/workers/configuration/cloudflare-access/) |
+| Cloudflare Access (Zero Trust) | Free: up to 50 users | $0. Earlier notes said a card is required; Cloudflare's current plan and trial pages say the Free plan needs no card. Confirm at sign-up | [Zero Trust free plan](https://www.cloudflare.com/zero-trust/trial), [one-click Access for Workers](https://developers.cloudflare.com/workers/configuration/cloudflare-access/) |
 | Resend | Free: 3,000 emails/month, 100/day | $0 | [Resend pricing](https://resend.com/pricing), [quotas](https://resend.com/docs/knowledge-base/account-quotas-and-limits) |
 | A domain you own | needed to email visitors (confirmations, replies from the dashboard) | about $10–15/year at most registrars (not checked) | without it Resend only delivers to your own account address ([403 on resend.dev](https://resend.com/docs/knowledge-base/403-error-resend-dev-domain)) |
 
@@ -70,7 +70,7 @@ Resend's 100/day.
 5. **Deploy the public Worker**: `npm run deploy:public` → note its URL (`https://gainauntu-inquiry-api.<subdomain>.workers.dev`).
 6. **Admin Worker**: `npx wrangler secret put ADMIN_EMAILS --config wrangler.admin.toml` (your login email) and
    `RESEND_API_KEY_ADMIN`; `npm run deploy:admin`; then dashboard → Workers & Pages → `gainauntu-inquiry-admin` → Settings →
-   Domains & Routes → **Enable Cloudflare Access** (this is where the card-on-file requirement applies). Copy the Access
+   Domains & Routes → **Enable Cloudflare Access** (if Cloudflare asks for a payment card here, stop: see FREE-OPTIONS.md for a card-free admin login). Copy the Access
    application's **AUD tag** and your **team domain** into `wrangler.admin.toml`, deploy again. Never enable Access on the
    public Worker (it would block visitors).
 7. **Resend**: create an API key (sending access). Optional but recommended: add and verify your domain, then set
