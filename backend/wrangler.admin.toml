@@ -6,20 +6,22 @@ name = "gainauntu-inquiry-admin"
 main = "src/admin.js"
 compatibility_date = "2026-11-01"
 workers_dev = true
+preview_urls = false
 
 rules = [ { type = "Text", globs = ["**/*.html", "**/*.css", "**/*.dash.js"], fallthrough = true } ]
 
 [vars]
+ADMIN_AUTH = "google"                              # "google": Google sign-in (secrets ADMIN_GOOGLE_CLIENT_ID/_SECRET); "access": Cloudflare Access
 EMAIL_PROVIDER = "gmail"
-ACCESS_TEAM_DOMAIN = "<your-team>.cloudflareaccess.com"
-ACCESS_AUD = "<Application Audience (AUD) tag>"
+ACCESS_TEAM_DOMAIN = ""                            # only for ADMIN_AUTH = "access"
+ACCESS_AUD = ""
 REPLY_FROM = "Auntu Gain"                         # sender name for dashboard replies (Gmail: sent as GMAIL_SENDER)
 REPLY_TO = ""                                      # optional: where visitors' answers to your replies should go (e.g. your Gmail)
 
 [[d1_databases]]
 binding = "DB"
 database_name = "gainauntu-inquiries"
-database_id = "<same database_id as the public Worker>"
+database_id = "860c7893-2d8e-4360-802e-4f93d866fe53"
 migrations_dir = "migrations"
 
 [observability]

@@ -138,6 +138,6 @@ test('me endpoint reports the identity and whether replies can be sent', async (
   const h = await start();
   try {
     const d = await (await get(h, '/api/me')).json();
-    assert.deepEqual(d, { email: ADMIN, replyConfigured: false });
+    assert.deepEqual(d, { email: ADMIN, auth: 'access', provider: 'resend', replyConfigured: false });
   } finally { await h.close(); }
 });

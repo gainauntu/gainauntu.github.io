@@ -3,7 +3,7 @@
 (function () {
   'use strict';
   var L = {
-    en: { brand: 'Private inquiry dashboard', title: 'Inquiries', uiLang: 'Language', status: 'Status', active: 'Active (not archived)', all: 'All', type: 'Type', search: 'Search', inbox: 'Inbox', none: 'No inquiries match.', pick: 'Select an inquiry.',
+    en: { logout: 'Sign out', sentGmail: 'Sent from your Gmail. If the address bounces, the notice arrives in your Gmail inbox.', brand: 'Private inquiry dashboard', title: 'Inquiries', uiLang: 'Language', status: 'Status', active: 'Active (not archived)', all: 'All', type: 'Type', search: 'Search', inbox: 'Inbox', none: 'No inquiries match.', pick: 'Select an inquiry.',
       st_new: 'New', st_read: 'Read', st_pending: 'Pending', st_replied: 'Replied', st_archived: 'Archived', total: 'Total',
       t_project: 'Project inquiry', t_collab: 'Research collaboration', t_msg: 'General message',
       received: 'Received', ref: 'Reference', name: 'Name', email: 'Email', org: 'Organisation', pageLang: 'Page language', replyLang: 'Preferred reply language', budget: 'Budget', start: 'Preferred start', notify: 'Owner notification', confirm: 'Visitor confirmation', board: 'Public board',
@@ -16,7 +16,7 @@
       rs_accepted: 'accepted by the email provider', rs_failed: 'failed', rs_delivered: 'delivered', rs_bounced: 'bounced', rs_delayed: 'delivery delayed', rs_complained: 'marked as spam', rs_recorded: 'recorded',
       ns_pending: 'pending', ns_accepted: 'accepted by the email provider', ns_failed: 'failed', ns_skipped: 'not sent (not configured)', ns_off: 'off', ns_delivered: 'delivered', ns_bounced: 'bounced', ns_delayed: 'delayed', ns_complained: 'marked as spam',
       saved: 'Saved.', err: 'Something went wrong. Nothing was changed.', sent: 'Accepted by the email provider. Delivery is confirmed only by a later delivery event.' },
-    ko: { brand: '비공개 문의 관리', title: '문의함', uiLang: '언어', status: '상태', active: '진행 중 (보관 제외)', all: '전체', type: '유형', search: '검색', inbox: '받은 문의', none: '조건에 맞는 문의가 없습니다.', pick: '문의를 선택해 주세요.',
+    ko: { logout: '로그아웃', sentGmail: 'Gmail에서 발송했습니다. 주소 오류로 반송되면 Gmail 받은편지함으로 알림이 옵니다.', brand: '비공개 문의 관리', title: '문의함', uiLang: '언어', status: '상태', active: '진행 중 (보관 제외)', all: '전체', type: '유형', search: '검색', inbox: '받은 문의', none: '조건에 맞는 문의가 없습니다.', pick: '문의를 선택해 주세요.',
       st_new: '새 문의', st_read: '읽음', st_pending: '답변 대기', st_replied: '답변 완료', st_archived: '보관됨', total: '전체',
       t_project: '프로젝트 문의', t_collab: '연구 협업 제안', t_msg: '일반 메시지',
       received: '접수일', ref: '접수번호', name: '이름', email: '이메일', org: '소속', pageLang: '페이지 언어', replyLang: '희망 회신 언어', budget: '예산', start: '희망 시작 시기', notify: '관리자 알림', confirm: '방문자 확인 메일', board: '공개 문의 목록',
@@ -29,7 +29,7 @@
       rs_accepted: '메일 서비스가 접수함', rs_failed: '실패', rs_delivered: '전달됨', rs_bounced: '반송됨', rs_delayed: '전달 지연', rs_complained: '스팸 신고됨', rs_recorded: '기록됨',
       ns_pending: '대기', ns_accepted: '메일 서비스가 접수함', ns_failed: '실패', ns_skipped: '미발송 (설정 안 됨)', ns_off: '사용 안 함', ns_delivered: '전달됨', ns_bounced: '반송됨', ns_delayed: '지연', ns_complained: '스팸 신고됨',
       saved: '저장했습니다.', err: '문제가 발생했습니다. 변경된 내용은 없습니다.', sent: '메일 서비스가 접수했습니다. 실제 전달 여부는 이후 전달 이벤트로 확인됩니다.' },
-    bn: { brand: 'ব্যক্তিগত বার্তা ব্যবস্থাপনা', title: 'বার্তাসমূহ', uiLang: 'ভাষা', status: 'অবস্থা', active: 'চলমান (আর্কাইভ বাদে)', all: 'সব', type: 'ধরন', search: 'খুঁজুন', inbox: 'ইনবক্স', none: 'মিলে যায় এমন কোনো বার্তা নেই।', pick: 'একটি বার্তা বেছে নিন।',
+    bn: { logout: 'সাইন আউট', sentGmail: 'আপনার Gmail থেকে পাঠানো হয়েছে। ঠিকানা ভুল হলে ফেরত আসার নোটিশ আপনার Gmail ইনবক্সে আসবে।', brand: 'ব্যক্তিগত বার্তা ব্যবস্থাপনা', title: 'বার্তাসমূহ', uiLang: 'ভাষা', status: 'অবস্থা', active: 'চলমান (আর্কাইভ বাদে)', all: 'সব', type: 'ধরন', search: 'খুঁজুন', inbox: 'ইনবক্স', none: 'মিলে যায় এমন কোনো বার্তা নেই।', pick: 'একটি বার্তা বেছে নিন।',
       st_new: 'নতুন', st_read: 'পড়া হয়েছে', st_pending: 'উত্তরের অপেক্ষায়', st_replied: 'উত্তর দেওয়া হয়েছে', st_archived: 'আর্কাইভ করা', total: 'মোট',
       t_project: 'প্রজেক্ট নিয়ে আলোচনা', t_collab: 'গবেষণা সহযোগিতা', t_msg: 'সাধারণ বার্তা',
       received: 'গ্রহণের তারিখ', ref: 'রেফারেন্স নম্বর', name: 'নাম', email: 'ইমেইল', org: 'প্রতিষ্ঠান', pageLang: 'পাতার ভাষা', replyLang: 'উত্তরের পছন্দের ভাষা', budget: 'বাজেট', start: 'শুরুর পছন্দের সময়', notify: 'মালিকের নোটিফিকেশন', confirm: 'দর্শকের নিশ্চিতকরণ ইমেইল', board: 'প্রকাশ্য তালিকা',
@@ -140,7 +140,7 @@
       send.addEventListener('click', function () {
         send.disabled = true; send.textContent = t('sending');
         api('POST', '/api/inquiries/' + id + '/reply', { subject: subj.value, body: body.value }).then(function (x) {
-          msg(x.ok ? t('sent') : t('err')); send.textContent = t('send'); send.disabled = false; load(); open(id);
+          msg(x.ok ? t(state.me && state.me.provider === 'gmail' ? 'sentGmail' : 'sent') : t('err')); send.textContent = t('send'); send.disabled = false; load(); open(id);
         });
       });
       var mail = el('a', { class: 'note', href: 'mailto:' + encodeURIComponent(q.email).replace('%40', '@') + '?subject=' + encodeURIComponent(subj.value), text: t('openMail') });
@@ -168,5 +168,6 @@
   ['#f-status', '#f-intent'].forEach(function (s) { $(s).addEventListener('change', load); });
   var deb; $('#f-q').addEventListener('input', function () { clearTimeout(deb); deb = setTimeout(load, 250); });
   applyStatic();
-  api('GET', '/api/me').then(function (r) { if (r.ok) { state.me = r.d; $('#who').textContent = r.d.email; } load(); });
+  $('#logout').addEventListener('click', function () { api('POST', '/auth/logout', {}).then(function () { location.href = '/'; }, function () { location.href = '/'; }); });
+  api('GET', '/api/me').then(function (r) { if (r.ok) { state.me = r.d; $('#who').textContent = r.d.email; if (r.d.auth === 'google') $('#logout').hidden = false; } load(); });
 })();

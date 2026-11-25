@@ -1,8 +1,9 @@
-// Owner dashboard (Cloudflare Worker behind Cloudflare Access). Every request, including the page itself, is checked
-// with verifyAccess(); state-changing requests also need a JSON body, the custom header x-ag-admin and a same-origin
+// Owner dashboard (Cloudflare Worker). Every request, including the page itself, is checked with Google sign-in sessions
+// (ADMIN_AUTH=google) or Cloudflare Access (ADMIN_AUTH=access); state-changing requests also need a JSON body, the custom header x-ag-admin and a same-origin
 // Origin, so a third-party page cannot drive them (CSRF). The UI renders every stored value as text, never as HTML.
 import { json, now, randomId, readJson, log } from './lib/util.js';
 import { verifyAccess } from './lib/access.js';
+import * as google from './lib/google-auth.js';
 import { sendEmail, oneLine } from './lib/email.js';
 import { retention } from './public.js';
 import PAGE from './admin/dashboard.html';
@@ -16,10 +17,21 @@ const SEC = {
 };
 const asset = (body, type) => new Response(body, { headers: { 'content-type': type, ...SEC } });
 
-function csrfOk(request, url) {
+function csrfOk(request, url, strict) {
   if (request.headers.get('x-ag-admin') !== '1') return false;
   const o = request.headers.get('origin');
-  return !o || o === url.origin;
+  return strict ? o === url.origin : (!o || o === url.origin);   // cookie sessions: a same-origin Origin is required
+}
+
+// ADMIN_AUTH = "google" (Google sign-in, session cookie) or "access" (Cloudflare Access). Anything else fails closed.
+const LOGIN_PAGE = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow"><title>Sign in · Inquiries</title><link rel="stylesheet" href="/app.css"></head>
+<body><main class="login"><h1>Private inquiry dashboard</h1><p>Only the site owner can sign in.</p>
+<p><a class="btn" href="/auth/login">Sign in with Google</a></p></main></body></html>`;
+async function identify(request, env) {
+  if (env.ADMIN_AUTH === 'google') return google.session(request, env);
+  if (env.ADMIN_AUTH === 'access') return verifyAccess(request, env);
+  return { ok: false, reason: 'auth_mode' };
 }
 
 async function list(env, url) {
@@ -90,23 +102,43 @@ async function reply(env, id, body, manual) {
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
-    const who = await verifyAccess(request, env);
+    const p = url.pathname, m = request.method, G = env.ADMIN_AUTH === 'google';
+    if (G && p.startsWith('/auth/')) {
+      if (m === 'GET' && p === '/auth/login') return google.login(request, env);
+      if (m === 'GET' && p === '/auth/callback') {
+        const r = await google.callback(request, env);
+        if (!r.ok) {
+          log('admin_login_denied', { reason: r.reason });
+          return new Response('Sign-in refused.', { status: r.status, headers: { 'content-type': 'text/plain', ...SEC, 'set-cookie': '__Host-ag_oauth=; Path=/; Secure; HttpOnly; SameSite=Lax; Max-Age=0' } });
+        }
+        log('admin_login', { ok: true });
+        const h = new Headers({ location: '/', ...SEC }); r.cookies.forEach((c) => h.append('set-cookie', c));
+        return new Response(null, { status: 302, headers: h });
+      }
+      if (m === 'POST' && p === '/auth/logout') {
+        if (!csrfOk(request, url, true)) return json({ error: 'forbidden' }, 403, SEC);
+        return new Response(JSON.stringify({ ok: true }), { status: 200, headers: { 'content-type': 'application/json', ...SEC, 'set-cookie': await google.logout(request, env) } });
+      }
+      return json({ error: 'not_found' }, 404, SEC);
+    }
+    if (G && m === 'GET' && p === '/app.css') return asset(CSS, 'text/css; charset=utf-8');   // needed by the sign-in page; holds no data
+    const who = await identify(request, env);
     if (!who.ok) {
       log('admin_denied', { reason: who.reason });
+      if (G && m === 'GET' && (p === '/' || p === '/index.html') && who.reason !== 'not_configured') return new Response(LOGIN_PAGE, { status: 401, headers: { 'content-type': 'text/html; charset=utf-8', ...SEC } });
       return new Response('Not authorized', { status: who.reason === 'not_allowed' ? 403 : 401, headers: { 'content-type': 'text/plain', ...SEC } });
     }
-    const p = url.pathname, m = request.method;
     if (m === 'GET' && (p === '/' || p === '/index.html')) return asset(PAGE, 'text/html; charset=utf-8');
     if (m === 'GET' && p === '/app.css') return asset(CSS, 'text/css; charset=utf-8');
     if (m === 'GET' && p === '/app.js') return asset(APP, 'text/javascript; charset=utf-8');
     if (!p.startsWith('/api/')) return json({ error: 'not_found' }, 404, SEC);
     try {
-      if (m === 'GET' && p === '/api/me') return json({ email: who.email, replyConfigured: !!env.REPLY_FROM });
+      if (m === 'GET' && p === '/api/me') return json({ email: who.email, auth: G ? 'google' : 'access', provider: env.EMAIL_PROVIDER || 'resend', replyConfigured: !!env.REPLY_FROM });
       if (m === 'GET' && p === '/api/inquiries') return list(env, url);
       const mm = p.match(/^\/api\/inquiries\/([0-9a-f]{32})(?:\/(status|reply|manual-reply|board))?$/);
       if (m === 'GET' && mm && !mm[2]) return detail(env, mm[1]);
       if (m !== 'GET') {
-        if (!csrfOk(request, url)) return json({ error: 'forbidden' }, 403);
+        if (!csrfOk(request, url, G)) return json({ error: 'forbidden' }, 403);
         const parsed = await readJson(request, 64 * 1024);
         if (parsed.error) return json({ error: parsed.error }, 400);
         const b = parsed.body || {};

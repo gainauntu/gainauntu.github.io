@@ -26,6 +26,17 @@ export function accessToken(claims = {}, opts = {}) {
   return data + '.' + b64u(sig);
 }
 
+// Google ID tokens for the admin sign-in tests (same throwaway key, published under kid "g1")
+export const GCLIENT = 'admin-client.apps.googleusercontent.com';
+export function googleIdToken(claims = {}, opts = {}) {
+  const t = Math.floor(Date.now() / 1000);
+  const header = { alg: opts.alg || 'RS256', kid: opts.kid || 'g1', typ: 'JWT' };
+  const body = { iss: 'https://accounts.google.com', aud: GCLIENT, azp: GCLIENT, sub: '1234567890', email: ADMIN, email_verified: true, iat: t, exp: t + 3600, ...claims };
+  const data = b64u(JSON.stringify(header)) + '.' + b64u(JSON.stringify(body));
+  const sig = opts.noSig ? '' : b64u(crypto.sign('RSA-SHA256', Buffer.from(data), opts.wrongKey ? other.privateKey : privateKey));
+  return data + '.' + sig;
+}
+
 // ---- outbound mock
 export function makeOutbound() {
   const o = {
@@ -48,6 +59,12 @@ export function makeOutbound() {
         if (o.resend === 'fail') return Response.json({ name: 'validation_error', message: 'x' }, { status: 422 });
         o.resendCount++;
         return Response.json({ id: 'msg_' + o.resendCount });
+      }
+      if (url.host === 'www.googleapis.com' && url.pathname === '/oauth2/v3/certs') return Response.json({ keys: [{ ...jwk, kid: 'g1' }] });
+      if (url.host === 'oauth2.googleapis.com' && url.pathname === '/token' && /grant_type=authorization_code/.test(body)) {
+        o.lastCodeExchange = new URLSearchParams(body);
+        if (o.idTokenFail) return Response.json({ error: 'invalid_grant' }, { status: 400 });
+        return Response.json({ access_token: 'ya29.login', id_token: typeof o.idToken === 'function' ? o.idToken(o.lastCodeExchange) : o.idToken, expires_in: 3599 });
       }
       if (url.host === 'oauth2.googleapis.com' && url.pathname === '/token') {
         if (o.gmail === 'oauthfail') return Response.json({ error: 'invalid_grant' }, { status: 400 });
@@ -77,13 +94,15 @@ export async function start({ publicVars = {}, adminVars = {}, migrate = true } 
           RETENTION_DAYS: '365', DAILY_LIMIT_PER_CLIENT: '5', DAILY_LIMIT_TOTAL: '80', TURNSTILE_SECRET: 'test-secret', RESEND_API_KEY: 're_test', RESEND_WEBHOOK_SECRET: 'whsec_' + Buffer.from('webhook-secret-for-tests-0123456789').toString('base64'),
           IP_HASH_SECRET: 'ip-hash-secret', OWNER_EMAIL: ADMIN, ...publicVars } },
       { ...common, name: 'admin', routes: ['admin.test/*'], scriptPath: path.join(ROOT, 'src/admin.js'), modulesRoot: ROOT,
-        bindings: { ACCESS_TEAM_DOMAIN: TEAM, ACCESS_AUD: AUD, ADMIN_EMAILS: ADMIN, REPLY_FROM: '', REPLY_TO: '', RESEND_API_KEY_ADMIN: 're_test', ...adminVars } }
+        bindings: { ADMIN_AUTH: 'access', ACCESS_TEAM_DOMAIN: TEAM, ACCESS_AUD: AUD, ADMIN_EMAILS: ADMIN, REPLY_FROM: '', REPLY_TO: '', RESEND_API_KEY_ADMIN: 're_test', ...adminVars } }
     ]
   });
   const db = await mf.getD1Database('DB', 'public');
   if (migrate) {
-    const sql = readFileSync(path.join(ROOT, 'migrations/0001_init.sql'), 'utf8').replace(/--[^\n]*/g, '');
-    for (const stmt of sql.split(';').map((s) => s.trim()).filter(Boolean)) await db.prepare(stmt).run();
+    for (const f of ['0001_init.sql', '0002_admin_sessions.sql']) {
+      const sql = readFileSync(path.join(ROOT, 'migrations', f), 'utf8').replace(/--[^\n]*/g, '');
+      for (const stmt of sql.split(';').map((s) => s.trim()).filter(Boolean)) await db.prepare(stmt).run();
+    }
   }
   // requests go through the normal entry and are routed by hostname, like production traffic
   const wrap = (host) => ({ fetch: (url, init) => mf.dispatchFetch(url.replace(/^https:\/\/[^/]+/, 'https://' + host), init) });
