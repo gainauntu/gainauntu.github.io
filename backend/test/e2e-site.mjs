@@ -125,6 +125,17 @@ try {
   const board = await page.textContent('[data-board-list]');
   check('board after approval: one anonymous Korean entry, no personal data', board.includes('비공개 프로젝트 문의') && board.includes('접수 완료') && !/Test Person|Example Lab|Edge pilot|test@example/.test(board), board.trim());
   await page.locator('[data-board]').screenshot({ path: path.join(SHOTS, 'board-ko.png') });
+  // board loading and error states (Bengali), with the service slowed down and then unreachable
+  let release, done; const held = new Promise((r) => { release = r; }), finished = new Promise((r) => { done = r; });
+  await page.route('**/v1/board', async (route) => { await held; await route.continue().catch(() => {}); done(); });
+  await page.goto(BASE + 'bn/hire.html'); await page.waitForTimeout(500);
+  const loadingText = await page.textContent('[data-board-empty]');
+  release(); await finished; await page.unroute('**/v1/board');
+  await page.route('**/v1/board', (route) => route.abort());
+  await page.goto(BASE + 'bn/hire.html'); await page.waitForTimeout(900);
+  const errorText = await page.textContent('[data-board-empty]');
+  await page.unroute('**/v1/board');
+  check('board loading and error states in Bengali (no stale or invented entries)', loadingText.includes('লোড হচ্ছে') && errorText.includes('এই মুহূর্তে বার্তার তালিকা দেখানো যাচ্ছে না') && (await page.textContent('[data-board-list]')).trim() === '', loadingText + ' / ' + errorText);
 
   // 7 dashboard: authentication and safe rendering of hostile content
   await db.prepare('UPDATE inquiries SET name = ? WHERE lang = ?').bind('<img src=x onerror="window.__xss=1">', 'bn').run();
