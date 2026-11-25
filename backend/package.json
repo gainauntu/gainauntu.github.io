@@ -1,0 +1,20 @@
+{
+  "name": "gainauntu-inquiry-backend",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Inquiry API (public Worker) and owner dashboard (Access-protected Worker) for gainauntu.github.io",
+  "type": "module",
+  "scripts": {
+    "test": "node --test --test-concurrency=1 test/*.test.mjs",
+    "check:public": "wrangler deploy --dry-run --config wrangler.public.toml --outdir .wrangler/dry-public",
+    "check:admin": "wrangler deploy --dry-run --config wrangler.admin.toml --outdir .wrangler/dry-admin",
+    "db:migrate:local": "wrangler d1 migrations apply gainauntu-inquiries --local --config wrangler.public.toml",
+    "db:migrate:remote": "wrangler d1 migrations apply gainauntu-inquiries --remote --config wrangler.public.toml",
+    "deploy:public": "wrangler deploy --config wrangler.public.toml",
+    "deploy:admin": "wrangler deploy --config wrangler.admin.toml"
+  },
+  "devDependencies": {
+    "miniflare": "4.20260730.0",
+    "wrangler": "4.158.0"
+  }
+}

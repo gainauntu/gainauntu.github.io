@@ -1,0 +1,52 @@
+:root { --paper: #F5F0E6; --paper-2: #ECE5D8; --ink: #1E2A31; --ink-2: #4A5660; --line: #D8CFBF; --green: #364739; --sky: #DCE8EF; --warn: #8A4F12; --ok: #2F6B45;
+  color-scheme: light; font: 15px/1.5 system-ui, -apple-system, "Segoe UI", "Pretendard", "Noto Sans Bengali", sans-serif; }
+@media (prefers-color-scheme: dark) { :root { --paper: #11171B; --paper-2: #1A2328; --ink: #EEE9DF; --ink-2: #B5B9B6; --line: #2E393F; --green: #9BC2A2; --sky: #23323B; --warn: #EDB36F; --ok: #8FD1A6; color-scheme: dark; } }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--paper); color: var(--ink); }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+.top { display: flex; justify-content: space-between; align-items: end; gap: 16px; padding: 22px 28px; border-bottom: 1px solid var(--line); }
+.top h1 { margin: 2px 0 0; font-size: 26px; font-weight: 600; }
+.k, .muted { color: var(--ink-2); margin: 0; font-size: 13px; }
+.top__r { display: flex; gap: 12px; align-items: center; }
+.who { font-size: 13px; color: var(--ink-2); }
+main { padding: 18px 28px 40px; }
+.stats { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 10px; }
+.stat { background: var(--paper-2); border-radius: 8px; padding: 10px 14px; }
+.stat b { display: block; font-size: 22px; font-variant-numeric: tabular-nums; }
+.stat span { font-size: 12.5px; color: var(--ink-2); }
+.filters { display: flex; flex-wrap: wrap; gap: 12px; margin: 16px 0; }
+.filters label { display: grid; gap: 4px; font-size: 12.5px; color: var(--ink-2); }
+.filters .grow { flex: 1; min-width: 200px; }
+select, input, textarea, button { font: inherit; color: var(--ink); }
+select, input, textarea { background: var(--paper); border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px; }
+textarea { width: 100%; min-height: 180px; }
+button { cursor: pointer; border: 1px solid var(--ink); background: var(--ink); color: var(--paper); border-radius: 999px; padding: 7px 14px; }
+button.line { background: transparent; color: var(--ink); border-color: var(--line); }
+button.warn { background: transparent; color: var(--warn); border-color: var(--warn); }
+button:disabled { opacity: .45; cursor: not-allowed; }
+:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; }
+.split { display: grid; grid-template-columns: minmax(260px, 380px) 1fr; gap: 18px; }
+.list ul { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); max-height: 72vh; overflow: auto; }
+.list li button { all: unset; box-sizing: border-box; display: grid; gap: 2px; width: 100%; padding: 10px 8px; border-bottom: 1px solid var(--line); cursor: pointer; }
+.list li button[aria-current="true"] { background: var(--paper-2); }
+.list .r1 { display: flex; justify-content: space-between; gap: 8px; font-size: 13px; color: var(--ink-2); }
+.list .r2 { font-weight: 600; }
+.badge { display: inline-block; font-size: 12px; padding: 1px 8px; border-radius: 999px; background: var(--sky); }
+.badge.new { background: var(--green); color: var(--paper); }
+.detail { background: var(--paper-2); border-radius: 10px; padding: 18px 20px; min-height: 300px; }
+.detail h2 { margin: 0 0 4px; font-size: 20px; }
+.detail dl { display: grid; grid-template-columns: max-content 1fr; gap: 6px 16px; margin: 14px 0; }
+.detail dt { color: var(--ink-2); font-size: 13px; }
+.detail dd { margin: 0; overflow-wrap: anywhere; }
+.brief { white-space: pre-wrap; background: var(--paper); border-radius: 6px; padding: 12px; overflow-wrap: anywhere; }
+.actions { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0; }
+.replies { border-top: 1px solid var(--line); margin-top: 18px; padding-top: 12px; }
+.reply { background: var(--paper); border-radius: 6px; padding: 10px 12px; margin: 8px 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+.note { font-size: 13px; color: var(--ink-2); }
+.warnline { color: var(--warn); font-size: 13px; }
+.status-line { min-height: 1.5em; color: var(--ink-2); }
+.empty { color: var(--ink-2); }
+@media (max-width: 860px) { .split { grid-template-columns: 1fr; } .stats { grid-template-columns: repeat(3, 1fr); } .top, main { padding-left: 16px; padding-right: 16px; } }
+.detail label { display: block; margin: 12px 0 4px; }
+.detail input[type="text"] { width: 100%; }
+.detail h3 { margin: 22px 0 6px; font-size: 16px; }

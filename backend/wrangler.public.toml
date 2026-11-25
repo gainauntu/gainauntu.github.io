@@ -1,0 +1,34 @@
+# Public inquiry API: accepts submissions from the website, serves the anonymous board, receives email webhooks.
+# Placeholders in <> must be replaced before deploying. Secrets are NOT set here: see README (wrangler secret put).
+name = "gainauntu-inquiry-api"
+main = "src/public.js"
+compatibility_date = "2026-11-01"
+workers_dev = true
+
+[vars]
+ALLOWED_ORIGINS = "https://gainauntu.github.io"   # comma-separated; add http://127.0.0.1:<port> only in .dev.vars for local tests
+TURNSTILE_HOSTNAMES = "gainauntu.github.io"        # hostnames a Turnstile token must come from
+NOTIFY_FROM = "Inquiries <onboarding@resend.dev>"  # until a domain is verified, Resend only delivers this to your own account address
+CONFIRM_FROM = ""                                  # e.g. "Auntu Gain <noreply@your-domain>" once verified; empty = no visitor confirmation
+SEND_CONFIRMATION = "false"                        # "true" only after CONFIRM_FROM uses a verified domain
+RETENTION_DAYS = "<owner decision, e.g. 365>"      # archived inquiries older than this are deleted daily; not stated publicly until you confirm it
+DAILY_LIMIT_PER_CLIENT = "5"
+DAILY_LIMIT_TOTAL = "80"                           # keeps well inside Resend's 100 emails/day free quota
+
+[[d1_databases]]
+binding = "DB"
+database_name = "gainauntu-inquiries"
+database_id = "<from: wrangler d1 create gainauntu-inquiries>"
+migrations_dir = "migrations"
+
+[[ratelimits]]
+name = "BURST"
+namespace_id = "5101"
+simple = { limit = 3, period = 60 }
+
+[triggers]
+crons = ["17 3 * * *"]                             # daily retention clean-up (03:17 UTC)
+
+[observability]
+enabled = true
+head_sampling_rate = 1

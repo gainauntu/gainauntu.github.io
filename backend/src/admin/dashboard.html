@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Inquiries · Auntu Gain</title>
+<link rel="stylesheet" href="/app.css">
+</head>
+<body>
+<header class="top">
+  <div><p class="k" data-t="brand">Private inquiry dashboard</p><h1 data-t="title">Inquiries</h1></div>
+  <div class="top__r">
+    <label class="sr" for="ui-lang" data-t="uiLang">Language</label>
+    <select id="ui-lang"><option value="en">English</option><option value="ko">한국어</option><option value="bn">বাংলা</option></select>
+    <span class="who" id="who"></span>
+  </div>
+</header>
+<main>
+  <section class="stats" id="stats" aria-label="Counts"></section>
+  <section class="filters">
+    <label><span data-t="status">Status</span>
+      <select id="f-status"><option value="" data-t="active">Active (not archived)</option><option value="new" data-t="st_new">New</option><option value="read" data-t="st_read">Read</option><option value="pending" data-t="st_pending">Pending</option><option value="replied" data-t="st_replied">Replied</option><option value="archived" data-t="st_archived">Archived</option><option value="all" data-t="all">All</option></select></label>
+    <label><span data-t="type">Type</span>
+      <select id="f-intent"><option value="" data-t="all">All</option><option value="project" data-t="t_project">Project inquiry</option><option value="collab" data-t="t_collab">Research collaboration</option><option value="msg" data-t="t_msg">General message</option></select></label>
+    <label class="grow"><span data-t="search">Search</span><input id="f-q" type="search" maxlength="100" autocomplete="off"></label>
+  </section>
+  <div class="split">
+    <section class="list" aria-labelledby="list-h"><h2 id="list-h" class="sr" data-t="inbox">Inbox</h2><ul id="list"></ul><p class="empty" id="empty" hidden data-t="none">No inquiries match.</p></section>
+    <section class="detail" id="detail" aria-live="polite"><p class="muted" data-t="pick">Select an inquiry.</p></section>
+  </div>
+  <p class="status-line" id="msg" role="status"></p>
+</main>
+<script src="/app.js"></script>
+</body>
+</html>

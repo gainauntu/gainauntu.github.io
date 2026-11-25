@@ -1,0 +1,26 @@
+# Owner dashboard: a separate Worker so Cloudflare Access can protect ALL of it without touching the public API.
+# Enable Access on this Worker (dashboard: Workers & Pages > gainauntu-inquiry-admin > Settings > Domains & Routes >
+# Enable Cloudflare Access) and put its Application Audience (AUD) tag and team domain below. The Worker also verifies
+# the Access JWT itself on every request, so a missing or misconfigured Access policy fails closed.
+name = "gainauntu-inquiry-admin"
+main = "src/admin.js"
+compatibility_date = "2026-11-01"
+workers_dev = true
+
+rules = [ { type = "Text", globs = ["**/*.html", "**/*.css", "**/*.dash.js"], fallthrough = true } ]
+
+[vars]
+ACCESS_TEAM_DOMAIN = "<your-team>.cloudflareaccess.com"
+ACCESS_AUD = "<Application Audience (AUD) tag>"
+REPLY_FROM = ""                                    # e.g. "Auntu Gain <reply@your-domain>" (verified domain); empty = reply in your own mail app and mark manually
+REPLY_TO = ""                                      # optional: where visitors' answers to your replies should go (e.g. your Gmail)
+
+[[d1_databases]]
+binding = "DB"
+database_name = "gainauntu-inquiries"
+database_id = "<same database_id as the public Worker>"
+migrations_dir = "migrations"
+
+[observability]
+enabled = true
+head_sampling_rate = 1

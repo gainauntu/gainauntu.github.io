@@ -1,0 +1,13 @@
+# Local development only. Copy to .dev.vars (git-ignored) and fill in test values.
+# In production every value below is set with `wrangler secret put <NAME> --config <file>`; never commit real values.
+
+# public Worker (wrangler.public.toml)
+TURNSTILE_SECRET=1x0000000000000000000000000000000AA     # Cloudflare's documented always-pass TEST secret
+RESEND_API_KEY=re_test_placeholder                     # real key: Resend dashboard > API Keys (sending access only)
+RESEND_WEBHOOK_SECRET=whsec_placeholder                # Resend dashboard > Webhooks > signing secret
+IP_HASH_SECRET=replace-with-32-random-bytes-hex        # used to store client IPs only as keyed hashes
+OWNER_EMAIL=owner@example.com                          # where new-inquiry notifications go (your Resend account address until a domain is verified)
+
+# admin Worker (wrangler.admin.toml)
+ADMIN_EMAILS=owner@example.com                         # comma-separated allow-list, checked against the Access identity
+RESEND_API_KEY_ADMIN=re_test_placeholder               # may be the same key as above
