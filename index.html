@@ -111,7 +111,6 @@
       </div>
       <div class="menu__prefs">
         <button class="theme-btn theme-btn--menu" type="button" data-theme-toggle data-i18n-attr="aria-label:theme.toDark;title:theme.toDark" aria-label="Switch to dark theme" title="Switch to dark theme"><svg class="theme-btn__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><g class="theme-btn__sun" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" fill="none"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.8v2.1M12 19.1v2.1M2.8 12h2.1M19.1 12h2.1M5.5 5.5l1.5 1.5M17 17l1.5 1.5M5.5 18.5 7 17M17 7l1.5-1.5"/></g><path class="theme-btn__moon" d="M19.6 14.6A8 8 0 0 1 9.4 4.4a8 8 0 1 0 10.2 10.2Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg></button>
-        <button class="pref-switch" type="button" role="switch" aria-checked="true" data-smooth-toggle><span class="pref-switch__track" aria-hidden="true"><i></i></span><span data-i18n="scroll.smooth">Smooth scrolling</span></button>
       </div>
       <p class="menu__contact"><a href="mailto:gainauntu@gmail.com" data-fact="contact.email" data-fact-href="contact.emailHref">gainauntu@gmail.com</a><a href="https://www.linkedin.com/in/gainauntu/" rel="noopener">LinkedIn</a></p>
     </div>
@@ -166,7 +165,7 @@
     <div class="wrap">
       <div class="sec-head">
         <h2 class="h2" data-split><span data-i18n="work.title">Selected Work</span></h2>
-        <p class="sec-head__p muted" data-reveal data-i18n="work.intro">A selection of my engineering projects. Each case study explains the work through original conceptual illustrations, not project photographs.</p>
+        <p class="sec-head__p muted" data-reveal data-i18n="work.intro">A selection of my engineering projects. Each case study uses conceptual illustrations to explain the work; these are distinct from any labelled project or product photographs.</p>
       </div>
       <ol class="projects" data-projects>
         <li class="project" data-reveal="row"><a class="project__row" href="work/skimmer.html" data-art-key="p2">
@@ -279,6 +278,15 @@
             <div><dt data-i18n="edu.bs.f.course.k">Selected coursework</dt><dd data-i18n="edu.bs.f.course.v">Machine Learning, Artificial Intelligence, Image Processing and Information Retrieval, each graded A</dd></div>
           </dl>
         </article>
+        <article class="degree degree--lang" data-reveal>
+          <p class="degree__kind"><span data-i18n="edu.khu.kind">Language education</span><span class="degree__badge degree__badge--done" data-i18n="edu.khu.status">Completed</span></p>
+          <h3 class="degree__inst" data-i18n="edu.khu.inst">Kyung Hee University (KHU)</h3>
+          <p class="degree__deg" data-i18n="edu.khu.program">Korean Language and Literature Course</p>
+          <dl class="degree__facts">
+            <div><dt data-i18n="edu.bs.f.per.k">Period</dt><dd data-i18n="edu.khu.period">Feb 2016 – Feb 2017</dd></div>
+          </dl>
+          <p class="degree__note muted small" data-i18n="edu.khu.note">Completed one year of Korean language studies before starting my undergraduate degree in South Korea.</p>
+        </article>
       </div>
       <div class="uresearch" data-reveal>
         <div><p class="uresearch__k" data-i18n="ur.k">Undergraduate research</p><h3 class="uresearch__t" data-i18n="ur.t">Emergency tweet-stream classification</h3><p class="uresearch__o" data-i18n="ur.o">Undergraduate researcher, Data Mining Lab, Jeonbuk National University · 2018–2019</p></div>
@@ -286,7 +294,7 @@
       </div>
       <div class="edu__foot" data-reveal>
         <p class="muted small" data-i18n="edu.cert">Certification: Engineer Information Processing (정보처리기사)</p>
-        <a class="link" href="Auntu_Gain_CV.pdf" rel="noopener" data-fact-href="contact.cv" data-i18n="edu.cv">Download CV (PDF)</a>
+        <a class="link" href="Auntu_Gain_CV.pdf?v=57c2439f7a" rel="noopener" data-fact-href="contact.cv" data-i18n="edu.cv">Download CV (PDF)</a>
       </div>
     </div>
   </section>
@@ -382,7 +390,7 @@
         <h2 class="h2" data-split><span data-i18n="ab.title">About</span></h2>
         <div class="about__story" data-reveal>
           <h3 class="about__story-h" data-i18n="ab.story.h">From Bangladesh to engineering in Korea</h3>
-          <p class="lead" data-i18n="ab.slot.story">I came to South Korea in 2016 through the Global Korea Scholarship, studied Korean, and completed my degree at Jeonbuk National University in 2021. I first worked with university research and autonomous platforms, then developed software for water drones, embedded devices, industrial systems, and automotive instrument clusters. Each role took me closer to the point where software has to work reliably on physical hardware.</p>
+          <p class="lead" data-i18n="ab.slot.story">I came to South Korea in 2016 through the Global Korea Scholarship. I studied Korean at Kyung Hee University from February 2016 to February 2017, then completed my undergraduate degree at Jeonbuk National University in 2021. I began with university research and autonomous platforms, and went on to develop software for water drones, embedded devices, industrial systems and automotive instrument clusters. Across these different roles, my focus has been making software work reliably on real hardware.</p>
         </div>
         <div class="about__blocks" data-stagger="80">
           <div class="about__block" data-reveal><h3 data-i18n="ab.phil.h">How I approach a problem</h3><p data-i18n="ab.slot.phil">I like working across the whole chain, from understanding a sensor or protocol to implementing the software and checking what happens on real hardware. Debugging, verification, and repeatable tests matter just as much to me as the first successful demonstration. I want to know not only whether something works, but when it might fail.</p></div>
@@ -418,7 +426,7 @@
         <div><dt data-i18n="c.email">Email</dt><dd><a class="link" href="mailto:gainauntu@gmail.com" data-fact="contact.email" data-fact-href="contact.emailHref">gainauntu@gmail.com</a></dd></div>
         <div data-show-if="contact.showPhone"><dt data-i18n="c.phone">Phone</dt><dd><a class="link" href="tel:+821028186879" data-fact="contact.phone" data-fact-href="contact.phoneHref">+82-10-2818-6879</a></dd></div>
         <div><dt data-i18n="c.li">LinkedIn</dt><dd><a class="link" href="https://www.linkedin.com/in/gainauntu/" rel="noopener" data-fact="contact.linkedinLabel" data-fact-href="contact.linkedin">linkedin.com/in/gainauntu</a></dd></div>
-        <div><dt data-i18n="c.cv">CV (PDF)</dt><dd><a class="link" href="Auntu_Gain_CV.pdf" rel="noopener" data-fact="contact.cvLabel" data-fact-href="contact.cv">Auntu_Gain_CV.pdf</a></dd></div>
+        <div><dt data-i18n="c.cv">CV (PDF)</dt><dd><a class="link" href="Auntu_Gain_CV.pdf?v=57c2439f7a" rel="noopener" data-fact="contact.cvLabel" data-fact-href="contact.cv">Auntu_Gain_CV.pdf</a></dd></div>
       </dl>
       <p class="contact-status"><span><i></i><span data-i18n="c.base">Based in Suwon, South Korea</span></span><span><i></i><span data-i18n="c.res">Permanent Resident (F-5), South Korea</span></span></p>
       <footer class="foot">

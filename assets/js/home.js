@@ -249,9 +249,10 @@
 
   /* ================= timeline ================= */
   var root = $('[data-timeline]');
-  var START = 2017, END = 2028.5;
+  var START = 2016, END = 2028.5;
   var TODAY = (window.AG_SITE && AG_SITE.today) || [2026, 11];
   var E = [
+    { id: 'khu', lane: 'edu', row: 1, from: [2016, 2], to: [2017, 2] },
     { id: 'jbnu', lane: 'edu', row: 0, from: [2017, 1], to: [2021, 2] },
     { id: 'dml', lane: 'edu', row: 1, from: [2018, 1], to: [2019, 12] },
     { id: 'skku', lane: 'edu', row: 0, from: [2027, 3], to: null, expected: true },
@@ -269,7 +270,7 @@
     var used = E.filter(function (e) { return e.lane === lane; }).map(function (e) { return e.row; }).filter(function (r, i, a) { return a.indexOf(r) === i; }).sort();
     E.forEach(function (e) { if (e.lane === lane) e.row = used.indexOf(e.row); });
   });
-  var ORDER_MOBILE = ['skku', 'wm', 'gt', 'pill', 'approtec', 'fluton', 'hy', 'dml', 'jbnu'].filter(function (id) { return E.some(function (e) { return e.id === id; }); });
+  var ORDER_MOBILE = ['skku', 'wm', 'gt', 'pill', 'approtec', 'fluton', 'hy', 'dml', 'jbnu', 'khu'].filter(function (id) { return E.some(function (e) { return e.id === id; }); });
   var LANES = [['edu', 'tl.lane.edu'], ['work', 'tl.lane.work'], ['ind', 'tl.lane.ind']];
   var selected = 'gt', sweep = 0, lines = [], trackW = 0, nowEl = null, chart = null, lastSweep = -1;
   function pct(ym) { return ((ym[0] + (ym[1] - 1) / 12) - START) / (END - START) * 100; }
@@ -371,7 +372,7 @@
   if (root) {
     M.onMeasure(function () { var tr = $('.tl__track', root); trackW = tr ? tr.clientWidth : 0; lastSweep = -1; paintSweep(); });
     render();
-    // scroll-linked progress: time sweeps from 2017 to today while the chart crosses the viewport
+    // scroll-linked progress: time sweeps from 2016 to today while the chart crosses the viewport
     M.scene(root, function (p) {
       var target = pct(TODAY);
       sweep = RM.matches ? target : target * clamp((p - 0.1) / 0.34, 0, 1);

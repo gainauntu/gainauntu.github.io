@@ -17,7 +17,7 @@ window.AG_SITE = {
   "phoneHref": "tel:+821028186879",
   "linkedin": "https://www.linkedin.com/in/gainauntu/",
   "linkedinLabel": "linkedin.com/in/gainauntu",
-  "cv": "Auntu_Gain_CV.pdf",
+  "cv": "Auntu_Gain_CV.pdf?v=57c2439f7a",
   "cvLabel": "Auntu_Gain_CV.pdf"
  },
  "employment": {
@@ -40,6 +40,15 @@ window.AG_SITE = {
   "skku": {
    "koDepartment": "AI응용공학과",
    "start": "2027-03"
+  },
+  "khu": {
+   "from": "2016-02",
+   "to": "2017-02",
+   "kind": "non-degree Korean language education"
   }
+ },
+ "inquiry": {
+  "apiBase": "",
+  "turnstileSiteKey": ""
  }
 };

@@ -251,6 +251,7 @@
     document.addEventListener('ag:lang', render);
   }
 
+
   if (CFG.demo === 'pill-threshold') pillDemo();
   if (CFG.demo === 'arm-angle') armDemo();
 })();

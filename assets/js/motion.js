@@ -10,8 +10,8 @@
      words or magnetic elements; 4C kept 122 layers alive).
    - Touchpads and other precision devices scroll natively (they already have momentum). Only stepped
      mouse wheels are smoothed, with shorter damping than 4C, and smoothing switches itself off for the
-     session if frames are measurably slow. Add ?scroll=native to any URL to force native scrolling;
-     Phase 4E adds a saved, reversible preference (menu > Smooth scrolling; localStorage ag-scroll).
+     session if frames are measurably slow. Add ?scroll=native to any URL to force native scrolling (testing).
+     Phase 5: no visitor-facing setting; keyboard, touch, scrollbar and find-in-page always take over at once.
    - Everything here is skipped or flattened for prefers-reduced-motion. */
 (function () {
   'use strict';
@@ -61,7 +61,7 @@
 
   /* ---------------- wheel smoothing (stepped mouse wheels only) ---------------- */
   var native = /[?&]scroll=native\b/.test(location.search), slow = false;
-  try { if (localStorage.getItem('ag-scroll') === 'native') native = true; if (sessionStorage.getItem('ag-native-scroll') === '1') slow = true; } catch (e) {}
+  try { if (sessionStorage.getItem('ag-native-scroll') === '1') slow = true; } catch (e) {}
   var LAMBDA = 10;            // 95 % of a wheel step within about 300 ms (4C: 8, about 375 ms)
   function smoothOK() { return !native && !slow && FINE.matches && !rm() && !saveData; }
   function setNative(v) { native = !!v; if (native && sm.mode === 'wheel') sm.active = false; }

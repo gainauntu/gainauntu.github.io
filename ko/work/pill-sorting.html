@@ -104,7 +104,6 @@
       </div>
       <div class="menu__prefs">
         <button class="theme-btn theme-btn--menu" type="button" data-theme-toggle data-i18n-attr="aria-label:theme.toDark;title:theme.toDark" aria-label="다크 테마로 전환" title="다크 테마로 전환"><svg class="theme-btn__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><g class="theme-btn__sun" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" fill="none"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.8v2.1M12 19.1v2.1M2.8 12h2.1M19.1 12h2.1M5.5 5.5l1.5 1.5M17 17l1.5 1.5M5.5 18.5 7 17M17 7l1.5-1.5"/></g><path class="theme-btn__moon" d="M19.6 14.6A8 8 0 0 1 9.4 4.4a8 8 0 1 0 10.2 10.2Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg></button>
-        <button class="pref-switch" type="button" role="switch" aria-checked="true" data-smooth-toggle><span class="pref-switch__track" aria-hidden="true"><i></i></span><span data-i18n="scroll.smooth">부드러운 스크롤</span></button>
       </div>
       <p class="menu__contact"><a href="mailto:gainauntu@gmail.com" data-fact="contact.email" data-fact-href="contact.emailHref">gainauntu@gmail.com</a><a href="https://www.linkedin.com/in/gainauntu/" rel="noopener">LinkedIn</a></p>
     </div>
@@ -148,7 +147,7 @@
   <section class="section section--flush">
     <div class="wrap split">
       <h2 class="h2" data-split><span data-i18n="cs.role">제가 맡은 역할</span></h2>
-      <ul class="role-list"><li data-reveal data-i18n="pill-sorting.r1">앞면·뒷면 이미지 쌍을 위한 시각 인식 파이프라인을 개발했습니다.</li><li data-reveal data-i18n="pill-sorting.r2">프로젝트 전용 이미지 데이터로 초기 CNN 분류기를 학습시켰고, 이후 개발 단계에서 DINOv2 기반 표현을 평가했습니다.</li><li data-reveal data-i18n="pill-sorting.r3">신뢰도 기반 거부 규칙을 설계했습니다.</li><li data-reveal data-i18n="pill-sorting.r4">분류 결과를 로봇 분류 컨트롤러와 연동하고, 시스템 전체를 다시 설계하지 않고도 새 알약 종류를 추가할 수 있는 재학습 절차를 만들었습니다.</li></ul>
+      <ul class="role-list"><li data-reveal data-i18n="pill-sorting.r1">앞면·뒷면 이미지 쌍을 위한 시각 인식 파이프라인을 개발했습니다.</li><li data-reveal data-i18n="pill-sorting.r2">프로젝트 전용 이미지 데이터로 초기 CNN 분류기를 학습시켰고, 이후 개발 단계에서 DINOv2 기반 표현을 평가했습니다.</li><li data-reveal data-i18n="pill-sorting.r3">신뢰도에 따른 자동 분류 보류 규칙을 설계했습니다.</li><li data-reveal data-i18n="pill-sorting.r4">분류 결과를 로봇 분류 컨트롤러와 연동하고, 시스템 전체를 다시 설계하지 않고도 새 알약 종류를 추가할 수 있는 재학습 절차를 만들었습니다.</li></ul>
     </div>
   </section>
 
@@ -162,7 +161,7 @@
         <div class="arch__canvas" data-diagram></div>
         <aside class="arch__note" aria-live="polite" data-diagram-note></aside>
       </div>
-      <p class="caption" data-i18n="cs.system.cap">공개 이력서의 내용을 바탕으로 제작한 개념도이며, 실제 제품 설계도는 아닙니다.</p>
+      <p class="caption" data-i18n="cs.system.cap">공개 가능한 프로젝트 정보를 바탕으로 구성한 개념도이며 실제 제품 설계도는 아닙니다.</p>
     </div>
   </section>
   <section class="section sim-sec">
@@ -184,14 +183,14 @@
           <div><dt data-i18n="pill-sorting.demo.manual">수작업 처리</dt><dd data-stat="manual">–</dd></div>
           <div><dt data-i18n="pill-sorting.demo.wrong">자동 분류 중 오분류</dt><dd data-stat="wrong">–</dd></div>
         </dl>
-        <ul class="sim__legend"><li><i class="sw sw--guard"></i><span data-i18n="pill-sorting.demo.correct">맞은 예측</span></li><li><i class="sw sw--naive"></i><span data-i18n="pill-sorting.demo.incorrect">틀린 예측</span></li></ul>
+        <ul class="sim__legend"><li><i class="sw sw--guard"></i><span data-i18n="pill-sorting.demo.correct">올바른 예측</span></li><li><i class="sw sw--naive"></i><span data-i18n="pill-sorting.demo.incorrect">잘못된 예측</span></li></ul>
       </div>
     </div>
   </section>
   <section class="section decisions">
     <div class="wrap">
       <h2 class="h2" data-split><span data-i18n="cs.decisions">주요 설계 결정</span></h2>
-      <div class="dec-list"><article class="dec" data-reveal><h3 data-i18n="pill-sorting.h1.t">추측보다 보류</h3><p><span class="dec__why" data-i18n="cs.why">이유</span><span data-i18n="pill-sorting.h1.d">알약의 오분류에 따른 비용이 판단 보류보다 크다고 보고, 신뢰도가 낮은 예측을 수작업 처리 대상으로 분리했습니다.</span></p></article><article class="dec" data-reveal><h3 data-i18n="pill-sorting.h2.t">단순하게 시작해 비교</h3><p><span class="dec__why" data-i18n="cs.why">이유</span><span data-i18n="pill-sorting.h2.d">먼저 프로젝트 전용 이미지로 학습한 CNN을 만들고, 그다음 DINOv2 기반 표현을 평가했습니다.</span></p></article><article class="dec" data-reveal><h3 data-i18n="pill-sorting.h3.t">다시 설계하지 않고 확장</h3><p><span class="dec__why" data-i18n="cs.why">이유</span><span data-i18n="pill-sorting.h3.d">재학습 절차로 시스템 전체를 바꾸지 않고 새 알약 종류를 추가할 수 있습니다.</span></p></article></div>
+      <div class="dec-list"><article class="dec" data-reveal><h3 data-i18n="pill-sorting.h1.t">불확실할 때는 자동 분류 보류</h3><p><span class="dec__why" data-i18n="cs.why">이유</span><span data-i18n="pill-sorting.h1.d">알약의 오분류에 따른 비용이 자동 분류 보류보다 크다고 보고, 신뢰도가 낮은 예측은 수작업 처리 대상으로 분리했습니다.</span></p></article><article class="dec" data-reveal><h3 data-i18n="pill-sorting.h2.t">간단한 모델부터 비교</h3><p><span class="dec__why" data-i18n="cs.why">이유</span><span data-i18n="pill-sorting.h2.d">먼저 프로젝트 전용 이미지로 학습한 CNN을 만들고, 그다음 DINOv2 기반 표현을 평가했습니다.</span></p></article><article class="dec" data-reveal><h3 data-i18n="pill-sorting.h3.t">전체 재설계 없이 확장</h3><p><span class="dec__why" data-i18n="cs.why">이유</span><span data-i18n="pill-sorting.h3.d">재학습 절차로 시스템 전체를 바꾸지 않고 새 알약 종류를 추가할 수 있습니다.</span></p></article></div>
     </div>
   </section>
   <section class="section related-sec">
@@ -208,7 +207,7 @@
     <div class="curve" aria-hidden="true"></div>
     <div class="wrap contact-band__in">
       <h2 class="contact-band__title" data-split><span data-i18n-html="cs.discuss">비슷한 프로젝트를 진행하고 계신가요? <em>함께 이야기해 볼까요?</em></span></h2>
-      <div class="intents"><a class="intent-link intent-link--primary" href="../hire.html"><span class="intent-link__t"><span data-i18n="c.hire">프로젝트 의뢰하기</span><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 12 12 4M6 4h6v6" stroke="currentColor" fill="none" stroke-width="1.4"/></svg></span><span class="intent-link__d" data-i18n="c.hire.d">개발 의뢰 및 기술 자문</span></a><a class="intent-link" href="../hire.html?intent=collab"><span class="intent-link__t"><span data-i18n="c.collab">연구 협업 문의</span><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 12 12 4M6 4h6v6" stroke="currentColor" fill="none" stroke-width="1.4"/></svg></span><span class="intent-link__d" data-i18n="c.collab.d">대학 및 연구기관과의 협업</span></a><a class="intent-link" href="../hire.html?intent=msg"><span class="intent-link__t"><span data-i18n="c.msg">메시지 보내기</span><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 12 12 4M6 4h6v6" stroke="currentColor" fill="none" stroke-width="1.4"/></svg></span><span class="intent-link__d" data-i18n="c.msg.d">채용 제안, 네트워킹 및 기타 문의</span></a></div>
+      <div class="intents"><a class="intent-link intent-link--primary" href="../hire.html"><span class="intent-link__t"><span data-i18n="c.hire">프로젝트 의뢰하기</span><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 12 12 4M6 4h6v6" stroke="currentColor" fill="none" stroke-width="1.4"/></svg></span><span class="intent-link__d" data-i18n="c.hire.d">개발 의뢰 및 기술 자문</span></a><a class="intent-link" href="../hire.html?intent=collab"><span class="intent-link__t"><span data-i18n="c.collab">연구 협업 문의</span><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 12 12 4M6 4h6v6" stroke="currentColor" fill="none" stroke-width="1.4"/></svg></span><span class="intent-link__d" data-i18n="c.collab.d">대학 및 연구기관과의 협업</span></a><a class="intent-link" href="../hire.html?intent=msg"><span class="intent-link__t"><span data-i18n="c.msg">메시지 보내기</span><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 12 12 4M6 4h6v6" stroke="currentColor" fill="none" stroke-width="1.4"/></svg></span><span class="intent-link__d" data-i18n="c.msg.d">채용 제안, 교류 및 기타 문의</span></a></div>
       <footer class="foot">
         <span>© 2026 <span lang="en">Auntu Gain</span></span>
         

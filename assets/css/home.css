@@ -468,3 +468,9 @@ body.research-page { background: var(--wash-moss); }
 /* Phase 4F: with the gated bullet removed, the remaining experience link needs a 24px target (WCAG 2.5.8) */
 .rx__block li:has(> a:only-child) { padding-block: 8px; }
 .rx__block li > a:only-child { display: block; padding-block: 3px; min-height: 24px; }
+
+/* Phase 5: Kyung Hee University language education, below the two degrees */
+.degree--lang { grid-column: 1 / -1; border-top: 1px solid var(--line); }
+.degree + .degree--lang { padding-left: 0; border-left: 0; }
+.degree--lang .degree__facts { max-width: 46ch; }
+@media (max-width: 760px) { .degree + .degree--lang { padding: 22px 0; } }
