@@ -6,11 +6,12 @@ compatibility_date = "2026-11-01"
 workers_dev = true
 
 [vars]
+EMAIL_PROVIDER = "gmail"                          # "gmail": send as your Gmail (OAuth secrets GMAIL_*); "resend": Resend API
 ALLOWED_ORIGINS = "https://gainauntu.github.io"   # comma-separated; add http://127.0.0.1:<port> only in .dev.vars for local tests
 TURNSTILE_HOSTNAMES = "gainauntu.github.io"        # hostnames a Turnstile token must come from
-NOTIFY_FROM = "Inquiries <onboarding@resend.dev>"  # until a domain is verified, Resend only delivers this to your own account address
-CONFIRM_FROM = ""                                  # e.g. "Auntu Gain <noreply@your-domain>" once verified; empty = no visitor confirmation
-SEND_CONFIRMATION = "false"                        # "true" only after CONFIRM_FROM uses a verified domain
+NOTIFY_FROM = "Website inquiries"                 # Gmail: display name (the address is GMAIL_SENDER). Resend: full "Name <addr>"
+CONFIRM_FROM = "Auntu Gain"                       # visitor confirmation sender name; empty = no confirmation
+SEND_CONFIRMATION = "true"                        # fixed-text confirmation to the visitor (never echoes their message)
 RETENTION_DAYS = "<owner decision, e.g. 365>"      # archived inquiries older than this are deleted daily; not stated publicly until you confirm it
 DAILY_LIMIT_PER_CLIENT = "5"
 DAILY_LIMIT_TOTAL = "80"                           # keeps well inside Resend's 100 emails/day free quota

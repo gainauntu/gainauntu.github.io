@@ -10,9 +10,10 @@ workers_dev = true
 rules = [ { type = "Text", globs = ["**/*.html", "**/*.css", "**/*.dash.js"], fallthrough = true } ]
 
 [vars]
+EMAIL_PROVIDER = "gmail"
 ACCESS_TEAM_DOMAIN = "<your-team>.cloudflareaccess.com"
 ACCESS_AUD = "<Application Audience (AUD) tag>"
-REPLY_FROM = ""                                    # e.g. "Auntu Gain <reply@your-domain>" (verified domain); empty = reply in your own mail app and mark manually
+REPLY_FROM = "Auntu Gain"                         # sender name for dashboard replies (Gmail: sent as GMAIL_SENDER)
 REPLY_TO = ""                                      # optional: where visitors' answers to your replies should go (e.g. your Gmail)
 
 [[d1_databases]]

@@ -33,6 +33,7 @@ export function makeOutbound() {
     turnstile: 'pass',            // pass | fail | error | wronghost
     resend: 'accept',             // accept | fail | timeout
     resendCount: 0,
+    gmail: 'accept',              // accept | fail | oauthfail
     async handle(req) {
       const url = new URL(req.url);
       const body = req.method === 'POST' ? await req.text() : '';
@@ -47,6 +48,15 @@ export function makeOutbound() {
         if (o.resend === 'fail') return Response.json({ name: 'validation_error', message: 'x' }, { status: 422 });
         o.resendCount++;
         return Response.json({ id: 'msg_' + o.resendCount });
+      }
+      if (url.host === 'oauth2.googleapis.com' && url.pathname === '/token') {
+        if (o.gmail === 'oauthfail') return Response.json({ error: 'invalid_grant' }, { status: 400 });
+        return Response.json({ access_token: 'ya29.test-token', expires_in: 3599, token_type: 'Bearer' });
+      }
+      if (url.host === 'gmail.googleapis.com' && url.pathname === '/gmail/v1/users/me/messages/send') {
+        if (o.gmail === 'fail') return Response.json({ error: { code: 403, status: 'PERMISSION_DENIED' } }, { status: 403 });
+        o.gmailCount = (o.gmailCount || 0) + 1;
+        return Response.json({ id: 'gm' + o.gmailCount, threadId: 't' + o.gmailCount });
       }
       if (url.host === TEAM && url.pathname === '/cdn-cgi/access/certs') return Response.json({ keys: [jwk] });
       return new Response('blocked in tests: ' + url.host, { status: 599 });

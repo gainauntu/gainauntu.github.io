@@ -16,12 +16,11 @@ if git ls-files --error-unmatch .dev.vars >/dev/null 2>&1; then say FAIL ".dev.v
 who=$(npx --no-install wrangler whoami 2>&1 || true)
 if echo "$who" | grep -qi 'not authenticated\|not logged in'; then say FAIL "run: npx wrangler login"; else say ok "wrangler is logged in"; fi
 pub=$(npx --no-install wrangler secret list --config wrangler.public.toml 2>/dev/null || true)
-for s in TURNSTILE_SECRET RESEND_API_KEY IP_HASH_SECRET OWNER_EMAIL; do
+for s in TURNSTILE_SECRET IP_HASH_SECRET OWNER_EMAIL GMAIL_CLIENT_ID GMAIL_CLIENT_SECRET GMAIL_REFRESH_TOKEN GMAIL_SENDER; do
   echo "$pub" | grep -q "\"$s\"" && say ok "public secret $s is set" || say WARN "public secret $s not found (set it with: npx wrangler secret put $s --config wrangler.public.toml)"
 done
-echo "$pub" | grep -q '"RESEND_WEBHOOK_SECRET"' || say WARN "RESEND_WEBHOOK_SECRET not set yet: delivery states stay 'accepted' until the webhook is configured"
 adm=$(npx --no-install wrangler secret list --config wrangler.admin.toml 2>/dev/null || true)
-for s in ADMIN_EMAILS RESEND_API_KEY_ADMIN; do
+for s in ADMIN_EMAILS GMAIL_CLIENT_ID GMAIL_CLIENT_SECRET GMAIL_REFRESH_TOKEN GMAIL_SENDER; do
   echo "$adm" | grep -q "\"$s\"" && say ok "admin secret $s is set" || say WARN "admin secret $s not found (npx wrangler secret put $s --config wrangler.admin.toml)"
 done
 [ $bad = 0 ] && echo "preflight passed (warnings above are allowed before the first deploy)" || { echo "preflight failed"; exit 1; }
