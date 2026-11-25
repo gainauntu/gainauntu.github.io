@@ -86,14 +86,13 @@
     document.dispatchEvent(new CustomEvent('ag:lang', { detail: { lang: lang } }));
   }
   // Phase 4F: every page exists in each language at its own URL (/, /ko/, /bn/). Switching opens the
-  // equivalent page, keeping the section (#hash) and the form intent (?intent=), never form contents.
+  // equivalent page, keeping the section (#hash) and every URL parameter (?intent=, ?scroll=, ...), never form contents.
   function setLang(l) {
     if (LANGS.indexOf(l) < 0 || l === lang) return false;
     var alt = root.getAttribute('data-alt-' + l);
     if (!alt) { lang = l; apply(); return false; }
-    var q = (location.search.match(/[?&]intent=(project|collab|msg)\b/) || [])[0];
     try { sessionStorage.setItem('ag-nav', String(Date.now())); } catch (e) {}
-    location.href = alt + (q ? '?' + q.slice(1) : '') + location.hash;
+    location.href = alt + location.search + location.hash;
     return true;
   }
   /* ---------------- theme: light (coastal, warm) or dark. Until the visitor chooses, the CSS follows

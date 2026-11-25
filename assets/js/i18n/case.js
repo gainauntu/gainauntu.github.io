@@ -44,5 +44,9 @@ Object.assign((window.AG_DICT = window.AG_DICT || {}), {
   "lbl.p7.cluster": ["Cluster display (original artwork)", "계기판 화면 (개념 일러스트)", "ইনস্ট্রুমেন্ট ক্লাস্টারের ডিসপ্লে (ধারণামূলক ইলাস্ট্রেশন)"],
   "lbl.p7.host": ["Host automation over ADB", "ADB 기반 호스트 측 자동화", "ADB-ভিত্তিক হোস্ট-সাইড অটোমেশন"],
   "lbl.p7.checks": ["Test checks", "테스트 판정", "পরীক্ষার ফল যাচাই"],
-  "cs.media.k": ["Product context (external link)", "관련 제품 자료 (외부 링크)", "পণ্যসংক্রান্ত তথ্য (বাহ্যিক লিংক)"]
+  "cs.media.k": ["Product context (external link)", "관련 제품 자료 (외부 링크)", "পণ্যসংক্রান্ত তথ্য (বাহ্যিক লিংক)"],
+  "cs.photos": ["Photographs", "사진", "ছবি"],
+  "cs.photo.kind.manufacturer": ["Manufacturer product photo", "제조사 제품 사진", "নির্মাতার পণ্যের ছবি"],
+  "cs.photo.kind.project": ["Project photo", "프로젝트 사진", "প্রজেক্টের ছবি"],
+  "cs.photo.kind.exhibition": ["Exhibition photo", "전시회 사진", "প্রদর্শনীর ছবি"]
 });

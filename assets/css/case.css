@@ -152,4 +152,15 @@ html:lang(ko) .case-title, html:lang(bn) .case-title { max-width: 26ch; }
 .case-media__k { font-size: var(--fs-xs); color: var(--ink-3); margin-bottom: 4px; }
 .case-media a { overflow-wrap: anywhere; }
 
+/* Phase 5: photographs (rendered only for files with recorded permission) */
+.photos { padding-top: 0; }
+.photos__grid { display: grid; gap: 22px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); align-items: start; }
+.photos__grid--n1 { grid-template-columns: minmax(0, 860px); }
+.photo { margin: 0; }
+.photo--wide { grid-column: 1 / -1; }
+.photo img { display: block; width: 100%; height: auto; border-radius: var(--r-photo); background: var(--paper-2); }
+.photo figcaption { margin-top: 10px; font-size: var(--fs-small); color: var(--ink-2); max-width: 70ch; }
+.photo__kind { display: inline-block; font-size: var(--fs-xs); letter-spacing: .02em; color: var(--ink-3); border: 1px solid var(--line); border-radius: 999px; padding: 1px 9px; margin-right: 6px; }
+.photo__credit { display: block; margin-top: 4px; font-size: var(--fs-xs); color: var(--ink-3); }
+
 

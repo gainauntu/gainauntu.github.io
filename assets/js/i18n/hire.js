@@ -187,9 +187,8 @@ Object.assign((window.AG_DICT = window.AG_DICT || {}), {
   "board.explain": ["Only anonymous activity shared with permission appears here. Messages and contact details are always private.", "동의한 문의의 익명 처리된 접수·답변 상태만 표시됩니다. 문의 내용과 연락처는 공개하지 않습니다.", "শুধু অনুমতি দেওয়া বার্তার বেনামি গ্রহণ ও উত্তরের অবস্থা এখানে দেখানো হয়। বার্তার বিষয়বস্তু ও যোগাযোগের তথ্য সব সময় গোপন থাকে।"],
   "board.optin": ["Allow the anonymous category and reply status of my inquiry to appear on the public board (optional). My message and contact details will remain private.", "문의 유형과 답변 상태가 익명으로 공개 문의 목록에 표시되는 것에 동의합니다(선택). 문의 내용과 연락처는 비공개로 유지됩니다.", "আমার বার্তার ধরন ও উত্তরের অবস্থা বেনামিভাবে প্রকাশ্য তালিকায় দেখানোর অনুমতি দিচ্ছি (ঐচ্ছিক)। বার্তার বিষয়বস্তু ও যোগাযোগের তথ্য গোপন থাকবে।"],
   "btn.retry": ["Try again", "다시 시도", "আবার চেষ্টা করুন"],
-  "btn.fallback": ["Send by email instead", "이메일로 대신 보내기", "এর বদলে ইমেইলে পাঠান"],
+  "btn.fallback": ["Send by email instead", "대신 이메일로 보내기", "ইমেইলের মাধ্যমে পাঠান"],
   "h.verify": ["Spam check", "자동 등록 방지 확인", "স্প্যাম যাচাই"],
-  "board.status.k": ["Status", "상태", "অবস্থা"],
   "board.loading": ["Loading…", "불러오는 중…", "লোড হচ্ছে…"],
-  "board.unavailable": ["The inquiry board is not available right now.", "지금은 문의 목록을 불러올 수 없습니다.", "এই মুহূর্তে তালিকাটি দেখা যাচ্ছে না।"]
+  "board.unavailable": ["The inquiry board is not available right now.", "지금은 문의 목록을 불러올 수 없습니다.", "এই মুহূর্তে বার্তার তালিকা দেখানো যাচ্ছে না।"]
 });
