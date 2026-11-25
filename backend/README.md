@@ -3,6 +3,11 @@
 Status: **implemented and tested locally (mocks); not deployed.** The website keeps its email hand-off until you finish the
 setup below and a production end-to-end test passes. Nothing here is live.
 
+Start with **`PRODUCTION-CHECKLIST.md`** (the 14 items, who does each, and what costs money). Scripts: `scripts/preflight.sh`
+(configuration check, reads secret names only), `scripts/deploy.sh --yes` (migrations + both Workers),
+`scripts/verify-production.mjs` (non-destructive production checks). Moving this folder to a private repository:
+`MOVE-TO-PRIVATE-REPO.md`.
+
 ## What it is
 
 | part | where it runs | who can reach it |
@@ -76,6 +81,7 @@ Resend's 100/day.
    to its direct-submission text, and the board appears. Review the privacy text first (it names Cloudflare, Resend, Turnstile).
 
 ## Verify in production before announcing it
+0. `node scripts/verify-production.mjs --api <public URL> --admin <admin URL>` (12 checks; stores nothing, sends nothing).
 1. Submit one inquiry of each type from the live site, to **your own** address only; check the dashboard and your inbox.
 2. Check the API refuses another origin: `curl -i -X POST <public URL>/v1/inquiries -H 'origin: https://example.com'` → 403.
 3. Open the dashboard in a private window without logging in → Access login page; with a non-listed account → 403.
@@ -85,7 +91,7 @@ Resend's 100/day.
 ## Local development and tests
 ```
 npm ci
-npm test                                   # 21 integration tests against the real Worker code (local workerd, mocked email/Turnstile/Access)
+npm test                                   # 23 integration tests against the real Worker code (local workerd, mocked email/Turnstile/Access)
 node test/e2e-site.mjs <site build with AG_INQUIRY_API=http://127.0.0.1:8799> <screenshot dir>   # browser end-to-end
 npm run check:public && npm run check:admin   # bundle both Workers without deploying
 ```
