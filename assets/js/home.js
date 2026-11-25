@@ -263,7 +263,7 @@
     // note in the detail, never as an end date, while the role is ongoing.
     { id: 'gt', lane: 'work', row: 0, from: [2024, 7], to: TODAY, openEnded: true, plan: 'tl.gt.plan' },
     { id: 'pill', lane: 'ind', row: 1, from: [2026, 1], to: [2026, 1], link: 'work/pill-sorting.html' },
-    
+    { id: 'wm', lane: 'ind', row: 0, from: [2026, 1], to: TODAY, openEnded: true, link: 'work/water-meter.html' }
   ];
   // a gated entry may leave an empty row in its lane: renumber the rows that are left
   ['edu', 'work', 'ind'].forEach(function (lane) {

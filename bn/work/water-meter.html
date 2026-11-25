@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="bn" data-title-key="water-meter.meta.title" data-root="../../" data-alt-en="../../work/water-meter.html" data-alt-ko="../../ko/work/water-meter.html" data-alt-bn="water-meter.html">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>অভিযোজনক্ষম এজ অ্যানোমালি ডিটেকশন · Auntu Gain</title>
+<meta name="description" content="সীমিত গণনাশক্তির মধ্যেও পানির অস্বাভাবিক ব্যবহার শনাক্ত করার জন্য স্মার্ট পানির মিটারে সরাসরি কাজ করে এমন সফটওয়্যার ডিজাইন ও বাস্তবায়ন করেছি।">
+<link rel="canonical" href="https://gainauntu.github.io/bn/work/water-meter.html">
+<link rel="alternate" hreflang="en" href="https://gainauntu.github.io/work/water-meter.html">
+<link rel="alternate" hreflang="ko" href="https://gainauntu.github.io/ko/work/water-meter.html">
+<link rel="alternate" hreflang="bn" href="https://gainauntu.github.io/bn/work/water-meter.html">
+<link rel="alternate" hreflang="x-default" href="https://gainauntu.github.io/work/water-meter.html">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Auntu Gain">
+<meta property="og:title" content="অভিযোজনক্ষম এজ অ্যানোমালি ডিটেকশন · Auntu Gain">
+<meta property="og:description" content="সীমিত গণনাশক্তির মধ্যেও পানির অস্বাভাবিক ব্যবহার শনাক্ত করার জন্য স্মার্ট পানির মিটারে সরাসরি কাজ করে এমন সফটওয়্যার ডিজাইন ও বাস্তবায়ন করেছি।">
+<meta property="og:url" content="https://gainauntu.github.io/bn/work/water-meter.html">
+<meta property="og:locale" content="bn_BD">
+<meta property="og:locale:alternate" content="en_GB">
+<meta property="og:locale:alternate" content="ko_KR">
+<meta property="og:image" content="https://gainauntu.github.io/assets/photos/busan-bridge-960.jpg">
+<meta name="twitter:card" content="summary">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#F5F0E6" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#11171B" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600&amp;family=Newsreader:ital,opsz,wght@1,6..72,400&amp;family=Noto+Sans+Bengali:wght@400;500;600&amp;display=swap">
+<link rel="stylesheet" href="../../assets/css/fonts.css">
+<script>(function(d){d.classList.add('js-motion');var t='';try{t=localStorage.getItem('ag-theme')||''}catch(e){}if(t==='dark'||t==='light')d.setAttribute('data-theme',t);})(document.documentElement)</script>
+<link rel="stylesheet" href="../../assets/css/base.css">
+<link rel="stylesheet" href="../../assets/css/motion.css">
+<link rel="stylesheet" href="../../assets/css/art.css">
+<link rel="stylesheet" href="../../assets/css/case.css">
+</head>
+<body>
+<a class="skip" href="#main" data-i18n="a11y.skip">মূল বিষয়বস্তুতে যান</a>
+
+<header class="site-head">
+  <div class="wrap site-head__in">
+    <a class="brand" href="../index.html" data-i18n-attr="aria-label:a11y.homeLink" aria-label="Auntu Gain, হোম">
+      <span class="brand__en" lang="en">Auntu Gain</span>
+      <span class="brand__local" data-i18n="name.local">অন্তু গাইন</span>
+    </a>
+    <nav class="nav" data-i18n-attr="aria-label:nav.primary" aria-label="প্রধান মেনু">
+      <a class="magnetic" data-strength="8" href="../index.html#work" aria-current="page"><span class="mag-inner" data-i18n="nav.work">প্রজেক্ট</span></a>
+      <a class="magnetic" data-strength="8" href="../index.html#experience"><span class="mag-inner" data-i18n="nav.experience">অভিজ্ঞতা</span></a>
+      <a class="magnetic" data-strength="8" href="../index.html#education"><span class="mag-inner" data-i18n="nav.education">শিক্ষা</span></a>
+      <a class="magnetic" data-strength="8" href="../index.html#research"><span class="mag-inner" data-i18n="nav.research">গবেষণার আগ্রহ</span></a>
+      <a class="magnetic" data-strength="8" href="../index.html#about"><span class="mag-inner" data-i18n="nav.about">পরিচিতি</span></a>
+      <a class="magnetic" data-strength="8" href="../index.html#contact"><span class="mag-inner" data-i18n="nav.contact">যোগাযোগ</span></a>
+    </nav>
+    <div class="head-actions">
+      <div class="lang">
+        <button class="lang__btn" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="lang-list" data-i18n-attr="aria-label:a11y.lang" aria-label="ভাষা বদলান">
+          <svg class="flag" data-flag-current aria-hidden="true" focusable="false"><use href="#flag-bd"/></svg>
+          <span class="lang__cur" data-lang-current lang="bn">বাংলা</span><span class="lang__code" data-lang-code aria-hidden="true">BN</span>
+          <svg class="chev" viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5" stroke="currentColor" fill="none" stroke-width="1.4"/></svg>
+        </button>
+        <ul class="lang__list" id="lang-list">
+          <li><a class="lang__opt" href="../../work/water-meter.html" hreflang="en" lang="en" data-lang-set="en"><span class="lang__name" data-flag="en">English</span><svg class="check" viewBox="0 0 14 14" aria-hidden="true"><path d="M2.5 7.5 5.5 10.5 11.5 3.5" stroke="currentColor" fill="none" stroke-width="1.6"/></svg></a></li>
+          <li><a class="lang__opt" href="../../ko/work/water-meter.html" hreflang="ko" lang="ko" data-lang-set="ko"><span class="lang__name" data-flag="ko">한국어</span><svg class="check" viewBox="0 0 14 14" aria-hidden="true"><path d="M2.5 7.5 5.5 10.5 11.5 3.5" stroke="currentColor" fill="none" stroke-width="1.6"/></svg></a></li>
+          <li><a class="lang__opt" href="water-meter.html" hreflang="bn" lang="bn" data-lang-set="bn"><span class="lang__name" data-flag="bn">বাংলা</span><svg class="check" viewBox="0 0 14 14" aria-hidden="true"><path d="M2.5 7.5 5.5 10.5 11.5 3.5" stroke="currentColor" fill="none" stroke-width="1.6"/></svg></a></li>
+        </ul>
+      </div>
+      <button class="theme-btn" type="button" data-theme-toggle data-i18n-attr="aria-label:theme.toDark;title:theme.toDark" aria-label="ডার্ক থিমে যান" title="ডার্ক থিমে যান"><svg class="theme-btn__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><g class="theme-btn__sun" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" fill="none"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.8v2.1M12 19.1v2.1M2.8 12h2.1M19.1 12h2.1M5.5 5.5l1.5 1.5M17 17l1.5 1.5M5.5 18.5 7 17M17 7l1.5-1.5"/></g><path class="theme-btn__moon" d="M19.6 14.6A8 8 0 0 1 9.4 4.4a8 8 0 1 0 10.2 10.2Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg></button>
+      <a class="btn btn--sm magnetic head-hire" href="../hire.html" data-strength="12"><span class="btn__label" data-i18n="nav.hire">প্রজেক্ট নিয়ে আলোচনা</span></a>
+      <button class="menu-btn" type="button" aria-expanded="false" aria-controls="menu" data-i18n-attr="aria-label:a11y.openMenu" aria-label="মেনু খুলুন">
+        <span class="menu-btn__label" data-i18n="nav.menu">মেনু</span><span class="menu-btn__icon" aria-hidden="true"><i></i></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- floating menu button: appears after the header scrolls away; the ring shows page progress -->
+<button class="fab magnetic" type="button" data-strength="16" aria-expanded="false" aria-controls="menu" data-i18n-attr="aria-label:a11y.openMenu" aria-label="মেনু খুলুন">
+  <svg class="fab__ring" viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="30.5"/></svg>
+  <span class="fab__icon mag-inner" aria-hidden="true"><i></i></span>
+</button>
+
+<div class="menu" id="menu" role="dialog" aria-modal="true" data-i18n-attr="aria-label:nav.menu" aria-label="মেনু">
+  <div class="menu__scrim"></div>
+  <div class="menu__panel" data-scroll-native>
+    <span class="menu__curve" aria-hidden="true"></span>
+    <div class="menu__head">
+      <span class="brand__en" lang="en">Auntu Gain</span>
+      <button class="menu__close" type="button" data-i18n-attr="aria-label:a11y.closeMenu" aria-label="মেনু বন্ধ করুন"><span data-i18n="nav.close">বন্ধ করুন</span><i aria-hidden="true"></i></button>
+    </div>
+    <nav class="menu__nav" data-i18n-attr="aria-label:nav.primary" aria-label="প্রধান মেনু">
+      <a href="../index.html#work" data-i18n="nav.work">প্রজেক্ট</a>
+      <a href="../index.html#experience" data-i18n="nav.experience">অভিজ্ঞতা</a>
+      <a href="../index.html#education" data-i18n="nav.education">শিক্ষা</a>
+      <a href="../index.html#research" data-i18n="nav.research">গবেষণার আগ্রহ</a>
+      <a href="../index.html#about" data-i18n="nav.about">পরিচিতি</a>
+      <a href="../index.html#contact" data-i18n="nav.contact">যোগাযোগ</a>
+    </nav>
+    <div class="menu__foot">
+      <a class="btn" href="../hire.html"><span class="btn__label" data-i18n="nav.hire">প্রজেক্ট নিয়ে আলোচনা</span></a>
+      <div class="menu__langs" role="group" data-i18n-attr="aria-label:lang.label" aria-label="ভাষা">
+        <a href="../../work/water-meter.html" hreflang="en" data-lang-set="en" lang="en" data-flag="en">English</a>
+        <a href="../../ko/work/water-meter.html" hreflang="ko" data-lang-set="ko" lang="ko" data-flag="ko">한국어</a>
+        <a href="water-meter.html" hreflang="bn" data-lang-set="bn" lang="bn" data-flag="bn">বাংলা</a>
+      </div>
+      <div class="menu__prefs">
+        <button class="theme-btn theme-btn--menu" type="button" data-theme-toggle data-i18n-attr="aria-label:theme.toDark;title:theme.toDark" aria-label="ডার্ক থিমে যান" title="ডার্ক থিমে যান"><svg class="theme-btn__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><g class="theme-btn__sun" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" fill="none"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.8v2.1M12 19.1v2.1M2.8 12h2.1M19.1 12h2.1M5.5 5.5l1.5 1.5M17 17l1.5 1.5M5.5 18.5 7 17M17 7l1.5-1.5"/></g><path class="theme-btn__moon" d="M19.6 14.6A8 8 0 0 1 9.4 4.4a8 8 0 1 0 10.2 10.2Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg></button>
+      </div>
+      <p class="menu__contact"><a href="mailto:gainauntu@gmail.com" data-fact="contact.email" data-fact-href="contact.emailHref">gainauntu@gmail.com</a><a href="https://www.linkedin.com/in/gainauntu/" rel="noopener">LinkedIn</a></p>
+    </div>
+  </div>
+</div>
+
+<main id="main">
+  <section class="case-hero" data-hero>
+    <div class="wrap">
+      <a class="back link" href="../index.html#work"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M13 8H3M7 3.5 2.5 8 7 12.5" stroke="currentColor" fill="none" stroke-width="1.4"/></svg><span data-i18n="cs.back">সব প্রজেক্ট দেখুন</span></a>
+      <h1 class="case-title" data-ptitle="p1" style="view-transition-name: case-title"><span class="pt" lang="en">Adaptive Edge Anomaly Detection for Smart Water Meters</span><span class="pt-loc">স্মার্ট পানির মিটারের জন্য অভিযোজনক্ষম এজ অ্যানোমালি ডিটেকশন</span></h1>
+      <dl class="facts4 facts4--n4" data-reveal><div><dt data-i18n="cs.k.org">প্রতিষ্ঠান</dt><dd data-i18n="water-meter.org">স্বাধীন চুক্তি, পণ্য উন্নয়ন</dd></div><div><dt data-i18n="cs.k.period">সময়কাল</dt><dd data-i18n="water-meter.period">জানুয়ারি ২০২৬ – বর্তমান</dd></div><div><dt data-i18n="cs.k.status">অবস্থা</dt><dd data-i18n="water-meter.status" class="status">চলমান উন্নয়ন</dd></div><div><dt data-i18n="cs.k.role">আমার ভূমিকা</dt><dd data-i18n="water-meter.roleShort">এমবেডেড অস্বাভাবিকতা শনাক্তকরণ প্রোটোটাইপ উন্নয়ন</dd></div></dl>
+    </div>
+    <div class="wrap">
+      <figure class="case-visual lit" data-light data-art="p1" data-art-labels data-reveal="fade">
+        <figcaption class="lit__tag" data-i18n="work.illus.syn">কৃত্রিম তথ্য দিয়ে তৈরি ধারণাভিত্তিক ইলাস্ট্রেশন</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="section glance">
+    <div class="wrap split">
+      <h2 class="h2" data-split><span data-i18n="cs.glance">একনজরে প্রজেক্টটি</span></h2>
+      <ul class="glance__list"><li data-reveal data-i18n="water-meter.g1">সীমিত গণনাশক্তির মধ্যেও পানির অস্বাভাবিক ব্যবহার শনাক্ত করার জন্য স্মার্ট পানির মিটারে সরাসরি কাজ করে এমন সফটওয়্যার ডিজাইন ও বাস্তবায়ন করেছি।</li><li data-reveal data-i18n="water-meter.g2">এই প্রজেক্টে এমবেডেড সফটওয়্যার ইঞ্জিনিয়ারিং, টাইম-সিরিজ বিশ্লেষণ এবং এজ এআই একত্রিত হয়েছে।</li><li data-reveal data-i18n="water-meter.g3">এমবেডেড প্রোটোটাইপ এবং হার্ডওয়্যার ইন্টিগ্রেশন নিয়ে কাজ করেছি।</li></ul>
+    </div>
+  </section>
+  <section class="section section--flush outcome" id="outcome">
+    <div class="wrap split">
+      <h2 class="h2" data-split><span data-i18n="cs.outcome">ফলাফল</span></h2>
+      <p class="lead" data-reveal data-i18n="water-meter.o1">উন্নয়ন ও পণ্যের মূল্যায়ন চলছে। ফলাফল এখনো প্রকাশ করা হয়নি।</p>
+    </div>
+  </section>
+
+  <section class="section section--flush">
+    <div class="wrap split">
+      <h2 class="h2" data-split><span data-i18n="cs.context">যে সমস্যাটি সমাধান করতে চেয়েছি</span></h2>
+      <div class="prose"><p class="lead" data-reveal data-i18n="water-meter.c1">পরিবেশভেদে পানির ব্যবহার আলাদা। সব সময় ক্লাউডের সঙ্গে যুক্ত না থেকেও এমবেডেড মিটারে অস্বাভাবিক ব্যবহার শনাক্ত করা যায় কি না, এই প্রজেক্টে তা অনুসন্ধান করা হয়েছে।</p><p data-reveal data-i18n="water-meter.c2">গ্রাহক প্রতিষ্ঠানের নিজস্ব বাস্তবায়নপদ্ধতি ও গোপন প্রযুক্তিগত তথ্য প্রকাশ করা হয়নি।</p></div>
+    </div>
+  </section>
+
+  <section class="section section--flush">
+    <div class="wrap split">
+      <h2 class="h2" data-split><span data-i18n="cs.role">আমি যে কাজগুলো করেছি</span></h2>
+      <ul class="role-list"><li data-reveal data-i18n="water-meter.r1">প্রাথমিক ধারণা থেকে বর্তমান প্রোডাক্ট প্রোটোটাইপ পর্যন্ত অন-ডিভাইস অ্যানোমালি ডিটেকশন সফটওয়্যার নকশা ও বাস্তবায়ন করেছি। মালিকানাধীন প্রযুক্তির বিস্তারিত প্রকাশ করা হয়নি।</li><li data-reveal data-i18n="water-meter.r2">এজ হার্ডওয়্যার ইন্টিগ্রেশন ও প্রোটোটাইপ তৈরিতে কাজ করেছি। নির্দিষ্ট হার্ডওয়্যার বিন্যাস প্রকাশ করা হয়নি।</li></ul>
+    </div>
+  </section>
+
+  <section class="section arch" id="system">
+    <div class="wrap">
+      <div class="split split--head">
+        <h2 class="h2" data-split><span data-i18n="cs.system">সিস্টেমের গঠন ও কার্যপ্রণালি</span></h2>
+        <p class="muted" data-reveal data-i18n="cs.system.intro">এটি সিস্টেমের একটি সরলীকৃত ধারণামূলক চিত্র। বিস্তারিত জানতে যেকোনো অংশ নির্বাচন করুন।</p>
+      </div>
+      <div class="arch__body" data-reveal="fade">
+        <div class="arch__canvas" data-diagram></div>
+        <aside class="arch__note" aria-live="polite" data-diagram-note></aside>
+      </div>
+      <p class="caption" data-i18n="cs.system.cap">প্রকাশযোগ্য প্রজেক্টের তথ্যের ভিত্তিতে তৈরি সরলীকৃত চিত্র; এটি প্রকৃত পণ্যের নকশা নয়।</p>
+    </div>
+  </section>
+  <section class="section sim-sec">
+    <div class="wrap">
+      <div class="split split--head">
+        <h2 class="h2" data-split><span data-i18n="water-meter.demo.title">অস্বাভাবিক ব্যবহারের কয়েকটি উদাহরণ</span></h2>
+        <p class="muted" data-reveal data-i18n="water-meter.demo.intro">একটি বাড়ির এক সপ্তাহের কৃত্রিম পানি ব্যবহারের তথ্য। কোন ধরনের প্যাটার্ন খতিয়ে দেখা দরকার, তা দেখতে একটি উদাহরণ বেছে নিন। চিহ্নগুলো শুধু এই প্রদর্শনের জন্য আঁকা; প্রকৃত সফটওয়্যার কীভাবে সিদ্ধান্ত নেয়, তা এখানে দেখানো হয়নি।</p>
+      </div>
+      <div class="sim demo demo--wm" data-demo="wm-events" data-reveal="fade">
+        <p class="sim__label" data-i18n="water-meter.demo.notice">কৃত্রিম ডেটা ব্যবহার করে তৈরি ধারণামূলক উদাহরণ। এটি প্রকৃত প্রজেক্টের অ্যালগরিদম, পরিমাপ, সেটিং বা ফলাফল তুলে ধরে না।</p>
+        <div class="demo__evs" role="radiogroup" aria-labelledby="wm-ev-k"><span class="demo__lab" id="wm-ev-k" data-i18n="water-meter.demo.ev">উদাহরণ</span><button type="button" class="demo__ev" role="radio" aria-checked="true" data-ev="none" data-i18n="water-meter.demo.none">কোনোটি নয়</button><button type="button" class="demo__ev" role="radio" aria-checked="false" data-ev="leak" data-i18n="water-meter.demo.leak">রাতে একটানা প্রবাহ</button><button type="button" class="demo__ev" role="radio" aria-checked="false" data-ev="burst" data-i18n="water-meter.demo.burst">হঠাৎ অস্বাভাবিক বৃদ্ধি</button><button type="button" class="demo__ev" role="radio" aria-checked="false" data-ev="stuck" data-i18n="water-meter.demo.stuck">অপরিবর্তিত রিডিং</button></div>
+        <div class="sim__plot demo__plot" data-plot></div>
+        <p class="demo__state" aria-live="polite" data-state></p>
+        <ul class="sim__legend"><li><i class="sw sw--use"></i><span data-i18n="water-meter.demo.use">কৃত্রিম পানি ব্যবহার</span></li><li><i class="sw sw--mark"></i><span data-i18n="water-meter.demo.mark">ব্যাখ্যার জন্য চিহ্নিত</span></li></ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="section related-sec">
+    <div class="wrap split">
+      <h2 class="h2" data-split><span data-i18n="cs.related">সম্পর্কিত প্রজেক্ট</span></h2>
+      <div>
+        <ul class="related" data-reveal><li><a href="pill-sorting.html"><span data-ptitle="p3"><span class="pt" lang="en">Robotic Pill-Sorting Vision System</span><span class="pt-loc">পিল বাছাইয়ের রোবটিক ভিশন সিস্টেম</span></span><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 12 12 4M6 4h6v6" stroke="currentColor" fill="none" stroke-width="1.4"/></svg></a></li><li><a href="flow-battery.html"><span data-ptitle="p6"><span class="pt" lang="en">Flow-Battery Monitoring and Protection</span><span class="pt-loc">ফ্লো ব্যাটারি পর্যবেক্ষণ ও সুরক্ষা ব্যবস্থা</span></span><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 12 12 4M6 4h6v6" stroke="currentColor" fill="none" stroke-width="1.4"/></svg></a></li></ul>
+        <a class="next-case" href="skimmer.html" data-reveal><span class="next-case__k" data-i18n="cs.next">পরের কেস স্টাডি</span><span class="next-case__t" data-ptitle="p2"><span class="pt" lang="en">Autonomous Water-Treatment Skimmer</span><span class="pt-loc">পানি শোধনাগারের জন্য স্বয়ংক্রিয় জলপৃষ্ঠ পরিষ্কারকারী নৌযান</span></span><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 12 12 4M6 4h6v6" stroke="currentColor" fill="none" stroke-width="1.4"/></svg></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section dark contact-band" data-light>
+    <div class="curve" aria-hidden="true"></div>
+    <div class="wrap contact-band__in">
+      <h2 class="contact-band__title" data-split><span data-i18n-html="cs.discuss">এ ধরনের কোনো প্রজেক্ট নিয়ে কাজ করছেন? <em>চলুন কথা বলি।</em></span></h2>
+      <div class="intents"><a class="intent-link intent-link--primary" href="../hire.html"><span class="intent-link__t"><span data-i18n="c.hire">প্রজেক্ট নিয়ে আলোচনা করুন</span><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 12 12 4M6 4h6v6" stroke="currentColor" fill="none" stroke-width="1.4"/></svg></span><span class="intent-link__d" data-i18n="c.hire.d">চুক্তিভিত্তিক উন্নয়ন ও কারিগরি পরামর্শ</span></a><a class="intent-link" href="../hire.html?intent=collab"><span class="intent-link__t"><span data-i18n="c.collab">গবেষণা সহযোগিতার প্রস্তাব দিন</span><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 12 12 4M6 4h6v6" stroke="currentColor" fill="none" stroke-width="1.4"/></svg></span><span class="intent-link__d" data-i18n="c.collab.d">একাডেমিক ও গবেষণা সহযোগীদের জন্য</span></a><a class="intent-link" href="../hire.html?intent=msg"><span class="intent-link__t"><span data-i18n="c.msg">বার্তা পাঠান</span><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 12 12 4M6 4h6v6" stroke="currentColor" fill="none" stroke-width="1.4"/></svg></span><span class="intent-link__d" data-i18n="c.msg.d">চাকরির প্রস্তাব, পেশাগত যোগাযোগ বা অন্য কোনো বিষয়</span></a></div>
+      <footer class="foot">
+        <span>© 2026 <span lang="en">Auntu Gain</span></span>
+        
+        <a href="#main" data-i18n="f.top">ওপরে ফিরুন</a>
+      </footer>
+    </div>
+  </section>
+</main>
+
+<script>window.AG_CASE = {"slug": "water-meter", "diagram": {"lanes": [{"label": "lane1", "nodes": ["meter", "normal", "edge", "chosen", "decision"]}, {"label": "lane2", "nodes": ["explored"], "ctx": true}], "links": [], "first": "chosen"}, "demo": "wm-events"};</script>
+<script src="../../assets/js/i18n/common.js"></script>
+<script src="../../assets/js/i18n/case.js"></script>
+<script src="../../assets/js/i18n/case-water-meter.js"></script>
+<script src="../../assets/js/data/site.js"></script>
+<script src="../../assets/js/site.js"></script>
+<script src="../../assets/js/motion.js"></script>
+<script src="../../assets/js/art.js"></script>
+<script src="../../assets/js/case.js"></script>
+</body>
+</html>

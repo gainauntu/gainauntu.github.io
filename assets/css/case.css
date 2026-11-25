@@ -164,3 +164,16 @@ html:lang(ko) .case-title, html:lang(bn) .case-title { max-width: 26ch; }
 .photo__credit { display: block; margin-top: 4px; font-size: var(--fs-xs); color: var(--ink-3); }
 
 
+/* Phase 5: water-meter illustrative events demo (synthetic) */
+.demo__evs { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; margin-top: 16px; }
+.demo__evs .demo__lab { margin-right: 6px; }
+.demo__ev { min-height: 40px; padding: 8px 16px; border-radius: 999px; border: 1px solid var(--line-strong); background: var(--paper); color: var(--ink); font: inherit; font-size: var(--fs-small); cursor: pointer; transition: background var(--t-fast), border-color var(--t-fast); }
+.demo__ev:hover { border-color: var(--ink-2); }
+.demo__ev[aria-checked="true"] { background: var(--ink); border-color: var(--ink); color: var(--paper); }
+.demo--wm .demo__state { margin-top: 14px; font-size: var(--fs-body); max-width: 70ch; }
+.wm-night { fill: var(--sky-soft); opacity: .55; }
+.wm-mark { fill: var(--warn); fill-opacity: .14; stroke: var(--warn); stroke-opacity: .55; stroke-dasharray: 4 5; }
+.wm-use { fill: none; stroke: var(--ink); stroke-width: 2; stroke-linejoin: round; }
+.sw--use { background: var(--ink); height: 3px; }
+.sw--mark { background: var(--warn); opacity: .5; }
+
