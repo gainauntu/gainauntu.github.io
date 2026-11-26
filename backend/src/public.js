@@ -93,7 +93,7 @@ async function submit(request, env) {
     const n = await sendEmail(env, 'RESEND_API_KEY', { from: env.NOTIFY_FROM, to: env.OWNER_EMAIL, subject: note.subject, text: note.text, replyTo: f.email, idempotencyKey: 'notify-' + id });
     let conf = { status: 'off' };
     if (confirmOn) {
-      const m = confirmation(f.replyLang || b.lang, b.intent, ref);
+      const m = confirmation(b.lang, b.intent, ref, f.replyLang || b.lang);
       conf = await sendEmail(env, 'RESEND_API_KEY', { from: env.CONFIRM_FROM, to: f.email, subject: m.subject, text: m.text, idempotencyKey: 'confirm-' + id });
     }
     await env.DB.prepare('UPDATE inquiries SET notify_status = ?, notify_id = ?, confirm_status = ?, confirm_id = ?, updated_at = ? WHERE id = ?')

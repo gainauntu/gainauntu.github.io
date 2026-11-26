@@ -27,7 +27,7 @@ const mf = new Miniflare({
       bindings: { ALLOWED_ORIGINS: 'http://127.0.0.1:' + SITE_PORT, TURNSTILE_HOSTNAMES: 'gainauntu.github.io', NOTIFY_FROM: 'Inquiries <onboarding@resend.dev>', SEND_CONFIRMATION: 'true', CONFIRM_FROM: 'Auntu Gain <noreply@example.org>',
         RETENTION_DAYS: '365', DAILY_LIMIT_PER_CLIENT: '20', DAILY_LIMIT_TOTAL: '80', TURNSTILE_SECRET: 'test', RESEND_API_KEY: 're_test', RESEND_WEBHOOK_SECRET: 'whsec_dGVzdA==', IP_HASH_SECRET: 'x', OWNER_EMAIL: ADMIN } },
     { ...common, name: 'admin', routes: ['admin.localhost/*'], scriptPath: path.join(ROOT, 'src/admin.js'),
-      bindings: { ACCESS_TEAM_DOMAIN: TEAM, ACCESS_AUD: AUD, ADMIN_EMAILS: ADMIN, REPLY_FROM: '', REPLY_TO: '', RESEND_API_KEY_ADMIN: 're_test' } }
+      bindings: { ADMIN_AUTH: 'access', ACCESS_TEAM_DOMAIN: TEAM, ACCESS_AUD: AUD, ADMIN_EMAILS: ADMIN, REPLY_FROM: '', REPLY_TO: '', RESEND_API_KEY_ADMIN: 're_test' } }
   ]
 });
 await mf.ready;
@@ -62,6 +62,7 @@ try {
 
   // 2 success, with board opt-in
   await fillProject(page, 'Edge pilot A');
+  check('retry and email-fallback buttons stay hidden before any submission attempt', !(await page.isVisible('[data-submit-actions]')) && !(await page.isVisible('[data-retry]')) && !(await page.isVisible('[data-fallback]')));
   check('review step shows the spam check and the optional board opt-in', await page.isVisible('[data-turnstile]') && await page.isVisible('.consent--board'));
   check('submit button says "Submit project inquiry"', (await page.textContent('[data-next] .btn__label')).trim() === 'Submit project inquiry');
   await page.click('.consent--board'); await page.waitForTimeout(150);

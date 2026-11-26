@@ -71,3 +71,14 @@ test('gmail: MIME builder rejects header-breaking addresses', () => {
   const m = buildMime({ fromName: 'A "B" <c>', fromAddr: 'owner@example.com', to: 'v@example.org', subject: 'line1\r\nX-Injected: 1', text: 't' });
   assert.doesNotMatch(m, /\r\nX-Injected/);
 });
+
+test('confirmation: page language and chosen reply language both used when they differ', async () => {
+  const { confirmation } = await import('../src/lib/templates.js');
+  const same = confirmation('en', 'project', 'AG-TEST-0001', 'en');
+  assert.equal(same.subject, 'Your inquiry AG-TEST-0001 was received'); assert.doesNotMatch(same.text, /접수/);
+  const mixed = confirmation('en', 'project', 'AG-TEST-0001', 'ko');
+  assert.match(mixed.subject, /^Your inquiry AG-TEST-0001 was received \/ 문의가 접수되었습니다/);
+  assert.ok(mixed.text.indexOf('Thank you') < mixed.text.indexOf('접수번호'));
+  const bn = confirmation('bn', 'collab', 'AG-TEST-0002', 'bn');
+  assert.match(bn.text, /গ্রহণ/); assert.doesNotMatch(bn.text, /Thank you/);
+});

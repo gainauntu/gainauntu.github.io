@@ -16,9 +16,13 @@ const T = {
 const IDX = { en: 0, ko: 1, bn: 2 };
 const fill = (s, v) => s.replace(/\{(\w+)\}/g, (_, k) => v[k] ?? '');
 
-export function confirmation(lang, intent, ref) {
-  const i = IDX[lang] ?? 0;
-  return { subject: fill(T.confirmSubject[i], { ref }), text: fill(T.confirmBody[i], { ref, type: T.intent[intent][i] }) };
+// pageLang: the language the visitor used on the site; replyLang: the language they asked to be answered in.
+// When they differ, the confirmation is written in both, page language first, so it never surprises the visitor.
+export function confirmation(pageLang, intent, ref, replyLang) {
+  const i = IDX[pageLang] ?? 0, r = IDX[replyLang] ?? i;
+  const one = (k) => fill(T.confirmBody[k], { ref, type: T.intent[intent][k] });
+  if (r === i) return { subject: fill(T.confirmSubject[i], { ref }), text: one(i) };
+  return { subject: fill(T.confirmSubject[i], { ref }) + ' / ' + fill(T.confirmSubject[r], { ref }), text: one(i) + '\n\n----------\n\n' + one(r) };
 }
 
 // to the owner: everything needed to answer, in English (the dashboard holds the same data)
