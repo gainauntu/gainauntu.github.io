@@ -104,7 +104,6 @@
       </div>
       <div class="menu__prefs">
         <button class="theme-btn theme-btn--menu" type="button" data-theme-toggle data-i18n-attr="aria-label:theme.toDark;title:theme.toDark" aria-label="다크 테마로 전환" title="다크 테마로 전환"><svg class="theme-btn__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><g class="theme-btn__sun" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" fill="none"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.8v2.1M12 19.1v2.1M2.8 12h2.1M19.1 12h2.1M5.5 5.5l1.5 1.5M17 17l1.5 1.5M5.5 18.5 7 17M17 7l1.5-1.5"/></g><path class="theme-btn__moon" d="M19.6 14.6A8 8 0 0 1 9.4 4.4a8 8 0 1 0 10.2 10.2Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg></button>
-        <button class="pref-switch" type="button" role="switch" aria-checked="true" data-smooth-toggle><span class="pref-switch__track" aria-hidden="true"><i></i></span><span data-i18n="scroll.smooth">부드러운 스크롤</span></button>
       </div>
       <p class="menu__contact"><a href="mailto:gainauntu@gmail.com" data-fact="contact.email" data-fact-href="contact.emailHref">gainauntu@gmail.com</a><a href="https://www.linkedin.com/in/gainauntu/" rel="noopener">LinkedIn</a></p>
     </div>
@@ -251,6 +250,13 @@
             <label class="consent"><input type="checkbox" name="consent" aria-describedby="err-consent"><span data-i18n="f.consent">문의에 대한 회신을 위해 개인정보가 어떻게 이용되는지 이해했으며 개인정보 처리 안내를 확인했습니다.</span></label>
             <p class="consent__link"><a class="link" href="privacy.html" data-i18n="privacy.title">개인정보 처리 안내</a></p>
             <p class="err" id="err-consent" hidden></p>
+            <label class="consent consent--board" data-direct-only hidden><input type="checkbox" name="boardOptIn"><span data-i18n="board.optin">문의 유형과 답변 상태가 익명으로 공개 문의 목록에 표시되는 것에 동의합니다(선택). 문의 내용과 연락처는 비공개로 유지됩니다.</span></label>
+            <div class="verify" data-direct-only hidden><p class="verify__k" data-i18n="h.verify">자동 등록 방지 확인</p><div data-turnstile></div></div>
+            <p class="submit-status" data-submit-status role="status" aria-live="polite" hidden></p>
+            <div class="submit-actions" data-submit-actions hidden>
+              <button type="button" class="btn btn--line" data-retry><span class="btn__label" data-i18n="btn.retry">다시 시도</span></button>
+              <button type="button" class="btn btn--line" data-fallback><span class="btn__label" data-i18n="btn.fallback">대신 이메일로 보내기</span></button>
+            </div>
           </fieldset>
 
           <div class="flow__nav">
@@ -260,6 +266,19 @@
         </form>
 
         <!-- email hand-off: the visitor's own email app sends the message; this page sends and stores nothing -->
+        <!-- direct submission: shown only after the inquiry service stored the inquiry -->
+        <div class="done done--direct" data-done-direct hidden tabindex="-1">
+          <p class="done__k" data-i18n="s.reference">접수번호</p>
+          <h2 class="done__t" data-i18n="s.received.title">문의가 접수되었습니다.</h2>
+          <p class="done__ref" data-ref></p>
+          <p class="done__p" data-i18n="s.received.body">문의 내용을 검토한 뒤 이메일로 회신드리겠습니다. 추후 확인을 위해 접수번호를 보관해 주세요.</p>
+          <p class="done__p" data-confirm-line hidden></p>
+          <div class="done__cta">
+            <button type="button" class="btn btn--line" data-restart><span class="btn__label" data-i18n="s.again">처음부터 다시</span></button>
+            <a class="link" href="index.html" data-i18n="s.home">홈으로</a>
+          </div>
+        </div>
+
         <div class="done" data-done hidden tabindex="-1">
           <p class="done__k" data-i18n="s.k">이메일 전송 준비 완료</p>
           <h2 class="done__t" data-i18n="s.t">문의 내용 작성이 완료되었습니다.</h2>
@@ -290,6 +309,12 @@
           <div class="brief__bar"><i data-brief-bar></i></div>
           <dl class="brief__rows" data-brief></dl>
           <p class="brief__demo" data-i18n="b.demo">이메일은 웹사이트가 아닌 이메일 앱에서 전송합니다.</p>
+        </div>
+        <div class="board" data-board data-direct-only hidden>
+          <h2 class="board__t" data-i18n="board.title">비공개 문의</h2>
+          <p class="board__x" data-i18n="board.explain">동의한 문의의 익명 처리된 접수·답변 상태만 표시됩니다. 문의 내용과 연락처는 공개하지 않습니다.</p>
+          <ul class="board__list" data-board-list></ul>
+          <p class="board__empty" data-board-empty hidden></p>
         </div>
         <div class="side__info" data-reveal="fade">
           <h2 data-i18n="h.next">문의 이후 안내</h2>

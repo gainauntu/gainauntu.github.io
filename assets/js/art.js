@@ -39,6 +39,77 @@
 
 
   /* =====================================================================
+     1 · Adaptive edge anomaly detection (flagship). A household supply line, the meter, an edge
+     device, and a synthetic consumption trace in which a small continuous night flow appears.
+     Generic and synthetic by design: no method, band, threshold or real data. */
+  A.p1 = {
+    rmT: 6.2,
+    svg: function () {
+      var b = '';
+      b += '<path d="M44 198 V114 L94 76 L144 114 V198" ' + s({ o: .5 }) + '/><path d="M30 198 H160" ' + s({ o: .25 }) + '/>';
+      b += '<rect x="82" y="152" width="22" height="46" ' + s({ o: .28 }) + '/><rect x="58" y="122" width="18" height="16" ' + s({ o: .22 }) + '/>';
+      b += '<path d="M144 128 H780 M144 152 H780" ' + s({ o: .3 }) + '/>';
+      b += '<path class="a-flow a-rev" d="M780 140 H146" ' + s({ c: WA, o: .75, w: 2 }) + '/>';
+      b += '<path data-drip d="M176 156 c4 7 4 11 0 13 c-4 -2 -4 -6 0 -13z" fill="' + WA + '" fill-opacity=".8"/>';
+      b += '<circle cx="280" cy="140" r="46" fill="' + NIGHT + '" ' + s({ o: .75, w: 1.5 }) + '/><circle cx="280" cy="140" r="35" ' + s({ o: .16 }) + '/>';
+      for (var k = 0; k < 24; k++) {
+        var an = k / 24 * Math.PI * 2, r1 = k % 6 ? 39 : 37;
+        b += '<line x1="' + f(280 + Math.cos(an) * r1) + '" y1="' + f(140 + Math.sin(an) * r1) + '" x2="' + f(280 + Math.cos(an) * 42) + '" y2="' + f(140 + Math.sin(an) * 42) + '" ' + s({ o: k % 6 ? .2 : .45 }) + '/>';
+      }
+      b += '<rect x="262" y="112" width="36" height="12" rx="2" ' + s({ o: .4 }) + '/>';
+      for (k = 0; k < 4; k++) b += '<rect x="' + (266 + k * 8) + '" y="115" width="5" height="6" rx="1" fill="' + FG + '" fill-opacity="' + (k === 3 ? .7 : .3) + '"/>';
+      b += '<g data-dial><line x1="280" y1="150" x2="280" y2="132" ' + s({ c: AC, w: 2 }) + '/></g><circle cx="280" cy="150" r="3" fill="' + AC + '"/>';
+      b += '<path d="M280 186 V226" ' + s({ o: .3 }) + ' stroke-dasharray="2 5"/><circle data-pkt cx="280" cy="186" r="3.2" fill="' + AC + '"/>';
+      b += '<rect x="222" y="226" width="116" height="72" rx="10" fill="#222B32" ' + s({ o: .6 }) + '/>';
+      b += '<rect x="258" y="241" width="44" height="42" rx="4" ' + s({ o: .7 }) + '/>';
+      for (k = 0; k < 5; k++) b += '<path d="M250 ' + (247 + k * 7) + ' h8 M302 ' + (247 + k * 7) + ' h8" ' + s({ o: .4 }) + '/>';
+      b += '<rect x="268" y="251" width="24" height="22" rx="2" fill="' + AC + '" fill-opacity=".16" ' + s({ c: AC, o: .6 }) + '/>';
+      b += '<circle class="a-blink-slow" cx="326" cy="238" r="3" fill="' + OK + '"/>';
+      b += '<path d="M338 262 H384" ' + s({ o: .3 }) + '/><path class="a-flow" d="M338 262 H384" ' + s({ c: AC, o: .8, w: 2 }) + '/>';
+      b += '<rect x="384" y="204" width="384" height="232" rx="12" fill="' + FG + '" fill-opacity=".025" ' + s({ o: .16 }) + '/>';
+      for (k = 1; k < 5; k++) b += '<path d="M' + f(400 + k * 70.4) + ' 220 V420" ' + s({ o: .07 }) + '/>';
+      b += '<rect x="400" y="396" width="352" height="14" fill="' + FG + '" fill-opacity=".06"/>';
+      b += '<path d="M400 410 H752" ' + s({ o: .25 }) + '/>';
+      // synthetic five-day consumption: morning and evening use, near-zero nights, then a small continuous flow
+      var r = rng(29), norm = [], leak = [], onset = 3.35;
+      for (var x = 400; x <= 752; x += 2) {
+        var d = (x - 400) / 70.4, h = (d % 1) * 24;
+        var g = function (c, w, a) { var z = (h - c) / w; return a * Math.exp(-z * z / 2); };
+        var v = 1.5 + g(7.2, 1.1, 52 + r() * 10) + g(19.4, 1.5, 40 + r() * 10) + g(13, 2.2, 12) + r() * 3;
+        if (d >= onset) v += 10;
+        var p = [x, f(410 - v * 2.3)];
+        if (d < onset) norm.push(p); else { if (!leak.length) leak.push(norm[norm.length - 1]); leak.push(p); }
+      }
+      var pts = function (a) { return a.map(function (p) { return p[0] + ',' + p[1]; }).join(' '); };
+      b += '<polyline data-series points="' + pts(norm) + '" ' + s({ o: .85, w: 1.6 }) + '/>';
+      b += '<polyline data-leak points="' + pts(leak) + '" ' + s({ c: AC, w: 1.9 }) + '/>';
+      var ex = f(400 + (4 + 3 / 24) * 70.4);
+      b += '<g data-event><path d="M' + ex + ' 384 V236" ' + s({ c: AC, o: .55 }) + ' stroke-dasharray="3 5"/>' +
+        '<path d="M' + (ex - 11) + ' 236 h22 l-4 -6 v-9 a7 7 0 0 0 -14 0 v9 z" fill="' + AC + '" fill-opacity=".14" ' + s({ c: AC, w: 1.4 }) + '/>' +
+        '<circle cx="' + ex + '" cy="385" r="4.5" fill="' + AC + '"/><circle class="a-pulse" cx="' + ex + '" cy="385" r="9" ' + s({ c: AC, o: .6 }) + '/></g>';
+      return svg(b);
+    },
+    setup: function (el) {
+      var series = q(el, '[data-series]'), lk = q(el, '[data-leak]'), ev = q(el, '[data-event]');
+      var dial = q(el, '[data-dial]'), pkt = q(el, '[data-pkt]'), drip = q(el, '[data-drip]');
+      var L1 = series.getTotalLength(), L2 = lk.getTotalLength();
+      series.style.strokeDasharray = L1; lk.style.strokeDasharray = L2;
+      return function (T) {
+        var t = T % 8;
+        var p = win(t, 0.2, 4.6), share = L1 / (L1 + L2), fade = 1 - win(t, 7.3, 7.9);
+        series.style.strokeDashoffset = f(L1 * (1 - Math.min(1, p / share)));
+        lk.style.strokeDashoffset = f(L2 * (1 - Math.max(0, (p - share) / (1 - share))));
+        series.style.opacity = lk.style.opacity = fade;
+        ev.style.opacity = pulse(t, 4.6, 5.0, 7.3, 7.9);
+        dial.setAttribute('transform', 'rotate(' + f(T * 140 % 360) + ' 280 150)');
+        var k = (T % 1.2) / 1.2; pkt.setAttribute('cy', f(186 + k * 40)); pkt.style.opacity = 1 - win(k, .8, 1);
+        var dk = (T % 2.6) / 2.6; drip.setAttribute('transform', 'translate(0 ' + f(dk * 18) + ')'); drip.style.opacity = 1 - win(dk, .55, .95);
+      };
+    }
+  };
+
+
+  /* =====================================================================
      2 · Autonomous water-treatment skimmer. Top-down pool, repeatable coverage mission, LiDAR
      scan near the walls, GNSS fix, then AprilTag-guided docking, electromagnetic retention and
      wireless charging. Hull shape and sensor positions are schematic. */
@@ -415,6 +486,7 @@
   var live = [], subscribed = false;
   /* labelled version for case studies: the compact preview stays unlabelled so it reads at small sizes */
   var LABELS = {
+    p1: [[94, 56, 'lbl.p1.house'], [280, 84, 'lbl.p1.meter'], [280, 318, 'lbl.p1.edge'], [576, 196, 'lbl.p1.chart']],
     p2: [[350, 56, 'lbl.p2.mission'], [672, 182, 'lbl.p2.dock'], [622, 284, 'lbl.p2.tag']],
     p3: [[300, 116, 'lbl.p3.camera'], [439, 94, 'lbl.p3.pair'], [650, 92, 'lbl.p3.conf'], [650, 296, 'lbl.p3.ctrl'], [500, 452, 'lbl.p3.manual'], [655, 452, 'lbl.p3.out']],
     p4: [[101, 140, 'lbl.p4.gs'], [247, 314, 'lbl.p4.usv'], [566, 172, 'lbl.p4.pose'], [440, 292, 'lbl.p4.obs']],

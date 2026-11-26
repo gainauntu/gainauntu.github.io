@@ -85,6 +85,27 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://gainauntu.github.io/privacy.html"/>
   </url>
   <url>
+    <loc>https://gainauntu.github.io/work/water-meter.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://gainauntu.github.io/work/water-meter.html"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://gainauntu.github.io/ko/work/water-meter.html"/>
+    <xhtml:link rel="alternate" hreflang="bn" href="https://gainauntu.github.io/bn/work/water-meter.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://gainauntu.github.io/work/water-meter.html"/>
+  </url>
+  <url>
+    <loc>https://gainauntu.github.io/ko/work/water-meter.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://gainauntu.github.io/work/water-meter.html"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://gainauntu.github.io/ko/work/water-meter.html"/>
+    <xhtml:link rel="alternate" hreflang="bn" href="https://gainauntu.github.io/bn/work/water-meter.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://gainauntu.github.io/work/water-meter.html"/>
+  </url>
+  <url>
+    <loc>https://gainauntu.github.io/bn/work/water-meter.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://gainauntu.github.io/work/water-meter.html"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://gainauntu.github.io/ko/work/water-meter.html"/>
+    <xhtml:link rel="alternate" hreflang="bn" href="https://gainauntu.github.io/bn/work/water-meter.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://gainauntu.github.io/work/water-meter.html"/>
+  </url>
+  <url>
     <loc>https://gainauntu.github.io/work/skimmer.html</loc>
     <xhtml:link rel="alternate" hreflang="en" href="https://gainauntu.github.io/work/skimmer.html"/>
     <xhtml:link rel="alternate" hreflang="ko" href="https://gainauntu.github.io/ko/work/skimmer.html"/>

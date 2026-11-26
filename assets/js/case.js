@@ -251,6 +251,67 @@
     document.addEventListener('ag:lang', render);
   }
 
+
+  /* ================= demo: illustrative water-use events (synthetic; Phase 5) =================
+     A made-up week of household use. The highlighted spans are drawn by hand for each example event; nothing here
+     detects anything, and there is no band, threshold, score or model. */
+  function wmDemo() {
+    var box = $('[data-demo="wm-events"]'); if (!box) return;
+    var plot = $('[data-plot]', box), state = $('[data-state]', box), btns = $$('[data-ev]', box);
+    var k = function (x) { return 'water-meter.demo.' + x; };
+    function rng(seed) { return function () { seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; }; }
+    var r = rng(11), base = [];
+    for (var i = 0; i < 168; i++) {          // 7 days x 24 hours, litres per hour (made up)
+      var h = i % 24, g = function (c, w, a) { var z = (h - c) / w; return a * Math.exp(-z * z / 2); };
+      base.push(Math.max(0, 0.4 + g(7.5, 1.1, 34 + r() * 8) + g(19.5, 1.6, 28 + r() * 8) + g(13, 2.2, 7) + r() * 2.2));
+    }
+    var EV = {
+      none: { mark: null, f: function (v) { return v; } },
+      leak: { mark: [[72, 168]], f: function (v, i) { return i >= 72 ? v + 6 : v; } },
+      burst: { mark: [[110, 112]], f: function (v, i) { return i >= 110 && i < 112 ? v + 95 : v; } },
+      stuck: { mark: [[60, 86]], f: function (v, i, a) { return i >= 60 && i < 86 ? a[59] : v; } }
+    };
+    var cur = 'none', raf2 = 0;
+    function series(ev) { var out = []; base.forEach(function (v, i) { out.push(EV[ev].f(v, i, out)); }); return out; }
+    function X(i) { return 40 + i / 167 * 940; }
+    function Y(v) { return 250 - Math.min(v, 140) / 140 * 220; }
+    function render(p) {
+      var d = series(cur), n = Math.max(2, Math.round(168 * p)), s = '<svg viewBox="0 0 1000 290" role="img" aria-label="' + t(k('title')) + '">';
+      for (var day = 0; day < 7; day++) {
+        s += '<rect class="wm-night" x="' + X(day * 24).toFixed(1) + '" y="30" width="' + (X(6) - X(0)).toFixed(1) + '" height="220"/>';
+        s += '<text class="demo-tick" x="' + X(day * 24 + 12).toFixed(1) + '" y="276">' + t(k('day'), { n: AG.num(day + 1) }) + '</text>';
+      }
+      s += '<line class="demo-axis" x1="40" x2="980" y1="250" y2="250"/>';
+      (EV[cur].mark || []).forEach(function (m) { s += '<rect class="wm-mark" x="' + X(m[0]).toFixed(1) + '" y="26" width="' + Math.max(8, X(m[1] - 1) - X(m[0])).toFixed(1) + '" height="228" rx="4"/>'; });
+      var pts = ''; for (var q = 0; q < n; q++) pts += X(q).toFixed(1) + ',' + Y(d[q]).toFixed(1) + ' ';
+      s += '<polyline class="wm-use" points="' + pts + '"/></svg>';
+      plot.innerHTML = s;
+    }
+    function play() {
+      cancelAnimationFrame(raf2);
+      if (RM.matches) { render(1); return; }
+      var t0 = 0;
+      (function step(now) { if (!t0) t0 = now; var p = Math.min(1, (now - t0) / 1400); render(p); if (p < 1) raf2 = requestAnimationFrame(step); })(performance.now());
+    }
+    function choose(ev, focus) {
+      cur = ev;
+      btns.forEach(function (b) { var on = b.getAttribute('data-ev') === ev; b.setAttribute('aria-checked', String(on)); b.tabIndex = on ? 0 : -1; if (on && focus) b.focus(); });
+      state.textContent = t(k('s.' + ev)); state.classList.toggle('is-flag', ev !== 'none');
+      play();
+    }
+    btns.forEach(function (b, i) {
+      b.addEventListener('click', function () { choose(b.getAttribute('data-ev')); });
+      b.addEventListener('keydown', function (e) {
+        var d = e.key === 'ArrowRight' || e.key === 'ArrowDown' ? 1 : e.key === 'ArrowLeft' || e.key === 'ArrowUp' ? -1 : 0;
+        if (!d) return; e.preventDefault(); choose(btns[(i + d + btns.length) % btns.length].getAttribute('data-ev'), true);
+      });
+    });
+    choose('none');
+    document.addEventListener('ag:lang', function () { state.textContent = t(k('s.' + cur)); render(1); });
+  }
+
+  if (CFG.demo === 'wm-events') wmDemo();
+
   if (CFG.demo === 'pill-threshold') pillDemo();
   if (CFG.demo === 'arm-angle') armDemo();
 })();

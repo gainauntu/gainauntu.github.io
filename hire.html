@@ -104,7 +104,6 @@
       </div>
       <div class="menu__prefs">
         <button class="theme-btn theme-btn--menu" type="button" data-theme-toggle data-i18n-attr="aria-label:theme.toDark;title:theme.toDark" aria-label="Switch to dark theme" title="Switch to dark theme"><svg class="theme-btn__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><g class="theme-btn__sun" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" fill="none"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.8v2.1M12 19.1v2.1M2.8 12h2.1M19.1 12h2.1M5.5 5.5l1.5 1.5M17 17l1.5 1.5M5.5 18.5 7 17M17 7l1.5-1.5"/></g><path class="theme-btn__moon" d="M19.6 14.6A8 8 0 0 1 9.4 4.4a8 8 0 1 0 10.2 10.2Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg></button>
-        <button class="pref-switch" type="button" role="switch" aria-checked="true" data-smooth-toggle><span class="pref-switch__track" aria-hidden="true"><i></i></span><span data-i18n="scroll.smooth">Smooth scrolling</span></button>
       </div>
       <p class="menu__contact"><a href="mailto:gainauntu@gmail.com" data-fact="contact.email" data-fact-href="contact.emailHref">gainauntu@gmail.com</a><a href="https://www.linkedin.com/in/gainauntu/" rel="noopener">LinkedIn</a></p>
     </div>
@@ -251,6 +250,13 @@
             <label class="consent"><input type="checkbox" name="consent" aria-describedby="err-consent"><span data-i18n="f.consent">I understand how my details will be used to respond to this inquiry and have read the privacy notice.</span></label>
             <p class="consent__link"><a class="link" href="privacy.html" data-i18n="privacy.title">Privacy notice</a></p>
             <p class="err" id="err-consent" hidden></p>
+            <label class="consent consent--board" data-direct-only hidden><input type="checkbox" name="boardOptIn"><span data-i18n="board.optin">Allow the anonymous category and reply status of my inquiry to appear on the public board (optional). My message and contact details will remain private.</span></label>
+            <div class="verify" data-direct-only hidden><p class="verify__k" data-i18n="h.verify">Spam check</p><div data-turnstile></div></div>
+            <p class="submit-status" data-submit-status role="status" aria-live="polite" hidden></p>
+            <div class="submit-actions" data-submit-actions hidden>
+              <button type="button" class="btn btn--line" data-retry><span class="btn__label" data-i18n="btn.retry">Try again</span></button>
+              <button type="button" class="btn btn--line" data-fallback><span class="btn__label" data-i18n="btn.fallback">Send by email instead</span></button>
+            </div>
           </fieldset>
 
           <div class="flow__nav">
@@ -260,6 +266,19 @@
         </form>
 
         <!-- email hand-off: the visitor's own email app sends the message; this page sends and stores nothing -->
+        <!-- direct submission: shown only after the inquiry service stored the inquiry -->
+        <div class="done done--direct" data-done-direct hidden tabindex="-1">
+          <p class="done__k" data-i18n="s.reference">Inquiry reference</p>
+          <h2 class="done__t" data-i18n="s.received.title">Your inquiry has been received.</h2>
+          <p class="done__ref" data-ref></p>
+          <p class="done__p" data-i18n="s.received.body">I will review your message and respond by email. Keep your reference number for follow-up.</p>
+          <p class="done__p" data-confirm-line hidden></p>
+          <div class="done__cta">
+            <button type="button" class="btn btn--line" data-restart><span class="btn__label" data-i18n="s.again">Start over</span></button>
+            <a class="link" href="index.html" data-i18n="s.home">Back to home</a>
+          </div>
+        </div>
+
         <div class="done" data-done hidden tabindex="-1">
           <p class="done__k" data-i18n="s.k">Ready to email</p>
           <h2 class="done__t" data-i18n="s.t">Your brief is ready.</h2>
@@ -290,6 +309,12 @@
           <div class="brief__bar"><i data-brief-bar></i></div>
           <dl class="brief__rows" data-brief></dl>
           <p class="brief__demo" data-i18n="b.demo">Your email app sends the message, not this website.</p>
+        </div>
+        <div class="board" data-board data-direct-only hidden>
+          <h2 class="board__t" data-i18n="board.title">Private inquiries</h2>
+          <p class="board__x" data-i18n="board.explain">Only anonymous activity shared with permission appears here. Messages and contact details are always private.</p>
+          <ul class="board__list" data-board-list></ul>
+          <p class="board__empty" data-board-empty hidden></p>
         </div>
         <div class="side__info" data-reveal="fade">
           <h2 data-i18n="h.next">What happens next</h2>

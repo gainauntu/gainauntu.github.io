@@ -103,7 +103,6 @@
       </div>
       <div class="menu__prefs">
         <button class="theme-btn theme-btn--menu" type="button" data-theme-toggle data-i18n-attr="aria-label:theme.toDark;title:theme.toDark" aria-label="다크 테마로 전환" title="다크 테마로 전환"><svg class="theme-btn__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><g class="theme-btn__sun" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" fill="none"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.8v2.1M12 19.1v2.1M2.8 12h2.1M19.1 12h2.1M5.5 5.5l1.5 1.5M17 17l1.5 1.5M5.5 18.5 7 17M17 7l1.5-1.5"/></g><path class="theme-btn__moon" d="M19.6 14.6A8 8 0 0 1 9.4 4.4a8 8 0 1 0 10.2 10.2Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg></button>
-        <button class="pref-switch" type="button" role="switch" aria-checked="true" data-smooth-toggle><span class="pref-switch__track" aria-hidden="true"><i></i></span><span data-i18n="scroll.smooth">부드러운 스크롤</span></button>
       </div>
       <p class="menu__contact"><a href="mailto:gainauntu@gmail.com" data-fact="contact.email" data-fact-href="contact.emailHref">gainauntu@gmail.com</a><a href="https://www.linkedin.com/in/gainauntu/" rel="noopener">LinkedIn</a></p>
     </div>
@@ -117,9 +116,9 @@
       <a class="back link" href="hire.html"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M13 8H3M7 3.5 2.5 8 7 12.5" stroke="currentColor" fill="none" stroke-width="1.4"/></svg><span data-i18n="nav.hire">프로젝트 의뢰</span></a>
       <h1 class="hire-title" data-split><span data-i18n="privacy.title">개인정보 처리 안내</span></h1>
       <div class="privacy__body">
-        <p class="lead" data-reveal data-i18n="privacy.form">문의 양식은 사용자의 기기에서 이메일을 작성할 수 있도록 돕습니다. 입력한 정보를 웹사이트 서버에 전송하지 않습니다. 이메일을 직접 보내면 발신자와 수신자의 이메일 서비스에서 해당 내용을 처리합니다.</p>
+        <p class="lead" data-reveal data-i18n="privacy.d.form">문의를 접수하면 입력하신 정보는 암호화된 연결을 통해 Cloudflare Workers에서 동작하는 문의 처리 서비스로 전송되고, 회신을 위해 비공개 Cloudflare D1 데이터베이스에 저장됩니다. 입력하신 내용은 브라우저에 저장되지 않습니다.</p><p data-reveal data-i18n="privacy.d.email">문의와 관련된 이메일은 Google의 Gmail API를 통해 제 Gmail 계정에서 발송됩니다. 제가 받는 알림, 문의하신 분께 보내는 접수 확인 메일, 입력하신 이메일 주소로 보내는 답장이 이에 해당하며, Google이 이메일 서비스 제공자로서 이 메일을 처리합니다.</p><p data-reveal data-i18n="privacy.d.bot">스팸을 막기 위해 문의 양식은 Cloudflare Turnstile을 사용하며, 이 기능은 Cloudflare에서 불러와 브라우저를 확인합니다. IP 주소는 이 확인과 요청 횟수 제한에 사용되며, 문의 처리 서비스에는 복원할 수 없는 해시 값으로만 저장되고 2일 후 삭제됩니다.</p><p data-reveal data-i18n="privacy.d.board">선택 항목에 동의하시면, 제가 확인한 뒤 문의 유형과 답변 여부가 공개 문의 목록에 익명으로 표시될 수 있습니다. 이름, 연락처, 제목, 예산, 문의 내용은 표시되지 않습니다. 삭제를 원하시면 접수번호와 함께 이메일로 알려 주세요.</p><p data-reveal data-i18n="privacy.d.keep">문의 내용은 요청 처리와 관련 연락에 필요한 기간 동안 보관합니다. 언제든지 삭제를 요청하실 수 있으며, 삭제한 문의는 데이터베이스에서 지워집니다. 보관 처리된 문의는 1년이 지나면 자동으로 삭제됩니다.</p>
         <p data-reveal data-i18n="privacy.purpose">직접 보내 주신 이름, 이메일 주소, 문의 내용 등은 문의에 회신하고 관련 연락을 주고받기 위해 이용합니다. 기밀 정보나 불필요한 개인정보는 포함하지 말아 주세요.</p>
-        <p data-reveal data-i18n="privacy.local">테마, 언어, 스크롤 설정과 첫 인사 애니메이션을 바꿔 보여 주기 위한 재생 횟수는 브라우저에만 저장되며 기기 밖으로 전송되지 않습니다. 문의 양식에 입력한 내용은 저장하지 않습니다.</p>
+        <p data-reveal data-i18n="privacy.local">테마 선택과 첫 인사 애니메이션을 바꿔 보여 주기 위한 재생 횟수는 브라우저에만 저장되며 기기 밖으로 전송되지 않습니다. 시작 화면 건너뛰기 같은 현재 방문 중의 설정은 탭을 닫을 때까지만 유지됩니다. 문의 양식에 입력한 내용은 브라우저에 저장하지 않습니다.</p>
         <p data-reveal data-i18n="privacy.fonts">이 사이트는 Google Fonts에서 글꼴을 불러오므로 브라우저가 Google 서버에 연결됩니다. 쿠키, 분석 도구, 추적 기능은 사용하지 않습니다.</p>
         <p data-reveal><span data-i18n="privacy.contact">개인정보 관련 문의나 삭제 요청은 이 페이지에 표시된 이메일 주소로 연락해 주세요.</span> <a class="link" href="mailto:gainauntu@gmail.com" data-fact="contact.email" data-fact-href="contact.emailHref">gainauntu@gmail.com</a></p>
       </div>

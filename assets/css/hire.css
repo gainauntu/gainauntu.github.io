@@ -157,3 +157,21 @@
 .mail-brief { display: block; width: 100%; margin-top: 8px; padding: 14px 16px; border: 1px solid var(--line-strong); border-radius: 8px; background: var(--paper); color: var(--ink);
   font: 400 var(--fs-small)/1.6 var(--font); resize: vertical; white-space: pre-wrap; }
 @media (max-width: 560px) { .mail-meta > div { grid-template-columns: 1fr; } }
+
+/* Phase 5: direct submission and anonymous board (hidden unless the inquiry service is configured) */
+.consent--board { margin-top: 12px; }
+.verify { margin-top: 16px; }
+.verify__k { font-size: var(--fs-small); color: var(--ink-2); margin-bottom: 6px; }
+.submit-status { margin-top: 14px; padding: 12px 14px; border-left: 3px solid var(--warn); background: var(--paper-2); color: var(--ink); max-width: 62ch; }
+.submit-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
+.submit-actions[hidden], .submit-status[hidden], .consent[hidden], [data-direct-only][hidden] { display: none; }   /* display rules above must not override [hidden] */
+.done__ref { font-family: "Schibsted Grotesk", sans-serif; font-size: calc(26px * var(--scale)); letter-spacing: .04em; margin: 6px 0 10px; font-variant-numeric: tabular-nums; }
+.board { margin-top: 22px; padding: 18px 20px; border-radius: 10px; background: var(--paper-2); }
+.board__t { font-size: var(--fs-h3); }
+.board__x { font-size: var(--fs-small); color: var(--ink-2); margin-top: 6px; }
+.board__list { list-style: none; margin: 12px 0 0; padding: 0; }
+.board__list li { display: grid; grid-template-columns: 1fr auto; gap: 2px 12px; padding: 10px 0; border-top: 1px solid var(--line); font-size: var(--fs-small); }
+.board__month { grid-row: 2; color: var(--ink-3); }
+.board__st { grid-row: 1 / span 2; align-self: center; padding: 3px 10px; border-radius: 999px; border: 1px solid var(--line-strong); white-space: nowrap; }
+.board__st--replied { background: var(--sky-soft); border-color: transparent; color: var(--sky-ink); }
+.board__empty { font-size: var(--fs-small); color: var(--ink-3); margin-top: 10px; }

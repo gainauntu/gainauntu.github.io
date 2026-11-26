@@ -465,11 +465,6 @@ html:not(.js-motion) .theme-btn, html:not(.js-motion) .menu__prefs { display: no
 
 /* ---------- Phase 4E: preference switch (menu) ---------- */
 .menu__prefs { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 22px; }
-.pref-switch { display: inline-flex; align-items: center; gap: 12px; min-height: 44px; padding: 0; border: 0; background: none; color: var(--night-fg); cursor: pointer; font-size: 15px; }
-.pref-switch__track { position: relative; width: 40px; height: 22px; border-radius: 999px; border: 1px solid var(--night-line); background: rgba(238, 233, 223, .06); flex: none; transition: background var(--t-fast); }
-.pref-switch__track i { position: absolute; left: 3px; top: 3px; width: 14px; height: 14px; border-radius: 50%; background: var(--night-mute); transition: transform 300ms var(--ease-reveal), background var(--t-fast); }
-.pref-switch[aria-checked="true"] .pref-switch__track { background: rgba(225, 180, 112, .2); border-color: var(--amber); }
-.pref-switch[aria-checked="true"] .pref-switch__track i { transform: translateX(18px); background: var(--amber); }
 
 /* ---------- Phase 4E: header at tablet and phone widths: language and theme stay in the header ---------- */
 @media (max-width: 1040px) {

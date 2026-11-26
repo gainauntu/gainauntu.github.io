@@ -166,7 +166,8 @@
     });
     backBtn.hidden = S.idx === 0;
     var last = S.idx === st.length - 1;
-    var sendKey = S.intent === 'collab' ? 'btn.send.collab' : S.intent === 'msg' ? 'btn.send.msg' : 'btn.send.project';
+    var sendKey = DIRECT ? (S.intent === 'collab' ? 'btn.submit.collab' : S.intent === 'msg' ? 'btn.submit.general' : 'btn.submit.project')
+      : S.intent === 'collab' ? 'btn.send.collab' : S.intent === 'msg' ? 'btn.send.msg' : 'btn.send.project';
     $('.btn__label', nextBtn).textContent = t(last ? sendKey : 'btn.next');
   }
   function show(step, animate) {
@@ -174,7 +175,7 @@
     var fs = $('.step[data-step="' + step + '"]', form);
     $$('[data-only]', fs).forEach(function (el) { el.hidden = el.getAttribute('data-only') !== S.intent; });
     if (animate && !AG.RM.matches) { void fs.offsetWidth; fs.classList.add('is-entering'); }
-    if (step === 'review') renderReview();
+    if (step === 'review') { renderReview(); if (DIRECT) loadTurnstile(); }
     if (step === 'contact') toggleCollabHint();
   }
   function go(i, focus) {
@@ -192,6 +193,7 @@
     if (errs.length) return;
     S.visited[cur()] = true;
     if (S.idx < steps().length - 1) go(S.idx + 1);
+    else if (DIRECT) submitDirect();
     else send();
   });
   backBtn.addEventListener('click', function () { if (S.idx > 0) go(S.idx - 1); });
@@ -321,14 +323,143 @@
     done.hidden = true; form.hidden = false; $('.flow__progress').hidden = false;
     go(steps().length - 1);
   });
-  $('[data-restart]').addEventListener('click', function () {
+  $$('[data-restart]').forEach(function (rb) { rb.addEventListener('click', function () {
     form.reset(); mail = null; $('[data-mail-brief]').value = '';
     S.sel = { stage: 'opt.notsure', budget: 'bud.discuss', start: 'opt.notsure', ctype: null, reply: 'lang.' + AG.lang(), mtype: null };
     Object.keys(CSEL).forEach(function (k) { CSEL[k].render(); });
-    done.hidden = true; form.hidden = false; $('.flow__progress').hidden = false; lastBrief = {};
+    done.hidden = true; doneDirect.hidden = true; form.hidden = false; $('.flow__progress').hidden = false; lastBrief = {};
+    attempt = null; statusMsg(null); if (window.turnstile && tsWidget !== null) { try { turnstile.reset(tsWidget); } catch (e) {} } tsToken = '';
     setIntent(S.intent);
     var lg = $('.step:not([hidden]) .step__q', form); if (lg) lg.focus();
-  });
+  }); });
+
+
+  /* ---------------- direct submission (Phase 5) ----------------
+     Active only when content/site.json inquiry.apiBase AND inquiry.turnstileSiteKey are set; otherwise the email
+     hand-off above stays the only path. Success is shown only after the inquiry service answers that it stored the
+     inquiry. A retry reuses the same attempt key (and the same bot-check token), so a timeout cannot create a duplicate.
+     Nothing typed is written to browser storage. */
+  var INQ = (window.AG_SITE && AG_SITE.inquiry) || {};
+  var DIRECT = !!(INQ.apiBase && INQ.turnstileSiteKey);
+  var doneDirect = $('[data-done-direct]');
+  var attempt = null, tsToken = '', tsWidget = null, tsLoading = false, submitting = false;
+  function uuid() {
+    if (window.crypto && crypto.randomUUID) return crypto.randomUUID();
+    var b = crypto.getRandomValues(new Uint8Array(16)); return Array.prototype.map.call(b, function (x) { return ('0' + x.toString(16)).slice(-2); }).join('');
+  }
+  function statusMsg(key, retry) {
+    var el = $('[data-submit-status]'), acts = $('[data-submit-actions]');
+    el.hidden = !key; el.textContent = key ? t(key) : ''; el.classList.toggle('is-err', !!key);
+    acts.hidden = !retry;
+  }
+  function loadTurnstile() {
+    if (tsWidget !== null || tsLoading) return;
+    var mount = $('[data-turnstile]'); if (!mount) return;
+    function render() {
+      tsWidget = turnstile.render(mount, {
+        sitekey: INQ.turnstileSiteKey, action: 'inquiry', language: AG.lang() === 'bn' ? 'auto' : AG.lang(),
+        theme: document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'auto',
+        callback: function (tok) { tsToken = tok; if (!$('[data-submit-status]').hidden && $('[data-submit-status]').textContent === t('s.spam')) statusMsg(null); },
+        'expired-callback': function () { tsToken = ''; }, 'error-callback': function () { tsToken = ''; }
+      });
+    }
+    if (window.turnstile) { render(); return; }
+    tsLoading = true;
+    window.__agTsReady = function () { tsLoading = false; render(); };
+    var sc = document.createElement('script');
+    sc.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&onload=__agTsReady';
+    sc.async = true; sc.defer = true;
+    sc.onerror = function () { tsLoading = false; statusMsg('h.direct.unavailable', true); $('[data-retry]').hidden = true; };
+    document.head.appendChild(sc);
+  }
+  function payload() {
+    var f = {}, put = function (k, v) { if (v !== undefined && v !== null && v !== '' && !(Array.isArray(v) && !v.length)) f[k] = v; };
+    if (S.intent === 'project') {
+      put('scope', checked('scope')); put('ptitle', val('ptitle')); put('desc', val('desc')); put('env', val('env')); put('stage', S.sel.stage);
+      put('budget', S.sel.budget); if (S.sel.budget !== 'bud.discuss') put('currency', S.currency);
+      put('engage', checked('engage')[0] || 'opt.notsure'); put('start', S.sel.start); put('org', val('org')); put('ctype', S.sel.ctype);
+    } else if (S.intent === 'collab') {
+      put('topic', checked('topic')); put('cdesc', val('cdesc')); put('affil', val('affil')); put('role', val('role'));
+    } else { put('mtype', S.sel.mtype); put('msg', val('msg')); }
+    put('name', val('name')); put('email', val('email'));
+    f.replyLang = (S.sel.reply || 'lang.' + AG.lang()).replace('lang.', '');
+    return f;
+  }
+  function submitDirect() {
+    if (submitting) return;
+    var brief = compose().text;
+    // a changed brief is a new attempt; an unchanged one keeps its key so the service can recognise a retry
+    if (!attempt || attempt.brief !== brief) attempt = { key: uuid(), brief: brief };
+    if (!tsToken) { statusMsg('s.spam'); return; }
+    submitting = true; statusMsg(null);
+    $('.btn__label', nextBtn).textContent = t('btn.submitting'); nextBtn.setAttribute('aria-busy', 'true'); nextBtn.disabled = true;
+    var ctl = window.AbortController ? new AbortController() : null, timer = setTimeout(function () { if (ctl) ctl.abort(); }, 20000);
+    var body = { idemKey: attempt.key, intent: S.intent, lang: AG.lang(), fields: payload(), brief: brief, consent: true,
+      boardOptIn: !!(form.elements.boardOptIn && form.elements.boardOptIn.checked), website: '', token: tsToken };
+    fetch(INQ.apiBase.replace(/\/$/, '') + '/v1/inquiries', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body), signal: ctl ? ctl.signal : undefined, credentials: 'omit' })
+      .then(function (r) { return r.json().catch(function () { return {}; }).then(function (d) { return { status: r.status, d: d }; }); })
+      .then(function (res) {
+        if ((res.status === 201 || res.status === 200) && res.d.ok && res.d.ref) return received(res.d);
+        if (res.status === 429) return statusMsg('s.rate', true);
+        if (res.status === 403 && res.d.error === 'spam') { tsToken = ''; try { turnstile.reset(tsWidget); } catch (e) {} attempt = null; return statusMsg('s.spam'); }
+        if (res.status === 400) { attempt = null; return statusMsg('s.error', true); }
+        statusMsg('s.unknown', true);            // 5xx or anything unexpected: outcome unknown; retry keeps the same key
+      })
+      .catch(function () { statusMsg('s.unknown', true); })
+      .then(function () {
+        clearTimeout(timer); submitting = false; nextBtn.disabled = false; nextBtn.removeAttribute('aria-busy'); renderProgress();
+      });
+  }
+  function received(d) {
+    form.hidden = true; $('.flow__progress').hidden = true;
+    $('[data-ref]', doneDirect).textContent = d.ref;
+    var cl = $('[data-confirm-line]', doneDirect);
+    cl.hidden = d.confirmation === 'off' || !d.confirmation;
+    cl.textContent = d.confirmation === 'requested' ? t('s.confirm.sent') : d.confirmation === 'failed' ? t('s.confirm.unavailable') : '';
+    doneDirect.hidden = false; doneDirect.focus();
+    attempt = null; tsToken = '';
+    loadBoard();
+  }
+  if (DIRECT) {
+    document.documentElement.classList.add('inq-direct');
+    $$('[data-direct-only]').forEach(function (el) { el.hidden = false; });
+    var pill = $('.demo-pill'); if (pill) { pill.setAttribute('data-i18n', 'h.direct.intro'); pill.textContent = t('h.direct.intro'); }
+    var bd = $('.brief__demo'); if (bd) bd.hidden = true;
+    var np = $('[data-i18n="h.next.p"]'); if (np) { np.setAttribute('data-i18n', 'h.direct.next'); np.textContent = t('h.direct.next'); }
+    $('[data-retry]').addEventListener('click', function () { submitDirect(); });
+    $('[data-fallback]').addEventListener('click', function () { statusMsg(null); send(); });
+  }
+
+  /* ---------------- anonymous board: only what the inquiry service publishes (opted-in and approved) ---------------- */
+  var BOARD_TYPE = { project: 'board.private.project', collab: 'board.private.research', msg: 'board.private.general' };
+  var BOARD_STATUS = { received: 'board.received', pending: 'board.pending', replied: 'board.replied' };
+  var boardData = null;
+  function renderBoard() {
+    var list = $('[data-board-list]'), empty = $('[data-board-empty]'); if (!list) return;
+    list.textContent = '';
+    if (boardData === 'error') { empty.hidden = false; empty.textContent = t('board.unavailable'); return; }
+    if (!boardData) { empty.hidden = false; empty.textContent = t('board.loading'); return; }
+    empty.hidden = boardData.length > 0; empty.textContent = boardData.length ? '' : t('board.empty');
+    boardData.forEach(function (x) {
+      if (!BOARD_TYPE[x.type] || !BOARD_STATUS[x.status] || !/^\d{4}-\d{2}$/.test(x.month)) return;
+      var li = document.createElement('li'), a = document.createElement('span'), b = document.createElement('span'), m = document.createElement('span');
+      a.className = 'board__type'; a.textContent = t(BOARD_TYPE[x.type]);
+      m.className = 'board__month';
+      try { m.textContent = new Date(x.month + '-15T00:00:00Z').toLocaleDateString(AG.lang() === 'bn' ? 'bn-BD' : AG.lang() === 'ko' ? 'ko-KR' : 'en-GB', { year: 'numeric', month: 'short', timeZone: 'UTC' }); } catch (e) { m.textContent = x.month; }
+      b.className = 'board__st board__st--' + x.status; b.textContent = t(BOARD_STATUS[x.status]);
+      li.appendChild(a); li.appendChild(m); li.appendChild(b); list.appendChild(li);
+    });
+  }
+  function loadBoard() {
+    if (!DIRECT) return;
+    renderBoard();
+    fetch(INQ.apiBase.replace(/\/$/, '') + '/v1/board', { credentials: 'omit' })
+      .then(function (r) { if (!r.ok) throw new Error('board'); return r.json(); })
+      .then(function (d) { boardData = Array.isArray(d.items) ? d.items : []; renderBoard(); })
+      .catch(function () { boardData = 'error'; renderBoard(); });
+  }
+  loadBoard();
+  document.addEventListener('ag:lang', renderBoard);
 
   /* ---------------- init ---------------- */
   var q = (location.search.match(/intent=(\w+)/) || [])[1];

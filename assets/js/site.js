@@ -86,14 +86,13 @@
     document.dispatchEvent(new CustomEvent('ag:lang', { detail: { lang: lang } }));
   }
   // Phase 4F: every page exists in each language at its own URL (/, /ko/, /bn/). Switching opens the
-  // equivalent page, keeping the section (#hash) and the form intent (?intent=), never form contents.
+  // equivalent page, keeping the section (#hash) and every URL parameter (?intent=, ?scroll=, ...), never form contents.
   function setLang(l) {
     if (LANGS.indexOf(l) < 0 || l === lang) return false;
     var alt = root.getAttribute('data-alt-' + l);
     if (!alt) { lang = l; apply(); return false; }
-    var q = (location.search.match(/[?&]intent=(project|collab|msg)\b/) || [])[0];
-    try { localStorage.setItem('ag-lang', l); sessionStorage.setItem('ag-nav', String(Date.now())); } catch (e) {}
-    location.href = alt + (q ? '?' + q.slice(1) : '') + location.hash;
+    try { sessionStorage.setItem('ag-nav', String(Date.now())); } catch (e) {}
+    location.href = alt + location.search + location.hash;
     return true;
   }
   /* ---------------- theme: light (coastal, warm) or dark. Until the visitor chooses, the CSS follows
@@ -185,18 +184,9 @@
     $$('.menu__nav a', menu).forEach(function (a) { a.addEventListener('click', function () { closeMenu(false); }); });
   }
 
-  /* ---------------- preference: smooth (eased) wheel scrolling or the browser's own; saved, reversible ---------------- */
-  function smoothPref() { try { return localStorage.getItem('ag-scroll') !== 'native'; } catch (e) { return true; } }
-  function syncSmooth() { $$('[data-smooth-toggle]').forEach(function (b) { b.setAttribute('aria-checked', String(smoothPref())); }); }
-  $$('[data-smooth-toggle]').forEach(function (b) {
-    b.addEventListener('click', function () {
-      var on = !smoothPref();
-      try { if (on) localStorage.removeItem('ag-scroll'); else localStorage.setItem('ag-scroll', 'native'); } catch (e) {}
-      if (window.AG.motion && window.AG.motion.setNative) window.AG.motion.setNative(!on);
-      syncSmooth();
-    });
-  });
-  syncSmooth();
+  /* ---------------- no visitor-facing scrolling setting (Phase 5): smooth scrolling is the default, with
+     automatic fallbacks in motion.js. Values saved by earlier versions are removed so nobody stays in an old mode. */
+  try { localStorage.removeItem('ag-scroll'); localStorage.removeItem('ag-lang'); } catch (e) {}
 
   /* in-site navigation is remembered for a moment, so the homepage greeting plays on arrival and refresh but not
      when someone comes back to the homepage from a case study */

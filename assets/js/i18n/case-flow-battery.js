@@ -19,7 +19,7 @@ Object.assign((window.AG_DICT = window.AG_DICT || {}), {
   "flow-battery.n.bus": ["CAN and RS485", "CAN·RS485", "CAN ও RS485"],
   "flow-battery.n.bus.d": ["The data arrives over CAN and RS485.", "데이터는 CAN과 RS485로 들어옵니다.", "ডেটা আসে CAN ও RS485 দিয়ে।"],
   "flow-battery.n.monitor": ["Monitoring software", "모니터링 소프트웨어", "মনিটরিং সফটওয়্যার"],
-  "flow-battery.n.monitor.d": ["Shows the battery's state and feeds the alarms.", "전지 상태를 보여 주고 경보 판단에 데이터를 넘깁니다.", "ব্যাটারির অবস্থা দেখায় এবং অ্যালার্মে তথ্য দেয়।"],
+  "flow-battery.n.monitor.d": ["Shows the battery's state and feeds the alarms.", "전지 상태를 표시하고 경보 판단에 필요한 데이터를 전달합니다.", "ব্যাটারির অবস্থা দেখায় এবং সতর্ক সংকেত নির্ধারণে প্রয়োজনীয় ডেটা পাঠায়।"],
   "flow-battery.n.alarm": ["Threshold alarms", "임계값 경보", "থ্রেশহোল্ড অ্যালার্ম"],
   "flow-battery.n.alarm.d": ["Fault alarms with configurable thresholds.", "임계값을 설정할 수 있는 고장 경보입니다.", "কনফিগারযোগ্য থ্রেশহোল্ডসহ ত্রুটি-সতর্কতা।"],
   "flow-battery.n.protect": ["Protective logic", "보호 로직", "সুরক্ষা লজিক"],
@@ -27,10 +27,10 @@ Object.assign((window.AG_DICT = window.AG_DICT || {}), {
   "flow-battery.n.inverter": ["Inverter control", "인버터 제어", "ইনভার্টার নিয়ন্ত্রণ"],
   "flow-battery.n.inverter.d": ["Automated control of the inverter.", "인버터를 자동으로 제어합니다.", "ইনভার্টারের স্বয়ংক্রিয় নিয়ন্ত্রণ।"],
   "flow-battery.n.tests": ["Charge and discharge tests", "충방전 시험", "চার্জ ও ডিসচার্জ টেস্ট"],
-  "flow-battery.n.tests.d": ["Tests that can run without continuous manual supervision.", "사람이 계속 지켜보지 않아도 되는 시험입니다.", "সারাক্ষণ হাতে তদারকি ছাড়াই চলা টেস্ট।"],
+  "flow-battery.n.tests.d": ["Tests that can run without continuous manual supervision.", "사람이 계속 지켜보지 않아도 되는 시험입니다.", "যে পরীক্ষা চালাতে সারাক্ষণ মানুষের তদারকির প্রয়োজন হয় না।"],
   "flow-battery.h1.t": ["Configurable thresholds", "설정 가능한 임계값", "কনফিগারযোগ্য থ্রেশহোল্ড"],
   "flow-battery.h1.d": ["Fault alarms use configurable thresholds and feed protective logic.", "고장 경보는 설정 가능한 임계값을 쓰고, 그 결과가 보호 로직으로 이어집니다.", "ত্রুটি-সতর্কতায় কনফিগারযোগ্য থ্রেশহোল্ড ব্যবহৃত হয়, আর তা সুরক্ষা লজিকে যায়।"],
-  "flow-battery.h2.t": ["Unattended tests", "무인 시험", "তদারকিহীন টেস্ট"],
-  "flow-battery.h2.d": ["Automated inverter control lets charge and discharge tests run without continuous manual supervision.", "인버터 제어를 자동화해 충방전 시험을 사람이 계속 지켜보지 않아도 진행할 수 있게 했습니다.", "স্বয়ংক্রিয় ইনভার্টার নিয়ন্ত্রণে চার্জ ও ডিসচার্জ টেস্ট সারাক্ষণ হাতে তদারকি ছাড়াই চলে।"],
+  "flow-battery.h2.t": ["Unattended tests", "상시 감독 없는 시험", "সারাক্ষণ তদারকি ছাড়া পরীক্ষা"],
+  "flow-battery.h2.d": ["Automated inverter control lets charge and discharge tests run without continuous manual supervision.", "인버터 제어를 자동화해 충방전 시험을 사람이 계속 지켜보지 않아도 진행할 수 있게 했습니다.", "ইনভার্টার নিয়ন্ত্রণ স্বয়ংক্রিয় করার ফলে চার্জ ও ডিসচার্জ পরীক্ষা সারাক্ষণ মানুষের তদারকি ছাড়াই চালানো যায়।"],
   "flow-battery.o1": ["Automated inverter control enabled charge/discharge tests without continuous manual supervision, with fault alarms and protective logic.", "인버터 제어를 자동화해 사람이 상시 감독하지 않고도 충방전 시험을 수행할 수 있도록 했으며, 고장 경보와 보호 로직을 구현했습니다.", "ইনভার্টার নিয়ন্ত্রণ স্বয়ংক্রিয় করে সারাক্ষণ মানুষের তদারকি ছাড়াই চার্জ ও ডিসচার্জ পরীক্ষা চালানোর ব্যবস্থা করেছি; ত্রুটির সতর্ক সংকেত ও সুরক্ষা লজিকও বাস্তবায়ন করেছি।"]
 });
