@@ -164,6 +164,7 @@
 .verify__k { font-size: var(--fs-small); color: var(--ink-2); margin-bottom: 6px; }
 .submit-status { margin-top: 14px; padding: 12px 14px; border-left: 3px solid var(--warn); background: var(--paper-2); color: var(--ink); max-width: 62ch; }
 .submit-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
+.submit-actions[hidden], .submit-status[hidden], .consent[hidden], [data-direct-only][hidden] { display: none; }   /* display rules above must not override [hidden] */
 .done__ref { font-family: "Schibsted Grotesk", sans-serif; font-size: calc(26px * var(--scale)); letter-spacing: .04em; margin: 6px 0 10px; font-variant-numeric: tabular-nums; }
 .board { margin-top: 22px; padding: 18px 20px; border-radius: 10px; background: var(--paper-2); }
 .board__t { font-size: var(--fs-h3); }

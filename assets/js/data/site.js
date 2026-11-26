@@ -48,7 +48,7 @@ window.AG_SITE = {
   }
  },
  "inquiry": {
-  "apiBase": "",
-  "turnstileSiteKey": ""
+  "apiBase": "https://gainauntu-inquiry-api.gainauntu.workers.dev",
+  "turnstileSiteKey": "0x4AAAAAAGR_fXPFcq3RIpUD"
  }
 };
