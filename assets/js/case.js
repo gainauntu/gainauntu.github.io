@@ -252,62 +252,101 @@
   }
 
 
-  /* ================= demo: illustrative water-use events (synthetic; Phase 5) =================
-     A made-up week of household use. The highlighted spans are drawn by hand for each example event; nothing here
-     detects anything, and there is no band, threshold, score or model. */
+  /* ================= demo: a week on one meter, played back (synthetic; Phase 5) =================
+     A made-up week of household use at half-hour resolution with three hand-placed illustrative events. Playback,
+     scrubbing and highlighting follow the earlier simulation's presentation; the highlighted spans are drawn by hand
+     for each event. Nothing here detects anything. */
   function wmDemo() {
     var box = $('[data-demo="wm-events"]'); if (!box) return;
-    var plot = $('[data-plot]', box), state = $('[data-state]', box), btns = $$('[data-ev]', box);
+    var plot = $('[data-plot]', box), read = $('[data-state]', box), range = $('[data-wm-range]', box), playBtn = $('[data-wm-play]', box), feed = $('[data-wm-feed]', box);
     var k = function (x) { return 'water-meter.demo.' + x; };
     function rng(seed) { return function () { seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; }; }
-    var r = rng(11), base = [];
-    for (var i = 0; i < 168; i++) {          // 7 days x 24 hours, litres per hour (made up)
-      var h = i % 24, g = function (c, w, a) { var z = (h - c) / w; return a * Math.exp(-z * z / 2); };
-      base.push(Math.max(0, 0.4 + g(7.5, 1.1, 34 + r() * 8) + g(19.5, 1.6, 28 + r() * 8) + g(13, 2.2, 7) + r() * 2.2));
+    var N = 336, SPD = 48, r = rng(11), d = [];
+    for (var i = 0; i < N; i++) {            // 7 days x 48 half-hours, litres per hour (made up)
+      var h = (i % SPD) / 2, g = function (c, w, a) { var z = (h - c) / w; return a * Math.exp(-z * z / 2); };
+      d.push(Math.max(0, 0.4 + g(7.5, 1.1, 32 + r() * 10) + g(19.5, 1.6, 26 + r() * 10) + g(13, 2.2, 7) + r() * 2.6));
     }
-    var EV = {
-      none: { mark: null, f: function (v) { return v; } },
-      leak: { mark: [[72, 168]], f: function (v, i) { return i >= 72 ? v + 6 : v; } },
-      burst: { mark: [[110, 112]], f: function (v, i) { return i >= 110 && i < 112 ? v + 95 : v; } },
-      stuck: { mark: [[60, 86]], f: function (v, i, a) { return i >= 60 && i < 86 ? a[59] : v; } }
-    };
-    var cur = 'none', raf2 = 0;
-    function series(ev) { var out = []; base.forEach(function (v, i) { out.push(EV[ev].f(v, i, out)); }); return out; }
-    function X(i) { return 40 + i / 167 * 940; }
-    function Y(v) { return 250 - Math.min(v, 140) / 140 * 220; }
-    function render(p) {
-      var d = series(cur), n = Math.max(2, Math.round(168 * p)), s = '<svg viewBox="0 0 1000 290" role="img" aria-label="' + t(k('title')) + '">';
+    // illustrative events, in half-hour indices
+    var EV = [
+      { id: 'stuck', a: 61, b: 109 },          // day 2 midday to day 3 midday: the reading does not change
+      { id: 'leak', a: 144, b: N - 1 },        // from day 4: a small flow that never stops
+      { id: 'burst', a: 220, b: 224 }          // day 5: two hours far above the rest of the week
+    ];
+    for (var q = EV[0].a; q <= EV[0].b; q++) d[q] = d[EV[0].a - 1];
+    for (q = EV[1].a; q < N; q++) d[q] += 6;
+    for (q = EV[2].a; q < EV[2].b; q++) d[q] += 92 + r() * 8;
+    var T = N - 1, playing = false, raf2 = 0, t0 = 0, tStart = 0, DUR = 11000, shown = {};
+    var H = 290, FS = '', FT = '';
+    function X(i) { return 40 + i / (N - 1) * 940; }
+    function Y(v) { return (H - 40) - Math.min(v, 140) / 140 * (H - 76); }
+    function render() {
+      var narrow = plot.clientWidth > 0 && plot.clientWidth < 600;          // phones: taller chart, larger labels
+      H = narrow ? 620 : 290; FS = narrow ? ' style="font-size:34px"' : ''; FT = narrow ? ' style="font-size:36px"' : '';
+      var s = '<svg viewBox="0 0 1000 ' + H + '" role="img" aria-label="' + t(k('title')) + '">';
       for (var day = 0; day < 7; day++) {
-        s += '<rect class="wm-night" x="' + X(day * 24).toFixed(1) + '" y="30" width="' + (X(6) - X(0)).toFixed(1) + '" height="220"/>';
-        s += '<text class="demo-tick" x="' + X(day * 24 + 12).toFixed(1) + '" y="276">' + t(k('day'), { n: AG.num(day + 1) }) + '</text>';
+        s += '<rect class="wm-night" x="' + X(day * SPD).toFixed(1) + '" y="30" width="' + (X(12) - X(0)).toFixed(1) + '" height="' + (H - 70) + '"/>';
+        s += '<text class="demo-tick"' + FS + ' x="' + X(day * SPD + 24).toFixed(1) + '" y="' + (H - (FS ? 2 : 14)) + '">' + (FS ? AG.num(day + 1) : t(k('day'), { n: AG.num(day + 1) })) + '</text>';
       }
-      s += '<line class="demo-axis" x1="40" x2="980" y1="250" y2="250"/>';
-      (EV[cur].mark || []).forEach(function (m) { s += '<rect class="wm-mark" x="' + X(m[0]).toFixed(1) + '" y="26" width="' + Math.max(8, X(m[1] - 1) - X(m[0])).toFixed(1) + '" height="228" rx="4"/>'; });
-      var pts = ''; for (var q = 0; q < n; q++) pts += X(q).toFixed(1) + ',' + Y(d[q]).toFixed(1) + ' ';
-      s += '<polyline class="wm-use" points="' + pts + '"/></svg>';
+      s += '<line class="demo-axis" x1="40" x2="980" y1="' + (H - 40) + '" y2="' + (H - 40) + '"/>';
+      var active = null;
+      EV.forEach(function (e) {
+        if (T < e.a) return;
+        var end = Math.min(T, e.b), w = Math.max(6, X(end) - X(e.a));
+        var op = Math.min(1, (T - e.a + 1) / 10);          // fades in over the first five hours of playback
+        s += '<g class="wm-ev wm-ev--' + e.id + '" style="opacity:' + op.toFixed(2) + '"><rect class="wm-ev__area" x="' + X(e.a).toFixed(1) + '" y="30" width="' + w.toFixed(1) + '" height="' + (H - 70) + '" rx="3"/>';
+        s += '<line class="wm-ev__start" x1="' + X(e.a).toFixed(1) + '" x2="' + X(e.a).toFixed(1) + '" y1="30" y2="' + (H - 40) + '"/>';
+        var ty = FT ? [72, 116, 160][EV.indexOf(e)] : 48;
+        s += '<text class="wm-ev__tag"' + FT + ' x="' + (X(e.a) + 8).toFixed(1) + '" y="' + ty + '"' + (X(e.a) > (FT ? 560 : 760) ? ' text-anchor="end" dx="-16"' : '') + '>' + t(k(e.id)) + '</text></g>';
+        if (T <= e.b && T < N - 1) active = e;
+      });
+      var pts = ''; for (var p2 = 0; p2 <= T; p2++) pts += X(p2).toFixed(1) + ',' + Y(d[p2]).toFixed(1) + ' ';
+      s += '<polyline class="wm-use" points="' + pts + '"/>';
+      s += '<line class="sim-cursor" x1="' + X(T).toFixed(1) + '" x2="' + X(T).toFixed(1) + '" y1="26" y2="' + (H - 36) + '"/>';
+      s += '<circle class="wm-head" cx="' + X(T).toFixed(1) + '" cy="' + Y(d[T]).toFixed(1) + '" r="' + (FS ? 9 : 4.5) + '"/></svg>';
       plot.innerHTML = s;
+      range.value = T;
+      var passed = EV.filter(function (e) { return T >= e.a; });
+      var msg = active ? t(k('s.' + active.id)) : (passed.length === EV.length ? t(k('done')) : t(k('s.none')));
+      if (read.textContent !== msg) read.textContent = msg;
+      read.classList.toggle('is-flag', !!active);
+      EV.forEach(function (e) {
+        var on = T >= e.a, li = shown[e.id];
+        if (on && !li) {
+          li = document.createElement('li'); var bt = document.createElement('button'); bt.type = 'button'; bt.className = 'wm-feed__item wm-feed__item--' + e.id;
+          bt.addEventListener('click', function () { stop(); T = Math.min(e.b, e.a + 12); render(); });
+          li.appendChild(bt); shown[e.id] = li;
+          var after = null; EV.forEach(function (o) { if (o.a > e.a && shown[o.id] && !after) after = shown[o.id]; });
+          feed.insertBefore(li, after); requestAnimationFrame(function () { li.classList.add('is-in'); });
+        }
+        if (!on && li) { li.remove(); delete shown[e.id]; }
+        if (li) li.firstChild.textContent = t(k('day'), { n: AG.num(Math.floor(e.a / SPD) + 1) }) + ' · ' + t(k(e.id));
+      });
+      feed.parentNode.classList.toggle('is-empty', !passed.length);
+      $('.btn__label', playBtn).textContent = playing ? t(k('pause')) : (T >= N - 1 ? t(k('replay')) : t(k('play')));
+    }
+    function stop() { playing = false; cancelAnimationFrame(raf2); raf2 = 0; render(); }
+    function step(now) {
+      if (!t0) t0 = now;
+      T = Math.min(N - 1, Math.round(tStart + (now - t0) / DUR * (N - 1)));
+      render();
+      if (T >= N - 1) { stop(); return; }
+      raf2 = requestAnimationFrame(step);
     }
     function play() {
-      cancelAnimationFrame(raf2);
-      if (RM.matches) { render(1); return; }
-      var t0 = 0;
-      (function step(now) { if (!t0) t0 = now; var p = Math.min(1, (now - t0) / 1400); render(p); if (p < 1) raf2 = requestAnimationFrame(step); })(performance.now());
+      if (T >= N - 1) T = 0;
+      if (RM.matches) { T = N - 1; render(); return; }
+      playing = true; t0 = 0; tStart = T; raf2 = requestAnimationFrame(step);
     }
-    function choose(ev, focus) {
-      cur = ev;
-      btns.forEach(function (b) { var on = b.getAttribute('data-ev') === ev; b.setAttribute('aria-checked', String(on)); b.tabIndex = on ? 0 : -1; if (on && focus) b.focus(); });
-      state.textContent = t(k('s.' + ev)); state.classList.toggle('is-flag', ev !== 'none');
-      play();
-    }
-    btns.forEach(function (b, i) {
-      b.addEventListener('click', function () { choose(b.getAttribute('data-ev')); });
-      b.addEventListener('keydown', function (e) {
-        var d = e.key === 'ArrowRight' || e.key === 'ArrowDown' ? 1 : e.key === 'ArrowLeft' || e.key === 'ArrowUp' ? -1 : 0;
-        if (!d) return; e.preventDefault(); choose(btns[(i + d + btns.length) % btns.length].getAttribute('data-ev'), true);
-      });
-    });
-    choose('none');
-    document.addEventListener('ag:lang', function () { state.textContent = t(k('s.' + cur)); render(1); });
+    playBtn.addEventListener('click', function () { if (playing) stop(); else play(); });
+    range.addEventListener('input', function () { if (playing) { playing = false; cancelAnimationFrame(raf2); raf2 = 0; } T = +range.value; render(); });
+    // start at the beginning and play once when the demo first scrolls into view (full week at once with reduced motion)
+    T = RM.matches ? N - 1 : 0; render();
+    if (!RM.matches && 'IntersectionObserver' in window) {
+      var io = new IntersectionObserver(function (es) { if (es[0].isIntersecting) { io.disconnect(); if (!playing && T === 0) play(); } }, { threshold: 0.45 });
+      io.observe(plot);
+    } else if (!RM.matches) play();
+    document.addEventListener('ag:lang', render);
+    var rz = 0; window.addEventListener('resize', function () { clearTimeout(rz); rz = setTimeout(render, 150); });
   }
 
   if (CFG.demo === 'wm-events') wmDemo();

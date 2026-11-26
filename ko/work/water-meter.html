@@ -168,14 +168,20 @@
     <div class="wrap">
       <div class="split split--head">
         <h2 class="h2" data-split><span data-i18n="water-meter.demo.title">평소와 다른 사용 패턴의 예</span></h2>
-        <p class="muted" data-reveal data-i18n="water-meter.demo.intro">가상으로 만든 한 가정의 일주일 물 사용량입니다. 예시 상황을 골라 살펴볼 만한 패턴이 어떤 모습인지 확인해 보세요. 강조 표시는 이 시연을 위해 그린 것으로, 실제 소프트웨어의 판단 방식을 보여 주지 않습니다.</p>
+        <p class="muted" data-reveal data-i18n="water-meter.demo.intro">가상의 가정용 물 사용량 1주일 데이터를 30분 단위로 재생합니다. 재생 중에 세 가지 예시 상황이 나타나며, 재생 위치가 도달하면 강조 표시됩니다. 타임라인을 끌어 원하는 시점을 다시 볼 수 있습니다. 강조 표시는 이 시연을 위해 그린 것으로, 실제 소프트웨어의 판단 방식을 보여주지 않습니다.</p>
       </div>
       <div class="sim demo demo--wm" data-demo="wm-events" data-reveal="fade">
         <p class="sim__label" data-i18n="water-meter.demo.notice">가상 데이터로 구성한 개념 예시입니다. 실제 프로젝트의 알고리즘, 측정 데이터, 설정값 또는 결과를 나타내지 않습니다.</p>
-        <div class="demo__evs" role="radiogroup" aria-labelledby="wm-ev-k"><span class="demo__lab" id="wm-ev-k" data-i18n="water-meter.demo.ev">예시 상황</span><button type="button" class="demo__ev" role="radio" aria-checked="true" data-ev="none" data-i18n="water-meter.demo.none">없음</button><button type="button" class="demo__ev" role="radio" aria-checked="false" data-ev="leak" data-i18n="water-meter.demo.leak">야간 연속 사용</button><button type="button" class="demo__ev" role="radio" aria-checked="false" data-ev="burst" data-i18n="water-meter.demo.burst">갑작스러운 급증</button><button type="button" class="demo__ev" role="radio" aria-checked="false" data-ev="stuck" data-i18n="water-meter.demo.stuck">변화 없는 검침값</button></div>
         <div class="sim__plot demo__plot" data-plot></div>
-        <p class="demo__state" aria-live="polite" data-state></p>
-        <ul class="sim__legend"><li><i class="sw sw--use"></i><span data-i18n="water-meter.demo.use">가상의 물 사용량</span></li><li><i class="sw sw--mark"></i><span data-i18n="water-meter.demo.mark">설명을 위한 강조 표시</span></li></ul>
+        <div class="sim__controls">
+          <button class="btn btn--sm" type="button" data-wm-play><span class="btn__label" data-i18n="water-meter.demo.play">재생</span></button>
+          <input class="sim__range" type="range" min="0" max="335" value="335" step="1" data-wm-range data-i18n-attr="aria-label:water-meter.demo.time" aria-label="1주일 타임라인">
+        </div>
+        <div class="sim__foot">
+          <ul class="sim__legend"><li><i class="sw sw--use"></i><span data-i18n="water-meter.demo.use">가상의 물 사용량</span></li><li><i class="sw sw--mark"></i><span data-i18n="water-meter.demo.mark">설명을 위한 강조 표시</span></li></ul>
+          <p class="sim__read demo__state" aria-live="polite" data-state></p>
+        </div>
+        <div class="wm-feed is-empty"><p class="wm-feed__k" data-i18n="water-meter.demo.feed">지금까지 강조된 상황</p><ul class="wm-feed__list" data-wm-feed></ul></div>
       </div>
     </div>
   </section>

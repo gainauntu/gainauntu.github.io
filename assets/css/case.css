@@ -164,16 +164,32 @@ html:lang(ko) .case-title, html:lang(bn) .case-title { max-width: 26ch; }
 .photo__credit { display: block; margin-top: 4px; font-size: var(--fs-xs); color: var(--ink-3); }
 
 
-/* Phase 5: water-meter illustrative events demo (synthetic) */
-.demo__evs { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; margin-top: 16px; }
-.demo__evs .demo__lab { margin-right: 6px; }
-.demo__ev { min-height: 40px; padding: 8px 16px; border-radius: 999px; border: 1px solid var(--line-strong); background: var(--paper); color: var(--ink); font: inherit; font-size: var(--fs-small); cursor: pointer; transition: background var(--t-fast), border-color var(--t-fast); }
-.demo__ev:hover { border-color: var(--ink-2); }
-.demo__ev[aria-checked="true"] { background: var(--ink); border-color: var(--ink); color: var(--paper); }
-.demo--wm .demo__state { margin-top: 14px; font-size: var(--fs-body); max-width: 70ch; }
+/* Phase 5: water-meter week playback (synthetic) */
+.demo--wm .sim__plot { margin-top: 16px; }
+.demo--wm .demo__state { font-size: var(--fs-small); color: var(--ink); max-width: 60ch; transition: color .3s; }
+.demo--wm .demo__state.is-flag { color: var(--warn); }
 .wm-night { fill: var(--sky-soft); opacity: .55; }
-.wm-mark { fill: var(--warn); fill-opacity: .14; stroke: var(--warn); stroke-opacity: .55; stroke-dasharray: 4 5; }
-.wm-use { fill: none; stroke: var(--ink); stroke-width: 2; stroke-linejoin: round; }
+.wm-use { fill: none; stroke: var(--ink); stroke-width: 1.8; stroke-linejoin: round; stroke-linecap: round; }
+.wm-head { fill: var(--paper); stroke: var(--ink); stroke-width: 2; }
+.demo--wm .sim-cursor { stroke: var(--ink-2); stroke-width: 1; opacity: .7; }
+.wm-ev--leak .wm-ev__area { fill-opacity: .11; }
+.wm-ev__area { fill-opacity: .16; }
+.wm-ev__start { stroke-width: 1.2; stroke-dasharray: 4 4; }
+.wm-ev__tag { font-size: 13px; font-family: "Schibsted Grotesk", sans-serif; }
+.wm-ev--leak .wm-ev__area { fill: var(--sky-ink); } .wm-ev--leak .wm-ev__start { stroke: var(--sky-ink); } .wm-ev--leak .wm-ev__tag { fill: var(--sky-ink); }
+.wm-ev--burst .wm-ev__area { fill: var(--warn); } .wm-ev--burst .wm-ev__start { stroke: var(--warn); } .wm-ev--burst .wm-ev__tag { fill: var(--warn); }
+.wm-ev--stuck .wm-ev__area { fill: var(--green); } .wm-ev--stuck .wm-ev__start { stroke: var(--green); } .wm-ev--stuck .wm-ev__tag { fill: var(--green); }
 .sw--use { background: var(--ink); height: 3px; }
-.sw--mark { background: var(--warn); opacity: .5; }
+.sw--mark { background: linear-gradient(90deg, var(--green), var(--sky-ink), var(--warn)); opacity: .55; height: 10px; }
+.wm-feed { margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--line); }
+.wm-feed__k { font-size: var(--fs-xs); color: var(--ink-3); }
+.wm-feed.is-empty .wm-feed__k { opacity: .55; }
+.wm-feed__list { list-style: none; margin: 8px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px 10px; min-height: 38px; }
+.wm-feed__list li { opacity: 0; transform: translateY(6px); transition: opacity .4s ease, transform .4s ease; }
+.wm-feed__list li.is-in { opacity: 1; transform: none; }
+.wm-feed__item { min-height: 36px; padding: 7px 14px; border-radius: 999px; border: 1px solid var(--line-strong); background: var(--paper); color: var(--ink); font: inherit; font-size: var(--fs-small); cursor: pointer; }
+.wm-feed__item::before { content: ""; display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 8px; vertical-align: 1px; }
+.wm-feed__item--leak::before { background: var(--sky-ink); } .wm-feed__item--burst::before { background: var(--warn); } .wm-feed__item--stuck::before { background: var(--green); }
+.wm-feed__item:hover { border-color: var(--ink-2); }
+@media (prefers-reduced-motion: reduce) { .wm-feed__list li { transition: none; } }
 
