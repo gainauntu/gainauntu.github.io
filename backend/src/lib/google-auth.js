@@ -4,7 +4,8 @@
 //  GET  /auth/login     -> new state, nonce and PKCE verifier in a short-lived HttpOnly cookie; redirect to Google
 //  GET  /auth/callback  -> state must match the cookie; code exchanged server-side (client secret + verifier); the ID token
 //                          is verified here (RS256 signature against Google's published keys, issuer, audience, expiry,
-//                          issued-at, nonce, email_verified, email on ADMIN_EMAILS, optional pinned subject ADMIN_GOOGLE_SUB)
+//                          issued-at, nonce, email_verified, email on ADMIN_EMAILS, pinned Google account ID ADMIN_GOOGLE_SUB,
+//                          which is also re-checked on every request)
 //  POST /auth/logout    -> CSRF-checked; the session row is deleted and the cookie cleared
 // Sessions: 32 random bytes in a __Host- cookie (HttpOnly, Secure, SameSite=Lax, Path=/); only its SHA-256 is stored in
 // D1 (admin_sessions), with an 8-hour lifetime. Every protected request re-reads the row and re-checks the allow-list.
@@ -116,7 +117,7 @@ export async function callback(request, env, fetcher = fetch) {
   const sid = rand(32), t = Date.now();
   await env.DB.batch([
     env.DB.prepare('DELETE FROM admin_sessions WHERE expires_at < ?').bind(t),
-    env.DB.prepare('INSERT INTO admin_sessions (id, email, created_at, expires_at) VALUES (?, ?, ?, ?)').bind(await sha256(sid), v.email, t, t + SESSION_TTL)
+    env.DB.prepare('INSERT INTO admin_sessions (id, email, sub, created_at, expires_at) VALUES (?, ?, ?, ?, ?)').bind(await sha256(sid), v.email, v.sub, t, t + SESSION_TTL)
   ]);
   return { ok: true, email: v.email, cookies: [setCookie(SESSION_COOKIE, sid, SESSION_TTL / 1000), setCookie(FLOW_COOKIE, '', 0)] };
 }
@@ -126,10 +127,11 @@ export async function session(request, env) {
   if (!configured(env)) return fail('not_configured');
   const sid = cookies(request)[SESSION_COOKIE];
   if (!sid || !/^[A-Za-z0-9_-]{40,60}$/.test(sid)) return fail('no_session');
-  const row = await env.DB.prepare('SELECT email, expires_at FROM admin_sessions WHERE id = ?').bind(await sha256(sid)).first();
+  const row = await env.DB.prepare('SELECT email, sub, expires_at FROM admin_sessions WHERE id = ?').bind(await sha256(sid)).first();
   if (!row || row.expires_at < Date.now()) return fail('expired');
   const email = String(row.email).toLowerCase();
   if (!list(env.ADMIN_EMAILS).map((e) => e.toLowerCase()).includes(email)) return fail('not_allowed');   // removed from the allow-list
+  if (env.ADMIN_GOOGLE_SUB && String(row.sub || '') !== String(env.ADMIN_GOOGLE_SUB)) return fail('subject');   // pinned Google account
   return { ok: true, email };
 }
 

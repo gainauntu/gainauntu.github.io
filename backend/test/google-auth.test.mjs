@@ -126,8 +126,8 @@ test('google: forged, expired or de-listed sessions fail closed; missing configu
     assert.equal((await get(h, '/api/inquiries', '__Host-ag_admin=' + fake + "' OR 1=1 --")).status, 401);
     const hash = (s) => crypto.createHash('sha256').update(s).digest('base64url');
     const old = crypto.randomBytes(32).toString('base64url'), gone = crypto.randomBytes(32).toString('base64url');
-    await h.db.prepare('INSERT INTO admin_sessions VALUES (?, ?, ?, ?)').bind(hash(old), ADMIN, 1, Date.now() - 1000).run();
-    await h.db.prepare('INSERT INTO admin_sessions VALUES (?, ?, ?, ?)').bind(hash(gone), 'former@example.com', 1, Date.now() + 3600e3).run();
+    await h.db.prepare('INSERT INTO admin_sessions (id, email, created_at, expires_at) VALUES (?, ?, ?, ?)').bind(hash(old), ADMIN, 1, Date.now() - 1000).run();
+    await h.db.prepare('INSERT INTO admin_sessions (id, email, created_at, expires_at) VALUES (?, ?, ?, ?)').bind(hash(gone), 'former@example.com', 1, Date.now() + 3600e3).run();
     assert.equal((await get(h, '/api/inquiries', '__Host-ag_admin=' + old)).status, 401);
     assert.equal((await get(h, '/api/inquiries', '__Host-ag_admin=' + gone)).status, 403);
   } finally { await h.close(); }
@@ -139,4 +139,19 @@ test('google: forged, expired or de-listed sessions fail closed; missing configu
   } finally { await h2.close(); }
   const h3 = await start({ adminVars: { ADMIN_AUTH: '' } });
   try { assert.equal((await get(h3, '/api/inquiries', null, { 'cf-access-jwt-assertion': accessToken() })).status, 401); } finally { await h3.close(); }
+});
+
+test('google: pinned account ID is enforced at sign-in and on every request', async () => {
+  const h = await start({ adminVars: { ...VARS, ADMIN_GOOGLE_SUB: '1234567890' } });
+  try {
+    const ok = await signIn(h);
+    assert.equal(ok.r.status, 302);
+    assert.equal((await h.db.prepare('SELECT sub FROM admin_sessions').first()).sub, '1234567890');
+    assert.equal((await get(h, '/api/me', '__Host-ag_admin=' + ok.session)).status, 200);
+    assert.equal((await signIn(h, { sub: '555' })).r.status, 403);          // same email, different Google account
+    const hash = (s) => crypto.createHash('sha256').update(s).digest('base64url');
+    const legacy = crypto.randomBytes(32).toString('base64url');            // a session from before pinning (no account ID)
+    await h.db.prepare('INSERT INTO admin_sessions (id, email, created_at, expires_at) VALUES (?, ?, ?, ?)').bind(hash(legacy), ADMIN, 1, Date.now() + 3600e3).run();
+    assert.equal((await get(h, '/api/me', '__Host-ag_admin=' + legacy)).status, 401);
+  } finally { await h.close(); }
 });

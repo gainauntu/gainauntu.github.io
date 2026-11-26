@@ -99,7 +99,7 @@ export async function start({ publicVars = {}, adminVars = {}, migrate = true } 
   });
   const db = await mf.getD1Database('DB', 'public');
   if (migrate) {
-    for (const f of ['0001_init.sql', '0002_admin_sessions.sql']) {
+    for (const f of ['0001_init.sql', '0002_admin_sessions.sql', '0003_admin_session_subject.sql']) {
       const sql = readFileSync(path.join(ROOT, 'migrations', f), 'utf8').replace(/--[^\n]*/g, '');
       for (const stmt of sql.split(';').map((s) => s.trim()).filter(Boolean)) await db.prepare(stmt).run();
     }
