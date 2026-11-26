@@ -168,14 +168,20 @@
     <div class="wrap">
       <div class="split split--head">
         <h2 class="h2" data-split><span data-i18n="water-meter.demo.title">What an unusual pattern can look like</span></h2>
-        <p class="muted" data-reveal data-i18n="water-meter.demo.intro">A synthetic week of household water use. Choose an illustrative event to see the kind of pattern that deserves a closer look. The highlights are drawn for this demonstration only; they do not show how the deployed software decides.</p>
+        <p class="muted" data-reveal data-i18n="water-meter.demo.intro">A synthetic week of household water use, played back half-hour by half-hour. Three illustrative events appear along the way and are highlighted as the playback reaches them. Drag the timeline to revisit any moment. The highlights are drawn for this demonstration only; they do not show how the deployed software decides.</p>
       </div>
       <div class="sim demo demo--wm" data-demo="wm-events" data-reveal="fade">
         <p class="sim__label" data-i18n="water-meter.demo.notice">Illustrative example using synthetic data. This does not represent the actual project algorithm, measurements, settings or results.</p>
-        <div class="demo__evs" role="radiogroup" aria-labelledby="wm-ev-k"><span class="demo__lab" id="wm-ev-k" data-i18n="water-meter.demo.ev">Illustrative event</span><button type="button" class="demo__ev" role="radio" aria-checked="true" data-ev="none" data-i18n="water-meter.demo.none">None</button><button type="button" class="demo__ev" role="radio" aria-checked="false" data-ev="leak" data-i18n="water-meter.demo.leak">Continuous night flow</button><button type="button" class="demo__ev" role="radio" aria-checked="false" data-ev="burst" data-i18n="water-meter.demo.burst">Sudden burst</button><button type="button" class="demo__ev" role="radio" aria-checked="false" data-ev="stuck" data-i18n="water-meter.demo.stuck">Unchanging reading</button></div>
         <div class="sim__plot demo__plot" data-plot></div>
-        <p class="demo__state" aria-live="polite" data-state></p>
-        <ul class="sim__legend"><li><i class="sw sw--use"></i><span data-i18n="water-meter.demo.use">Synthetic water use</span></li><li><i class="sw sw--mark"></i><span data-i18n="water-meter.demo.mark">Highlighted for illustration</span></li></ul>
+        <div class="sim__controls">
+          <button class="btn btn--sm" type="button" data-wm-play><span class="btn__label" data-i18n="water-meter.demo.play">Play</span></button>
+          <input class="sim__range" type="range" min="0" max="335" value="335" step="1" data-wm-range data-i18n-attr="aria-label:water-meter.demo.time" aria-label="Week timeline">
+        </div>
+        <div class="sim__foot">
+          <ul class="sim__legend"><li><i class="sw sw--use"></i><span data-i18n="water-meter.demo.use">Synthetic water use</span></li><li><i class="sw sw--mark"></i><span data-i18n="water-meter.demo.mark">Highlighted for illustration</span></li></ul>
+          <p class="sim__read demo__state" aria-live="polite" data-state></p>
+        </div>
+        <div class="wm-feed is-empty"><p class="wm-feed__k" data-i18n="water-meter.demo.feed">Highlighted so far</p><ul class="wm-feed__list" data-wm-feed></ul></div>
       </div>
     </div>
   </section>
