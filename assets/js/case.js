@@ -251,6 +251,80 @@
     document.addEventListener('ag:lang', render);
   }
 
+  /* ================= demo: one shared-bicycle ride, step by step (illustrative; Phase 5) =================
+     A conceptual walk-through of what the lock firmware handles during one rental. States and indicators are words,
+     not measurements; no device data, settings or product models. */
+  function lockJourney() {
+    var box = $('[data-demo="lock-journey"]'); if (!box) return;
+    var k = function (x) { return 'bike-lock.' + x; };
+    var stage = $('[data-stage]', box), read = $('[data-state]', box), steps = $$('[data-step]', box), nodes = $$('[data-node]', box), info = $('[data-node-info]', box);
+    var playBtn = $('[data-j-play]', box), prev = $('[data-j-prev]', box), next = $('[data-j-next]', box), rows = $$('[data-k]', box);
+    var BASE = { lock: 'locked', mcu: 'asleep', ble: 'idle', gps: 'idle', modem: 'idle', battery: 'ok', temp: 'ok', hum: 'ok', tilt: 'upright', state: 'saved', wdt: 'watch' };
+    var S = [
+      { on: ['lock', 'mcu'], lines: [], set: {} },
+      { on: ['mcu'], lines: [], set: { mcu: 'awake' } },
+      { on: ['nfc', 'mcu'], lines: ['nfc'], set: { mcu: 'awake' } },
+      { on: ['phone'], lines: [], set: { mcu: 'awake' } },
+      { on: ['phone', 'ble', 'mcu'], lines: ['ble'], set: { mcu: 'awake', ble: 'linked' } },
+      { on: ['phone', 'ble', 'mcu', 'lock'], lines: ['ble'], set: { mcu: 'awake', ble: 'linked' }, pulse: true },
+      { on: ['lock', 'store'], lines: [], set: { mcu: 'awake', ble: 'linked', lock: 'unlocked', state: 'saved' }, open: true },
+      { on: ['gps', 'sensors'], lines: ['gps'], set: { mcu: 'awake', lock: 'unlocked', gps: 'fix', tilt: 'moving', state: 'ready' }, open: true, ride: true },
+      { on: ['lock', 'store'], lines: [], set: { mcu: 'awake', lock: 'locked', state: 'saved' } },
+      { on: ['modem', 'gps', 'sensors'], lines: ['modem'], set: { mcu: 'awake', modem: 'sending', gps: 'fix' } },
+      { on: ['mcu'], lines: [], set: {} }
+    ];
+    var cur = 0, playing = false, timer = 0, DWELL = 2800;
+    function render(focus) {
+      var st = S[cur], v = {}; for (var key in BASE) v[key] = BASE[key]; for (var key2 in st.set) v[key2] = st.set[key2];
+      steps.forEach(function (b, i) { var on = i === cur; b.setAttribute('aria-current', on ? 'step' : 'false'); b.classList.toggle('is-done', i < cur); if (on && focus) b.focus(); });
+      var bar = steps[0].closest('.lj-steps'), cb = steps[cur];
+      if (bar && cb && bar.scrollWidth > bar.clientWidth) { var l = cb.getBoundingClientRect().left - bar.getBoundingClientRect().left + bar.scrollLeft; if (l < bar.scrollLeft || l + cb.offsetWidth > bar.scrollLeft + bar.clientWidth) bar.scrollLeft = Math.max(0, l - 24); }
+      nodes.forEach(function (b) { b.classList.toggle('is-active', st.on.indexOf(b.getAttribute('data-node')) > -1); });
+      ['ble', 'nfc', 'gps', 'modem'].forEach(function (l) { stage.classList.toggle('line-' + l, st.lines.indexOf(l) > -1); });
+      stage.classList.toggle('is-open', !!st.open); stage.classList.toggle('is-ride', !!st.ride); stage.classList.toggle('is-pulse', !!st.pulse);
+      stage.classList.toggle('is-asleep', v.mcu === 'asleep');
+      rows.forEach(function (r) {
+        var key = r.getAttribute('data-k'), val = v[key], el = $('[data-v]', r);
+        var txt = t(k('demo.v.' + (val === 'fix' ? 'fix' : val))); if (el.textContent !== txt) { el.textContent = txt; r.classList.remove('is-changed'); void r.offsetWidth; r.classList.add('is-changed'); }
+        r.setAttribute('data-val', val);
+      });
+      read.textContent = t(k('demo.d' + (cur + 1)));
+      $('.btn__label', playBtn).textContent = t(k('demo.' + (playing ? 'pause' : (cur === S.length - 1 ? 'replay' : 'play'))));
+      prev.disabled = cur === 0; next.disabled = cur === S.length - 1;
+    }
+    function go(i, focus) { cur = Math.max(0, Math.min(S.length - 1, i)); render(focus); }
+    function stop() { playing = false; clearInterval(timer); render(); }
+    function play() {
+      if (cur === S.length - 1) cur = 0;
+      playing = true; render();
+      timer = setInterval(function () { if (cur >= S.length - 1) { stop(); return; } go(cur + 1); }, RM.matches ? DWELL * 1.4 : DWELL);
+    }
+    playBtn.addEventListener('click', function () { if (playing) stop(); else play(); });
+    prev.addEventListener('click', function () { stop(); go(cur - 1); });
+    next.addEventListener('click', function () { stop(); go(cur + 1); });
+    steps.forEach(function (b, i) {
+      b.addEventListener('click', function () { stop(); go(i); });
+      b.addEventListener('keydown', function (e) {
+        var d = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0; if (!d) return; e.preventDefault(); stop(); go(cur + d, true);
+      });
+    });
+    nodes.forEach(function (b) {
+      var show = function () {
+        nodes.forEach(function (o) { o.setAttribute('aria-pressed', String(o === b)); });
+        var id = b.getAttribute('data-node'), m = { phone: 'ble', store: 'store', sensors: 'sensors', mcu: 'mcu', lock: 'lock', nfc: 'nfc', gps: 'gps', modem: 'modem', ble: 'ble' }[id];
+        info.innerHTML = ''; var h = document.createElement('strong'); h.textContent = t(k('n.' + m)); var p = document.createElement('span'); p.textContent = t(k('n.' + m + '.d'));
+        info.appendChild(h); info.appendChild(p); info.hidden = false;
+      };
+      b.addEventListener('click', show); b.addEventListener('mouseenter', function () { if (matchMedia('(hover: hover)').matches) show(); });
+    });
+    render();
+    if ('IntersectionObserver' in window) {
+      var seen = false;
+      new IntersectionObserver(function (es) { if (es[0].isIntersecting && !seen && !RM.matches) { seen = true; play(); } }, { threshold: 0.4 }).observe(stage);
+    }
+    document.addEventListener('ag:lang', function () { render(); var a = nodes.filter(function (b) { return b.getAttribute('aria-pressed') === 'true'; })[0]; if (a) a.click(); });
+  }
+
   /* ================= demo: intake tank and pump control, simulated (synthetic; Phase 5) =================
      A live simulation with invented inflow, levels, flows and control settings. It illustrates what the system does
      (monitoring, automatic pump control, manual control, role-based access); it does not reproduce the project's
@@ -475,5 +549,6 @@
 
   if (CFG.demo === 'pill-threshold') pillDemo();
   if (CFG.demo === 'pump-sim') pumpSim();
+  if (CFG.demo === 'lock-journey') lockJourney();
   if (CFG.demo === 'arm-angle') armDemo();
 })();

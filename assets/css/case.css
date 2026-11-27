@@ -214,6 +214,70 @@ html:lang(ko) .case-title, html:lang(bn) .case-title { max-width: 26ch; }
 @media (max-width: 420px) { .dash__tiles { grid-template-columns: 1fr; } .pump__clock { margin-left: 0; } }
 @media (prefers-reduced-motion: reduce) { .dash__list li, .tile__tank i, .lamp { transition: none; } }
 
+/* Phase 5: shared-bicycle ride walk-through (illustrative) */
+.lj-steps { list-style: none; margin: 16px 0 0; padding: 0 0 4px; display: flex; gap: 6px; overflow-x: auto; scrollbar-width: thin; }
+.lj-step { display: inline-flex; align-items: center; gap: 7px; white-space: nowrap; min-height: 36px; padding: 6px 12px 6px 6px; border-radius: 999px; border: 1px solid var(--line-strong); background: var(--paper); color: var(--ink-2); font: inherit; font-size: var(--fs-small); cursor: pointer; transition: background .25s, color .25s, border-color .25s; }
+.lj-step i { display: inline-grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; background: var(--paper-2); font-style: normal; font-size: 12px; font-variant-numeric: tabular-nums; }
+.lj-step.is-done { color: var(--ink); } .lj-step.is-done i { background: var(--green-soft); }
+.lj-step[aria-current="step"] { background: var(--ink); border-color: var(--ink); color: var(--paper); } .lj-step[aria-current="step"] i { background: var(--warn); color: var(--paper); }
+.lj-grid { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(220px, 1fr); gap: 18px; margin-top: 14px; align-items: stretch; }
+.lj-stage { background: var(--paper); border-radius: 8px; padding: 8px; }
+.lj-stage svg { display: block; width: 100%; height: auto; fill: none; stroke: var(--ink); stroke-linecap: round; stroke-linejoin: round; }
+.lj-stage .st-faint { stroke-opacity: .25; }
+.st-ground { stroke-opacity: .25; }
+.st-wheel circle { stroke-width: 2; stroke-opacity: .7; } .st-spokes path { stroke-opacity: .25; } .st-hub { fill: var(--paper-2); }
+.st-spokes { transform-origin: 430px 352px; transform-box: view-box; }
+.is-ride .st-spokes { animation: lj-spin 1.6s linear infinite; }
+@keyframes lj-spin { to { transform: rotate(360deg); } }
+.st-phone rect, .st-card rect, .st-sat rect, .st-cloud path, .st-cloud rect, .st-chip > rect { stroke-width: 1.4; stroke-opacity: .7; fill: var(--paper-2); }
+.st-card path, .st-sat path, .st-cloud path + rect + path { stroke-opacity: .6; }
+.st-padlock { stroke: var(--warn); stroke-width: 1.8; }
+.st-shackle { transition: transform .5s ease; }
+.is-open .st-padlock, .is-ride .st-padlock { stroke: var(--green-2); } .is-open .st-shackle { transform: translateY(-5px); }
+.st-lock rect:first-child { stroke: var(--warn); stroke-width: 2; fill: color-mix(in srgb, var(--warn) 10%, var(--paper)); }
+.st-lamp { fill: var(--warn); stroke: none; transition: fill .3s; } .is-open .st-lamp { fill: var(--green-2); }
+.st-bolt { stroke: var(--warn); stroke-width: 6; transition: transform .6s cubic-bezier(.2,.7,.2,1), stroke-opacity .6s; }
+.is-open .st-bolt { transform: translateY(-34px); stroke-opacity: .35; }
+.st-line { stroke-width: 2; stroke-dasharray: 5 8; stroke-opacity: .15; transition: stroke-opacity .4s; }
+.st-line--ble { stroke: var(--sky-ink); } .st-line--nfc { stroke: var(--green-2); } .st-line--gps { stroke: var(--sky-ink); } .st-line--modem { stroke: var(--warn); }
+.line-ble .st-line--ble, .line-nfc .st-line--nfc, .line-gps .st-line--gps, .line-modem .st-line--modem { stroke-opacity: 1; animation: lj-dash .9s linear infinite; }
+@keyframes lj-dash { to { stroke-dashoffset: -26; } }
+.is-pulse .st-line--ble { stroke-width: 3.5; }
+.st-ping { stroke: var(--sky-ink); opacity: 0; transform-origin: 446px 186px; transform-box: view-box; }
+.line-gps .st-ping { animation: lj-ping 1.4s ease-out infinite; }
+@keyframes lj-ping { from { opacity: .9; transform: scale(.5); } to { opacity: 0; transform: scale(2.2); } }
+.st-chip text { fill: var(--ink-2); stroke: none; font: 14px "Schibsted Grotesk", sans-serif; }
+.st-mem rect { fill: var(--sky-ink); fill-opacity: .2; stroke: none; }
+.line-modem .st-mem rect, .is-open .st-mem rect:nth-child(-n+2) { fill-opacity: .7; animation: lj-mem 1.2s ease-in-out infinite alternate; }
+@keyframes lj-mem { to { fill-opacity: .25; } }
+.st-moon { fill: var(--ink-2); stroke: none; opacity: .15; transition: opacity .4s; } .is-asleep .st-moon { opacity: .85; }
+.st-heart { stroke: var(--green-2); stroke-width: 1.8; stroke-dasharray: 90; animation: lj-beat 1.6s linear infinite; }
+.is-asleep .st-heart { opacity: .4; animation-duration: 3.2s; }
+@keyframes lj-beat { from { stroke-dashoffset: 90; } to { stroke-dashoffset: -90; } }
+.st-link { stroke-opacity: .3; stroke-dasharray: 2 5; }
+.lj-side { background: var(--paper); border-radius: 8px; padding: 12px 14px; }
+.lj-status { list-style: none; margin: 8px 0 0; padding: 0; display: grid; gap: 2px; font-size: var(--fs-small); }
+.lj-status li { display: flex; justify-content: space-between; gap: 10px; padding: 5px 0; border-top: 1px solid var(--line); }
+.lj-k { color: var(--ink-2); }
+.lj-v { display: inline-flex; align-items: center; gap: 7px; color: var(--ink); white-space: nowrap; }
+.lj-v::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--line-strong); }
+[data-val="unlocked"] .lj-v::before, [data-val="awake"] .lj-v::before, [data-val="linked"] .lj-v::before, [data-val="fix"] .lj-v::before, [data-val="moving"] .lj-v::before { background: var(--green-2); }
+[data-val="sending"] .lj-v::before, [data-val="locked"] .lj-v::before { background: var(--warn); }
+[data-val="ok"] .lj-v::before, [data-val="upright"] .lj-v::before, [data-val="saved"] .lj-v::before, [data-val="watch"] .lj-v::before, [data-val="ready"] .lj-v::before { background: var(--sky-ink); }
+.lj-status li.is-changed .lj-v { animation: lj-flash .6s ease-out; }
+@keyframes lj-flash { from { color: var(--warn); } to { color: var(--ink); } }
+.lj-nodes { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; margin-top: 14px; }
+.lj-nodes .demo__lab { margin-right: 4px; }
+.lj-node { min-height: 32px; padding: 4px 12px; border-radius: 6px; border: 1px solid var(--line); background: var(--paper); color: var(--ink-2); font: inherit; font-size: var(--fs-small); cursor: pointer; transition: border-color .25s, color .25s, background .25s; }
+.lj-node.is-active { border-color: var(--green-2); color: var(--ink); background: var(--green-soft); }
+.lj-node[aria-pressed="true"] { border-color: var(--ink); }
+.lj-info { margin-top: 10px; padding: 10px 14px; border-left: 3px solid var(--green-2); background: var(--paper); border-radius: 0 6px 6px 0; font-size: var(--fs-small); display: flex; flex-wrap: wrap; gap: 4px 10px; }
+.lj-info[hidden] { display: none; }
+.lj-controls { align-items: center; }
+.lj-read { flex: 1; min-width: 220px; margin: 0 0 0 8px; }
+@media (max-width: 860px) { .lj-grid { grid-template-columns: 1fr; } }
+@media (prefers-reduced-motion: reduce) { .lj-stage *, .lj-step, .lj-status li .lj-v { animation: none !important; transition: none !important; } }
+
 
 /* Phase 5: water-meter week playback (synthetic) */
 .demo--wm .sim__plot { margin-top: 16px; }
