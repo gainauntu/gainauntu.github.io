@@ -560,6 +560,98 @@
     }
   };
 
+  /* =====================================================================
+     9 · Shared-bicycle lock firmware (Fluton). A stylized step-through shared bicycle with the smart lock at the rear
+     wheel, and the firmware's world around it: phone app over BLE, an NFC tap, a GPS fix, modem telemetry to a server,
+     sensing (humidity, temperature, battery, tilt), stored state, and sleep and wake under a watchdog.
+     One 12 s loop: sleep, wake, NFC, BLE, unlock, ride, relock, sync, sleep. Conceptual: no product or chip models.
+     ===================================================================== */
+  A.p9 = {
+    rmT: 7.4,
+    svg: function () {
+      var b = '';
+      var wheel = function (cx, id) {
+        var g = '<circle cx="' + cx + '" cy="332" r="92" ' + s({ o: .7, w: 2 }) + '/><circle cx="' + cx + '" cy="332" r="84" ' + s({ o: .18 }) + '/>';
+        g += '<g data-spokes="' + id + '">';
+        for (var i = 0; i < 12; i++) { var a = i * Math.PI / 6; g += '<path d="M' + cx + ' 332 L' + f(cx + Math.cos(a) * 84) + ' ' + f(332 + Math.sin(a) * 84) + '" ' + s({ o: .28 }) + '/>'; }
+        return g + '</g><circle cx="' + cx + '" cy="332" r="7" fill="' + NIGHT + '" ' + s({ o: .8 }) + '/>';
+      };
+      b += '<path d="M60 428 H760" ' + s({ o: .2 }) + '/>';
+      b += wheel(232, 'r') + wheel(578, 'f');
+      // step-through frame, seat, handlebar and front basket
+      b += '<path d="M232 332 L388 332 L344 196 M388 332 L520 196 M232 332 L332 226 M520 196 L540 150 M512 150 H566 M540 150 L578 332" ' + s({ c: '#B7A6D8', o: .9, w: 4 }) + '/>';
+      b += '<path d="M318 186 H372" ' + s({ w: 7 }) + '/><path d="M344 196 V186" ' + s({ w: 3 }) + '/>';
+      b += '<path d="M560 168 H636 L626 214 H570 Z M574 180 H630 M572 192 H628 M571 204 H627" ' + s({ o: .45, w: 1.2 }) + '/>';
+      b += '<circle cx="388" cy="332" r="14" ' + s({ o: .6, w: 1.4 }) + '/>';
+      // the smart lock at the rear wheel: housing, bolt ring through the spokes, status lamp
+      b += '<g data-lockglow><rect x="186" y="236" width="92" height="44" rx="10" fill="' + AC + '" fill-opacity=".08" ' + s({ c: AC, o: .9, w: 1.6 }) + '/></g>';
+      b += '<rect x="204" y="246" width="30" height="20" rx="3" fill="' + NIGHT + '" ' + s({ o: .6 }) + '/><path d="M210 256 h18 M213 251 v10 M219 251 v10 M225 251 v10" ' + s({ o: .45 }) + '/>';
+      b += '<circle data-llamp cx="262" cy="256" r="5" fill="' + AC + '"/>';
+      b += '<path data-bolt d="M204 280 A62 62 0 0 0 260 280" ' + s({ c: AC, w: 4 }) + '/>';
+      // phone with BLE waves toward the lock
+      b += '<rect x="54" y="74" width="62" height="112" rx="12" fill="' + NIGHT + '" ' + s({ o: .8, w: 1.4 }) + '/><rect x="62" y="88" width="46" height="74" rx="4" ' + s({ o: .25 }) + '/>';
+      b += '<g data-applock ' + s({ c: OK, w: 1.6 }) + '><rect x="76" y="118" width="18" height="14" rx="2"/><path d="M80 118 v-5 a5 5 0 0 1 10 0"/></g>';
+      b += '<g data-ble>'; for (var w = 0; w < 3; w++) b += '<path d="M' + (128 + w * 16) + ' ' + (118 - w * 10) + ' q12 ' + (12 + w * 10) + ' 0 ' + (24 + w * 20) + '" ' + s({ c: WA, w: 1.8 }) + '/>'; b += '</g>';
+      b += '<path data-blepath d="M120 140 Q170 210 200 238" ' + s({ c: WA, o: .55 }) + ' stroke-dasharray="3 6"/>';
+      // NFC tap at the lock
+      b += '<g data-nfc><rect x="112" y="248" width="40" height="26" rx="5" fill="' + NIGHT + '" ' + s({ c: OK, o: .9 }) + '/>';
+      for (var n = 0; n < 3; n++) b += '<path d="M' + (158 + n * 8) + ' 252 q6 9 0 18" ' + s({ c: OK, o: .8, w: 1.4 }) + '/>';
+      b += '</g>';
+      // GPS satellite and ping
+      b += '<g ' + s({ o: .8, w: 1.4 }) + '><rect x="384" y="58" width="32" height="20" rx="3"/><path d="M362 68 H384 M416 68 H438 M362 60 V76 M438 60 V76"/></g>';
+      b += '<path data-gpsline d="M400 80 L246 234" ' + s({ c: WA, o: .5 }) + ' stroke-dasharray="2 7"/><circle data-gpsping cx="232" cy="236" r="10" ' + s({ c: WA, w: 1.4 }) + '/>';
+      // server / cloud and modem uplink
+      b += '<path d="M650 104 a22 22 0 0 1 42 -12 a17 17 0 0 1 28 16 a15 15 0 0 1 -6 28 H664 a17 17 0 0 1 -14 -32 z" fill="' + NIGHT + '" ' + s({ c: WA, o: .8 }) + '/>';
+      b += '<path data-uplink d="M278 248 C420 160 560 140 660 128" ' + s({ c: AC, o: .45 }) + ' stroke-dasharray="3 6"/>';
+      for (var p = 0; p < 3; p++) b += '<circle data-packet r="3.6" fill="' + AC + '"/>';
+      // firmware chip: memory / state, sleep moon and watchdog heartbeat
+      b += '<rect x="196" y="440" width="96" height="42" rx="6" fill="#222B32" ' + s({ o: .6 }) + '/>';
+      for (var c = 0; c < 6; c++) b += '<rect data-mem x="' + (204 + c * 14) + '" y="452" width="9" height="18" rx="1.5" fill="' + WA + '" fill-opacity=".2"/>';
+      b += '<path d="M244 440 V286" ' + s({ o: .25 }) + ' stroke-dasharray="2 4"/>';
+      b += '<g data-moon><path d="M312 446 a14 14 0 1 0 14 22 a11 11 0 1 1 -14 -22 z" fill="' + FG + '" fill-opacity=".7"/><text x="334" y="446" fill="' + FG + '" fill-opacity=".6" font-size="12" font-family="Schibsted Grotesk, sans-serif">z z</text></g>';
+      b += '<polyline data-heart points="300,474 318,474 324,462 332,486 338,468 344,474 372,474" ' + s({ c: OK, w: 1.6 }) + '/>';
+      // sensor and status chips: humidity, temperature, battery, tilt
+      var chip = function (x, inner, id) { return '<g data-chip="' + id + '"><rect x="' + x + '" y="444" width="44" height="34" rx="8" fill="' + NIGHT + '" ' + s({ o: .55 }) + '/>' + inner + '</g>'; };
+      b += chip(470, '<path d="M492 452 q-9 11 0 18 q9 -7 0 -18 z" ' + s({ c: WA, w: 1.4 }) + '/>', 'hum');
+      b += chip(524, '<path d="M546 452 v12" ' + s({ w: 1.6 }) + '/><circle cx="546" cy="468" r="3.5" fill="' + AC + '"/>', 'temp');
+      b += chip(578, '<rect x="587" y="454" width="22" height="12" rx="2" ' + s({ w: 1.3 }) + '/><rect data-batt x="589" y="456" width="15" height="8" rx="1" fill="' + OK + '"/><path d="M610 458 v4" ' + s({ w: 1.6 }) + '/>', 'bat');
+      b += chip(632, '<g data-tilt><path d="M642 470 H666 M654 470 V452" ' + s({ w: 1.6 }) + '/></g>', 'tilt');
+      return svg(b);
+    },
+    setup: function (el) {
+      var sr = q(el, '[data-spokes="r"]'), sf = q(el, '[data-spokes="f"]'), bolt = q(el, '[data-bolt]'), lamp = q(el, '[data-llamp]'), glow = q(el, '[data-lockglow]');
+      var ble = q(el, '[data-ble]'), blep = q(el, '[data-blepath]'), app = q(el, '[data-applock]'), nfc = q(el, '[data-nfc]');
+      var gl = q(el, '[data-gpsline]'), gp = q(el, '[data-gpsping]'), up = q(el, '[data-uplink]'), pk = qa(el, '[data-packet]');
+      var moon = q(el, '[data-moon]'), heart = q(el, '[data-heart]'), mem = qa(el, '[data-mem]'), tilt = q(el, '[data-tilt]'), chips = qa(el, '[data-chip]');
+      var ride = 0;
+      return function (T) {
+        var c = T % 12;
+        var asleep = c < 2 || c > 11.4, unlocked = c > 6 && c < 9.4, riding = c > 6.6 && c < 9.2;
+        if (riding) ride += 0.06;
+        sr.setAttribute('transform', 'rotate(' + f(ride * 57.3) + ' 232 332)'); sf.setAttribute('transform', 'rotate(' + f(ride * 57.3) + ' 578 332)');
+        var open = c < 6 ? 0 : c < 6.6 ? (c - 6) / 0.6 : c < 9.4 ? 1 : c < 10 ? 1 - (c - 9.4) / 0.6 : 0;
+        bolt.setAttribute('transform', 'translate(0 ' + f(-open * 26) + ')'); bolt.setAttribute('stroke-opacity', f(1 - open * 0.6));
+        lamp.setAttribute('fill', unlocked ? OK : AC);
+        glow.style.opacity = f(0.55 + 0.45 * Math.abs(Math.sin(T * 2)));
+        var bleOn = c > 3.8 && c < 6.4; ble.style.opacity = bleOn ? f(0.4 + 0.6 * Math.abs(Math.sin(T * 6))) : 0.12; blep.style.opacity = bleOn ? 1 : 0.15;
+        app.setAttribute('stroke', c > 3.4 && c < 10 ? OK : FG); app.setAttribute('stroke-opacity', c > 3.4 && c < 10 ? 1 : .35);
+        var nfcOn = c > 2.8 && c < 3.9; nfc.style.opacity = nfcOn ? f(0.5 + 0.5 * Math.abs(Math.sin(T * 7))) : 0.18;
+        var gpsOn = riding || (c > 9.8 && c < 11.2); gl.style.opacity = gpsOn ? 0.9 : 0.15;
+        var ping = (T * 1.4) % 1; gp.setAttribute('r', f(6 + ping * 16)); gp.setAttribute('stroke-opacity', gpsOn ? f(1 - ping) : 0);
+        var sync = c > 10 && c < 11.4; up.style.opacity = sync ? 0.9 : 0.15;
+        pk.forEach(function (p, i) {
+          var u = ((c - 10) / 1.4 + i / 3) % 1, x = 278 + (660 - 278) * u, y = 248 - 120 * Math.sin(u * Math.PI * 0.8) - (u * 0);
+          p.setAttribute('cx', f(x)); p.setAttribute('cy', f(y - u * 0)); p.setAttribute('fill-opacity', sync ? f(1 - Math.abs(u - 0.5)) : 0);
+        });
+        moon.style.opacity = asleep ? 0.9 : 0.12;
+        heart.setAttribute('stroke-opacity', asleep ? 0.35 : f(0.5 + 0.5 * Math.abs(Math.sin(T * 5))));
+        mem.forEach(function (m, i) { var on = (c > 6 && c < 6.8 && i < 3) || (c > 9.6 && c < 10.4) || (Math.floor(T * 3) % 6 === i && !asleep); m.setAttribute('fill-opacity', on ? .85 : .2); });
+        tilt.setAttribute('transform', riding ? 'rotate(' + f(Math.sin(T * 5) * 12) + ' 654 470)' : '');
+        chips.forEach(function (ch, i) { ch.style.opacity = asleep ? 0.45 : f(0.75 + 0.25 * Math.sin(T * 2 + i)); });
+      };
+    }
+  };
+
   /* ---------------- mounting and live control ---------------- */
   var RMQ = window.matchMedia('(prefers-reduced-motion: reduce)');
   var live = [], subscribed = false;
@@ -572,7 +664,8 @@
     p5: [[400, 40, 'lbl.p5.legend'], [450, 286, 'lbl.p5.obs']],
     p6: [[112, 72, 'lbl.p6.tank'], [688, 72, 'lbl.p6.tank'], [400, 92, 'lbl.p6.stack'], [120, 336, 'lbl.p6.bus'], [400, 422, 'lbl.p6.inv'], [634, 456, 'lbl.p6.mon']],
     p7: [[92, 222, 'lbl.p7.veh'], [416, 222, 'lbl.p7.stack'], [638, 80, 'lbl.p7.cluster'], [548, 386, 'lbl.p7.host'], [702, 386, 'lbl.p7.checks']],
-    p8: [[128, 100, 'lbl.p8.tank'], [300, 338, 'lbl.p8.sensors'], [380, 252, 'lbl.p8.pump'], [476, 488, 'lbl.p8.recharge'], [584, 488, 'lbl.p8.pi'], [655, 62, 'lbl.p8.ui'], [716, 296, 'lbl.p8.db']]
+    p8: [[128, 100, 'lbl.p8.tank'], [300, 338, 'lbl.p8.sensors'], [380, 252, 'lbl.p8.pump'], [476, 488, 'lbl.p8.recharge'], [584, 488, 'lbl.p8.pi'], [655, 62, 'lbl.p8.ui'], [716, 296, 'lbl.p8.db']],
+    p9: [[86, 62, 'lbl.p9.phone'], [232, 226, 'lbl.p9.lock'], [400, 44, 'lbl.p9.gps'], [690, 66, 'lbl.p9.cloud'], [132, 238, 'lbl.p9.nfc'], [244, 498, 'lbl.p9.fw']]
   };
   function labels(el) {
     var key = el.getAttribute('data-art'), svgEl = el.querySelector('svg'), L = LABELS[key];

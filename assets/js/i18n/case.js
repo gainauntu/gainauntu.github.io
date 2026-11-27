@@ -58,5 +58,11 @@ Object.assign((window.AG_DICT = window.AG_DICT || {}), {
   "lbl.p8.recharge": ["To recharge", "함양 시설로", "পুনর্ভরণের দিকে"],
   "lbl.p8.pi": ["Raspberry Pi · RS-485", "Raspberry Pi · RS-485", "Raspberry Pi · RS-485"],
   "lbl.p8.ui": ["Qt dashboard", "Qt 대시보드", "Qt ড্যাশবোর্ড"],
-  "lbl.p8.db": ["MySQL · Cloud SQL", "MySQL · Cloud SQL", "MySQL · Cloud SQL"]
+  "lbl.p8.db": ["MySQL · Cloud SQL", "MySQL · Cloud SQL", "MySQL · Cloud SQL"],
+  "lbl.p9.phone": ["App · BLE", "앱 · BLE", "অ্যাপ · BLE"],
+  "lbl.p9.lock": ["Rear-wheel smart lock", "뒷바퀴 스마트 잠금장치", "পেছনের চাকার স্মার্ট লক"],
+  "lbl.p9.cloud": ["Modem → server", "모뎀 → 서버", "মডেম → সার্ভার"],
+  "lbl.p9.gps": ["GPS", "GPS", "GPS"],
+  "lbl.p9.nfc": ["NFC", "NFC", "NFC"],
+  "lbl.p9.fw": ["C/RTOS firmware", "C/RTOS 펌웨어", "C/RTOS ফার্মওয়্যার"]
 });
