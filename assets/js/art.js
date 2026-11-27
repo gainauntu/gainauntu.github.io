@@ -481,6 +481,85 @@
     }
   };
 
+  /* =====================================================================
+     8 · Automated water intake and pump control (Approtec). Intake tank with level and flow sensing over RS-485,
+     Raspberry Pi software, an automatically controlled pump sending water on toward recharge, a Qt dashboard with
+     role-based access, and MySQL / Google Cloud SQL. Conceptual: no site, hardware models or settings.
+     ===================================================================== */
+  A.p8 = {
+    rmT: 7.2,
+    svg: function () {
+      var b = '';
+      // inflow channel and intake tank
+      b += '<path d="M24 132 H70" ' + s({ o: .45, w: 1.4 }) + '/><path class="a-flow" d="M24 132 H70" ' + s({ c: WA, o: .7, w: 2 }) + '/>';
+      b += '<rect x="70" y="110" width="180" height="224" rx="12" ' + s({ o: .55, w: 1.4 }) + '/>';
+      b += '<rect data-water x="78" y="220" width="164" height="106" rx="7" fill="' + WA + '" fill-opacity=".16"/>';
+      b += '<path data-surface d="M78 220 q20 -5 41 0 t41 0 t41 0 t41 0" ' + s({ c: WA, o: .8, w: 1.4 }) + '/>';
+      b += '<path d="M78 176 H242" ' + s({ c: AC, o: .35 }) + ' stroke-dasharray="3 6"/><path d="M78 282 H242" ' + s({ c: OK, o: .35 }) + ' stroke-dasharray="3 6"/>';
+      // level sensor on the tank roof with its beam
+      b += '<rect x="196" y="92" width="34" height="18" rx="4" fill="' + NIGHT + '" ' + s({ o: .8 }) + '/>';
+      b += '<path data-beam d="M213 112 V220" ' + s({ c: WA, o: .45 }) + ' stroke-dasharray="2 5"/>';
+      // outlet: flow sensor, pump, pipe down to the recharge well
+      b += '<path d="M250 300 H358 M402 300 H476 V372" ' + s({ o: .45, w: 1.4 }) + '/><path class="a-flow" data-outflow d="M250 300 H358 M402 300 H476 V372" ' + s({ c: WA, o: .8, w: 2 }) + '/>';
+      b += '<circle cx="298" cy="300" r="12" fill="' + NIGHT + '" ' + s({ o: .75 }) + '/><path d="M291 300 H305 M300 295 L305 300 L300 305" ' + s({ w: 1.3 }) + '/>';
+      b += '<circle cx="380" cy="300" r="22" fill="' + NIGHT + '" ' + s({ o: .85, w: 1.4 }) + '/><g data-imp><path d="M380 284 V316 M364 300 H396 M369 289 L391 311 M391 289 L369 311" ' + s({ o: .7 }) + '/></g>';
+      b += '<circle data-lamp cx="402" cy="276" r="5" fill="' + OK + '"/>';
+      // ground and recharge well with infiltration
+      b += '<path d="M300 372 H560" ' + s({ o: .3 }) + '/><path d="M310 380 l-10 10 M340 380 l-10 10 M370 380 l-10 10 M520 380 l-10 10 M550 380 l-10 10" ' + s({ o: .18 }) + '/>';
+      b += '<path d="M462 372 V468 M490 372 V468" ' + s({ o: .45, w: 1.2 }) + '/>';
+      for (var i = 0; i < 6; i++) b += '<circle data-drop cx="' + (468 + (i % 3) * 8) + '" cy="390" r="2.2" fill="' + WA + '"/>';
+      // RS-485 bus from both sensors to the Raspberry Pi
+      b += '<path d="M213 92 V64 H150 V36 M298 312 V420" ' + s({ o: .3 }) + ' stroke-dasharray="2 4"/>';
+      b += '<path d="M60 420 H520" ' + s({ o: .32 }) + '/><path class="a-flow" d="M60 420 H520" ' + s({ c: AC, o: .55, w: 1.2 }) + '/>';
+      b += '<path d="M150 36 H40 V420 H60" ' + s({ o: .3 }) + ' stroke-dasharray="2 4"/>';
+      b += '<circle data-pkt r="3.2" fill="' + AC + '"/>';
+      // Raspberry Pi board
+      b += '<rect x="520" y="392" width="128" height="78" rx="8" fill="#1f3a2c" ' + s({ c: OK, o: .6 }) + '/>';
+      b += '<rect x="556" y="414" width="34" height="30" rx="3" fill="' + NIGHT + '" ' + s({ o: .6 }) + '/>';
+      for (var j = 0; j < 10; j++) b += '<rect x="' + (532 + j * 10.5) + '" y="398" width="5" height="5" rx="1" fill="' + AC + '" fill-opacity=".7"/>';
+      b += '<path d="M604 420 h30 M604 432 h22 M604 444 h26" ' + s({ o: .45 }) + '/>';
+      // control line to the pump
+      b += '<path d="M520 430 H420 V322" ' + s({ c: OK, o: .45 }) + ' stroke-dasharray="4 4"/>';
+      // Qt dashboard window
+      b += '<rect x="540" y="70" width="230" height="186" rx="10" fill="#202830" ' + s({ o: .55 }) + '/>';
+      b += '<path d="M540 92 H770" ' + s({ o: .3 }) + '/><circle cx="554" cy="81" r="3" fill="' + AC + '"/><circle cx="565" cy="81" r="3" fill="' + FG + '" fill-opacity=".35"/><circle cx="576" cy="81" r="3" fill="' + FG + '" fill-opacity=".35"/>';
+      b += '<rect x="556" y="106" width="34" height="96" rx="5" ' + s({ o: .45 }) + '/><rect data-gauge x="560" y="160" width="26" height="38" rx="3" fill="' + WA + '" fill-opacity=".45"/>';
+      b += '<polyline data-trend ' + s({ c: WA, o: .85, w: 1.4 }) + '/>';
+      b += '<rect x="604" y="208" width="72" height="34" rx="6" ' + s({ o: .4 }) + '/><circle data-dlamp cx="620" cy="225" r="6" fill="' + OK + '"/><path d="M634 225 h30" ' + s({ o: .5 }) + '/>';
+      b += '<g ' + s({ c: AC, o: .8, w: 1.3 }) + '><rect x="712" y="216" width="20" height="16" rx="3"/><path d="M716 216 v-5 a6 6 0 0 1 12 0 v5"/></g>';
+      b += '<path d="M584 392 V256" ' + s({ o: .35 }) + ' stroke-dasharray="3 4"/>';
+      // databases: local MySQL and Google Cloud SQL
+      b += '<path d="M648 430 H690 M716 380 V350" ' + s({ o: .35 }) + ' stroke-dasharray="3 4"/>';
+      b += '<g ' + s({ o: .7 }) + '><ellipse cx="716" cy="392" rx="26" ry="8"/><path d="M690 392 V436 a26 8 0 0 0 52 0 V392"/><path d="M690 414 a26 8 0 0 0 52 0" stroke-opacity=".5"/></g>';
+      b += '<path d="M692 334 a18 18 0 0 1 34 -10 a14 14 0 0 1 22 14 a12 12 0 0 1 -4 22 H700 a14 14 0 0 1 -8 -26 z" fill="' + NIGHT + '" ' + s({ c: WA, o: .7 }) + '/>';
+      b += '<circle data-sync r="2.6" fill="' + WA + '"/>';
+      return svg(b);
+    },
+    setup: function (el) {
+      var water = q(el, '[data-water]'), surf = q(el, '[data-surface]'), beam = q(el, '[data-beam]'), imp = q(el, '[data-imp]');
+      var lamp = q(el, '[data-lamp]'), dl = q(el, '[data-dlamp]'), gauge = q(el, '[data-gauge]'), trend = q(el, '[data-trend]');
+      var out = q(el, '[data-outflow]'), drops = qa(el, '[data-drop]'), pkt = q(el, '[data-pkt]'), sync = q(el, '[data-sync]');
+      function lvl(t) { var c = ((t % 10) + 10) % 10; return c < 6 ? 0.28 + 0.46 * c / 6 : 0.74 - 0.46 * (c - 6) / 4; }
+      return function (T) {
+        var c = T % 10, on = c >= 6, L = lvl(T), top = 326 - L * 210;
+        water.setAttribute('y', f(top)); water.setAttribute('height', f(326 - top));
+        surf.setAttribute('d', 'M78 ' + f(top) + ' q20 ' + f(-4 * Math.sin(T * 3)) + ' 41 0 t41 0 t41 0 t41 0');
+        beam.setAttribute('d', 'M213 112 V' + f(top));
+        imp.setAttribute('transform', on ? 'rotate(' + f((T * 300) % 360) + ' 380 300)' : '');
+        out.style.animationPlayState = on ? '' : 'paused'; out.setAttribute('stroke-opacity', on ? .8 : .2);
+        lamp.setAttribute('fill', on ? OK : FG); lamp.setAttribute('fill-opacity', on ? 1 : .25);
+        dl.setAttribute('fill', on ? OK : FG); dl.setAttribute('fill-opacity', on ? 1 : .25);
+        gauge.setAttribute('y', f(198 - L * 88)); gauge.setAttribute('height', f(L * 88));
+        drops.forEach(function (d, i) { var k = ((T * 0.9 + i / 6) % 1); d.setAttribute('cy', f(384 + k * 80)); d.setAttribute('fill-opacity', on ? f(0.85 * (1 - k)) : 0); });
+        var pts = []; for (var x = 0; x <= 150; x += 5) pts.push((604 + x) + ',' + f(194 - lvl(T - (150 - x) / 30) * 80));
+        trend.setAttribute('points', pts.join(' '));
+        var u = (T * 0.35) % 1, px = u < 0.5 ? 60 + u * 2 * 460 : 520, py = 420;
+        pkt.setAttribute('cx', f(px)); pkt.setAttribute('cy', py); pkt.setAttribute('fill-opacity', u < 0.5 ? 1 : 0);
+        var v = (T * 0.5) % 1; sync.setAttribute('cx', f(648 + v * 42)); sync.setAttribute('cy', 430); sync.setAttribute('fill-opacity', v < 0.95 ? .9 : 0);
+      };
+    }
+  };
+
   /* ---------------- mounting and live control ---------------- */
   var RMQ = window.matchMedia('(prefers-reduced-motion: reduce)');
   var live = [], subscribed = false;
@@ -492,7 +571,8 @@
     p4: [[101, 140, 'lbl.p4.gs'], [247, 314, 'lbl.p4.usv'], [566, 172, 'lbl.p4.pose'], [440, 292, 'lbl.p4.obs']],
     p5: [[400, 40, 'lbl.p5.legend'], [450, 286, 'lbl.p5.obs']],
     p6: [[112, 72, 'lbl.p6.tank'], [688, 72, 'lbl.p6.tank'], [400, 92, 'lbl.p6.stack'], [120, 336, 'lbl.p6.bus'], [400, 422, 'lbl.p6.inv'], [634, 456, 'lbl.p6.mon']],
-    p7: [[92, 222, 'lbl.p7.veh'], [416, 222, 'lbl.p7.stack'], [638, 80, 'lbl.p7.cluster'], [548, 386, 'lbl.p7.host'], [702, 386, 'lbl.p7.checks']]
+    p7: [[92, 222, 'lbl.p7.veh'], [416, 222, 'lbl.p7.stack'], [638, 80, 'lbl.p7.cluster'], [548, 386, 'lbl.p7.host'], [702, 386, 'lbl.p7.checks']],
+    p8: [[128, 100, 'lbl.p8.tank'], [300, 338, 'lbl.p8.sensors'], [380, 252, 'lbl.p8.pump'], [476, 488, 'lbl.p8.recharge'], [584, 488, 'lbl.p8.pi'], [655, 62, 'lbl.p8.ui'], [716, 296, 'lbl.p8.db']]
   };
   function labels(el) {
     var key = el.getAttribute('data-art'), svgEl = el.querySelector('svg'), L = LABELS[key];

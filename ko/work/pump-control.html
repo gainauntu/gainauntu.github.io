@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="ko" data-title-key="pump-control.meta.title" data-root="../../" data-alt-en="../../work/pump-control.html" data-alt-ko="pump-control.html" data-alt-bn="../../bn/work/pump-control.html">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>자동 취수 및 펌프 제어 시스템 · Auntu Gain</title>
+<meta name="description" content="인공함양 시스템의 취수를 감시하고 제어하는 Raspberry Pi 기반 소프트웨어입니다.">
+<link rel="canonical" href="https://gainauntu.github.io/ko/work/pump-control.html">
+<link rel="alternate" hreflang="en" href="https://gainauntu.github.io/work/pump-control.html">
+<link rel="alternate" hreflang="ko" href="https://gainauntu.github.io/ko/work/pump-control.html">
+<link rel="alternate" hreflang="bn" href="https://gainauntu.github.io/bn/work/pump-control.html">
+<link rel="alternate" hreflang="x-default" href="https://gainauntu.github.io/work/pump-control.html">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Auntu Gain">
+<meta property="og:title" content="자동 취수 및 펌프 제어 시스템 · Auntu Gain">
+<meta property="og:description" content="인공함양 시스템의 취수를 감시하고 제어하는 Raspberry Pi 기반 소프트웨어입니다.">
+<meta property="og:url" content="https://gainauntu.github.io/ko/work/pump-control.html">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:locale:alternate" content="en_GB">
+<meta property="og:locale:alternate" content="bn_BD">
+<meta property="og:image" content="https://gainauntu.github.io/assets/photos/busan-bridge-960.jpg">
+<meta name="twitter:card" content="summary">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#F5F0E6" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#11171B" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600&amp;family=Newsreader:ital,opsz,wght@1,6..72,400&amp;family=Noto+Sans+Bengali:wght@400;500;600&amp;display=swap">
+<link rel="stylesheet" href="../../assets/css/fonts.css">
+<script>(function(d){d.classList.add('js-motion');var t='';try{t=localStorage.getItem('ag-theme')||''}catch(e){}if(t==='dark'||t==='light')d.setAttribute('data-theme',t);})(document.documentElement)</script>
+<link rel="stylesheet" href="../../assets/css/base.css">
+<link rel="stylesheet" href="../../assets/css/motion.css">
+<link rel="stylesheet" href="../../assets/css/art.css">
+<link rel="stylesheet" href="../../assets/css/case.css">
+</head>
+<body>
+<a class="skip" href="#main" data-i18n="a11y.skip">본문 바로가기</a>
+
+<header class="site-head">
+  <div class="wrap site-head__in">
+    <a class="brand" href="../index.html" data-i18n-attr="aria-label:a11y.homeLink" aria-label="Auntu Gain 홈">
+      <span class="brand__en" lang="en">Auntu Gain</span>
+      <span class="brand__local" data-i18n="name.local">가인온투</span>
+    </a>
+    <nav class="nav" data-i18n-attr="aria-label:nav.primary" aria-label="주 메뉴">
+      <a class="magnetic" data-strength="8" href="../index.html#work" aria-current="page"><span class="mag-inner" data-i18n="nav.work">프로젝트</span></a>
+      <a class="magnetic" data-strength="8" href="../index.html#experience"><span class="mag-inner" data-i18n="nav.experience">경력</span></a>
+      <a class="magnetic" data-strength="8" href="../index.html#education"><span class="mag-inner" data-i18n="nav.education">학력</span></a>
+      <a class="magnetic" data-strength="8" href="../index.html#research"><span class="mag-inner" data-i18n="nav.research">연구 관심사</span></a>
+      <a class="magnetic" data-strength="8" href="../index.html#about"><span class="mag-inner" data-i18n="nav.about">소개</span></a>
+      <a class="magnetic" data-strength="8" href="../index.html#contact"><span class="mag-inner" data-i18n="nav.contact">연락처</span></a>
+    </nav>
+    <div class="head-actions">
+      <div class="lang">
+        <button class="lang__btn" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="lang-list" data-i18n-attr="aria-label:a11y.lang" aria-label="언어 변경">
+          <svg class="flag" data-flag-current aria-hidden="true" focusable="false"><use href="#flag-kr"/></svg>
+          <span class="lang__cur" data-lang-current lang="ko">한국어</span><span class="lang__code" data-lang-code aria-hidden="true">KO</span>
+          <svg class="chev" viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5" stroke="currentColor" fill="none" stroke-width="1.4"/></svg>
+        </button>
+        <ul class="lang__list" id="lang-list">
+          <li><a class="lang__opt" href="../../work/pump-control.html" hreflang="en" lang="en" data-lang-set="en"><span class="lang__name" data-flag="en">English</span><svg class="check" viewBox="0 0 14 14" aria-hidden="true"><path d="M2.5 7.5 5.5 10.5 11.5 3.5" stroke="currentColor" fill="none" stroke-width="1.6"/></svg></a></li>
+          <li><a class="lang__opt" href="pump-control.html" hreflang="ko" lang="ko" data-lang-set="ko"><span class="lang__name" data-flag="ko">한국어</span><svg class="check" viewBox="0 0 14 14" aria-hidden="true"><path d="M2.5 7.5 5.5 10.5 11.5 3.5" stroke="currentColor" fill="none" stroke-width="1.6"/></svg></a></li>
+          <li><a class="lang__opt" href="../../bn/work/pump-control.html" hreflang="bn" lang="bn" data-lang-set="bn"><span class="lang__name" data-flag="bn">বাংলা</span><svg class="check" viewBox="0 0 14 14" aria-hidden="true"><path d="M2.5 7.5 5.5 10.5 11.5 3.5" stroke="currentColor" fill="none" stroke-width="1.6"/></svg></a></li>
+        </ul>
+      </div>
+      <button class="theme-btn" type="button" data-theme-toggle data-i18n-attr="aria-label:theme.toDark;title:theme.toDark" aria-label="다크 테마로 전환" title="다크 테마로 전환"><svg class="theme-btn__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><g class="theme-btn__sun" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" fill="none"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.8v2.1M12 19.1v2.1M2.8 12h2.1M19.1 12h2.1M5.5 5.5l1.5 1.5M17 17l1.5 1.5M5.5 18.5 7 17M17 7l1.5-1.5"/></g><path class="theme-btn__moon" d="M19.6 14.6A8 8 0 0 1 9.4 4.4a8 8 0 1 0 10.2 10.2Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg></button>
+      <a class="btn btn--sm magnetic head-hire" href="../hire.html" data-strength="12"><span class="btn__label" data-i18n="nav.hire">프로젝트 의뢰</span></a>
+      <button class="menu-btn" type="button" aria-expanded="false" aria-controls="menu" data-i18n-attr="aria-label:a11y.openMenu" aria-label="메뉴 열기">
+        <span class="menu-btn__label" data-i18n="nav.menu">메뉴</span><span class="menu-btn__icon" aria-hidden="true"><i></i></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- floating menu button: appears after the header scrolls away; the ring shows page progress -->
+<button class="fab magnetic" type="button" data-strength="16" aria-expanded="false" aria-controls="menu" data-i18n-attr="aria-label:a11y.openMenu" aria-label="메뉴 열기">
+  <svg class="fab__ring" viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="30.5"/></svg>
+  <span class="fab__icon mag-inner" aria-hidden="true"><i></i></span>
+</button>
+
+<div class="menu" id="menu" role="dialog" aria-modal="true" data-i18n-attr="aria-label:nav.menu" aria-label="메뉴">
+  <div class="menu__scrim"></div>
+  <div class="menu__panel" data-scroll-native>
+    <span class="menu__curve" aria-hidden="true"></span>
+    <div class="menu__head">
+      <span class="brand__en" lang="en">Auntu Gain</span>
+      <button class="menu__close" type="button" data-i18n-attr="aria-label:a11y.closeMenu" aria-label="메뉴 닫기"><span data-i18n="nav.close">닫기</span><i aria-hidden="true"></i></button>
+    </div>
+    <nav class="menu__nav" data-i18n-attr="aria-label:nav.primary" aria-label="주 메뉴">
+      <a href="../index.html#work" data-i18n="nav.work">프로젝트</a>
+      <a href="../index.html#experience" data-i18n="nav.experience">경력</a>
+      <a href="../index.html#education" data-i18n="nav.education">학력</a>
+      <a href="../index.html#research" data-i18n="nav.research">연구 관심사</a>
+      <a href="../index.html#about" data-i18n="nav.about">소개</a>
+      <a href="../index.html#contact" data-i18n="nav.contact">연락처</a>
+    </nav>
+    <div class="menu__foot">
+      <a class="btn" href="../hire.html"><span class="btn__label" data-i18n="nav.hire">프로젝트 의뢰</span></a>
+      <div class="menu__langs" role="group" data-i18n-attr="aria-label:lang.label" aria-label="언어">
+        <a href="../../work/pump-control.html" hreflang="en" data-lang-set="en" lang="en" data-flag="en">English</a>
+        <a href="pump-control.html" hreflang="ko" data-lang-set="ko" lang="ko" data-flag="ko">한국어</a>
+        <a href="../../bn/work/pump-control.html" hreflang="bn" data-lang-set="bn" lang="bn" data-flag="bn">বাংলা</a>
+      </div>
+      <div class="menu__prefs">
+        <button class="theme-btn theme-btn--menu" type="button" data-theme-toggle data-i18n-attr="aria-label:theme.toDark;title:theme.toDark" aria-label="다크 테마로 전환" title="다크 테마로 전환"><svg class="theme-btn__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><g class="theme-btn__sun" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" fill="none"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.8v2.1M12 19.1v2.1M2.8 12h2.1M19.1 12h2.1M5.5 5.5l1.5 1.5M17 17l1.5 1.5M5.5 18.5 7 17M17 7l1.5-1.5"/></g><path class="theme-btn__moon" d="M19.6 14.6A8 8 0 0 1 9.4 4.4a8 8 0 1 0 10.2 10.2Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg></button>
+      </div>
+      <p class="menu__contact"><a href="mailto:gainauntu@gmail.com" data-fact="contact.email" data-fact-href="contact.emailHref">gainauntu@gmail.com</a><a href="https://www.linkedin.com/in/gainauntu/" rel="noopener">LinkedIn</a></p>
+    </div>
+  </div>
+</div>
+
+<main id="main">
+  <section class="case-hero" data-hero>
+    <div class="wrap">
+      <a class="back link" href="../index.html#work"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M13 8H3M7 3.5 2.5 8 7 12.5" stroke="currentColor" fill="none" stroke-width="1.4"/></svg><span data-i18n="cs.back">전체 프로젝트 보기</span></a>
+      <h1 class="case-title" data-ptitle="p8" style="view-transition-name: case-title"><span class="pt" lang="en">Automated Water Intake &amp; Pump Control System</span><span class="pt-loc">자동 취수 및 펌프 제어 시스템</span></h1>
+      <dl class="facts4 facts4--n3" data-reveal><div><dt data-i18n="cs.k.org">소속</dt><dd data-i18n="pump-control.org">Approtec</dd></div><div><dt data-i18n="cs.k.period">기간</dt><dd data-i18n="pump-control.period">2023년 6월 – 2024년 6월</dd></div><div><dt data-i18n="cs.k.role">담당 역할</dt><dd data-i18n="pump-control.roleShort">임베디드 소프트웨어, 펌프 제어, 모니터링</dd></div></dl>
+    </div>
+    <div class="wrap">
+      <figure class="case-visual lit" data-light data-art="p8" data-art-labels data-reveal="fade">
+        <figcaption class="lit__tag" data-i18n="work.illus">실제 사진이 아닌 개념 일러스트</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="section glance">
+    <div class="wrap split">
+      <h2 class="h2" data-split><span data-i18n="cs.glance">프로젝트 요약</span></h2>
+      <ul class="glance__list"><li data-reveal data-i18n="pump-control.g1">인공함양 시스템의 취수를 감시하고 제어하는 Raspberry Pi 기반 소프트웨어입니다.</li><li data-reveal data-i18n="pump-control.g2">수위·유량 센서 값을 RS-485로 읽어 실시간으로 수집하고 표시합니다.</li><li data-reveal data-i18n="pump-control.g3">펌프 자동 제어, 권한별 접근을 지원하는 Qt 대시보드, MySQL과 Google Cloud SQL 기반 데이터 관리.</li></ul>
+    </div>
+  </section>
+  <section class="section section--flush outcome" id="outcome">
+    <div class="wrap split">
+      <h2 class="h2" data-split><span data-i18n="cs.outcome">결과</span></h2>
+      <p class="lead" data-reveal data-i18n="pump-control.o1">RS-485로 수위·유량 데이터를 수집하고, 펌프를 자동 제어하며, 권한별 Qt 대시보드로 모니터링과 제어를 제공하는 Raspberry Pi 소프트웨어를 구현했습니다. 데이터는 MySQL과 Google Cloud SQL로 관리합니다.</p>
+    </div>
+  </section>
+
+  <section class="section section--flush">
+    <div class="wrap split">
+      <h2 class="h2" data-split><span data-i18n="cs.context">해결하고자 한 문제</span></h2>
+      <div class="prose"><p class="lead" data-reveal data-i18n="pump-control.c1">인공함양 시스템은 물을 끌어들여 펌프로 보냅니다. 수위와 유량을 계속 감시해야 하고, 펌프는 사람이 직접 조작하지 않아도 동작해야 합니다.</p><p data-reveal data-i18n="pump-control.c2">고객사, 설치 장소, 하드웨어 모델, 운전 설정값은 공개하지 않습니다. 이 페이지의 그림과 시뮬레이션은 개념 설명용입니다.</p></div>
+    </div>
+  </section>
+
+  <section class="section section--flush">
+    <div class="wrap split">
+      <h2 class="h2" data-split><span data-i18n="cs.role">제가 맡은 역할</span></h2>
+      <ul class="role-list"><li data-reveal data-i18n="pump-control.r1">Raspberry Pi 기반 임베디드 소프트웨어를 개발했습니다.</li><li data-reveal data-i18n="pump-control.r2">수위·유량 센서와의 RS-485 통신과 실시간 데이터 수집을 구현했습니다.</li><li data-reveal data-i18n="pump-control.r3">펌프 자동 제어 기능을 구현했습니다.</li><li data-reveal data-i18n="pump-control.r4">권한별 사용자 접근을 지원하는 Qt 모니터링·제어 대시보드를 만들었습니다.</li><li data-reveal data-i18n="pump-control.r5">로컬 데이터는 MySQL로 관리하고 Google Cloud SQL과 연동했습니다.</li></ul>
+    </div>
+  </section>
+
+  <section class="section arch" id="system">
+    <div class="wrap">
+      <div class="split split--head">
+        <h2 class="h2" data-split><span data-i18n="cs.system">시스템 구성과 동작 원리</span></h2>
+        <p class="muted" data-reveal data-i18n="cs.system.intro">시스템을 단순화한 개념도입니다. 각 구성 요소를 선택하면 설명을 볼 수 있습니다.</p>
+      </div>
+      <div class="arch__body" data-reveal="fade">
+        <div class="arch__canvas" data-diagram></div>
+        <aside class="arch__note" aria-live="polite" data-diagram-note></aside>
+      </div>
+      <p class="caption" data-i18n="cs.system.cap">공개 가능한 프로젝트 정보를 바탕으로 구성한 개념도이며 실제 제품 설계도는 아닙니다.</p>
+    </div>
+  </section>
+  <section class="section sim-sec">
+    <div class="wrap">
+      <div class="split split--head">
+        <h2 class="h2" data-split><span data-i18n="pump-control.demo.title">취수 설비 하루 운전해 보기</span></h2>
+        <p class="muted" data-reveal data-i18n="pump-control.demo.intro">가상의 취수조와 가상 데이터로 구성한 시뮬레이션입니다. 유입량을 바꾸고 자동·수동 제어를 전환하며, 대시보드에서 운영자와 조회 사용자가 각각 할 수 있는 일을 확인해 보세요. 모든 내용은 예시입니다.</p>
+      </div>
+      <div class="sim demo demo--pump" data-demo="pump-sim" data-reveal="fade">
+        <p class="sim__label"><span data-i18n="pump-control.demo.notice">가상 데이터로 구성한 예시 시뮬레이션입니다. 수위, 유량, 제어 설정은 임의로 정한 값이며, 실제 프로젝트의 하드웨어, 설정 또는 결과를 나타내지 않습니다.</span></p>
+        <div class="pump__grid">
+          <div class="pump__main">
+            <div class="sim__plot demo__plot" data-plot></div>
+            <div class="sim__controls pump__controls">
+              <button class="btn btn--sm" type="button" data-p-play><span class="btn__label" data-i18n="pump-control.demo.play">재생</span></button>
+              <button class="btn btn--sm btn--line" type="button" data-p-reset><span data-i18n="pump-control.demo.reset">처음부터</span></button>
+              <span class="demo__lab"><span data-i18n="pump-control.demo.inflow">유입량</span></span><div class="seg" role="radiogroup" aria-label="유입량" data-i18n-attr="aria-label:pump-control.demo.inflow"><button type="button" class="seg__b" role="radio" aria-checked="false" data-inflow="dry"><span data-i18n="pump-control.demo.in.dry">적음</span></button><button type="button" class="seg__b" role="radio" aria-checked="false" data-inflow="normal"><span data-i18n="pump-control.demo.in.normal">보통</span></button><button type="button" class="seg__b" role="radio" aria-checked="false" data-inflow="storm"><span data-i18n="pump-control.demo.in.storm">많음</span></button></div>
+              <span class="pump__clock"><span class="demo__lab"><span data-i18n="pump-control.demo.clock">시뮬레이션 시각</span></span> <output data-clock>06:00</output></span>
+            </div>
+            <div class="sim__foot">
+              <ul class="sim__legend"><li><i class="sw sw--lvl"></i><span data-i18n="pump-control.demo.use">수위 (가상)</span></li><li><i class="sw sw--flow"></i><span data-i18n="pump-control.demo.flowk">펌프 유량 (가상)</span></li><li><i class="sw sw--run"></i><span data-i18n="pump-control.demo.run">펌프 가동 구간</span></li></ul>
+              <p class="sim__read demo__state" aria-live="polite" data-state></p>
+            </div>
+          </div>
+          <div class="pump__dash" role="group" aria-label="모니터링 대시보드 (예시)" data-i18n-attr="aria-label:pump-control.demo.dash">
+            <p class="dash__bar"><i></i><i></i><i></i><span data-i18n="pump-control.demo.dash">모니터링 대시보드 (예시)</span></p>
+            <div class="dash__role"><span class="demo__lab"><span data-i18n="pump-control.demo.role">로그인 권한</span></span><div class="seg" role="radiogroup" aria-label="로그인 권한" data-i18n-attr="aria-label:pump-control.demo.role"><button type="button" class="seg__b" role="radio" aria-checked="false" data-role="operator"><span data-i18n="pump-control.demo.operator">운영자</span></button><button type="button" class="seg__b" role="radio" aria-checked="false" data-role="viewer"><span data-i18n="pump-control.demo.viewer">조회 사용자</span></button></div></div>
+            <div class="dash__tiles">
+              <div class="tile tile--level"><p class="tile__k"><span data-i18n="pump-control.demo.level">수위</span></p><div class="tile__tank"><i data-gauge-fill></i></div><p class="tile__v" data-v="level">–</p></div>
+              <div class="tile"><p class="tile__k"><span data-i18n="pump-control.demo.flow">펌프 유량</span></p><p class="tile__v" data-v="flow">–</p><svg class="tile__spark" viewBox="0 0 120 32" aria-hidden="true"><polyline data-spark/></svg></div>
+              <div class="tile"><p class="tile__k"><span data-i18n="pump-control.demo.pump">펌프</span></p><p class="tile__v"><i class="lamp" data-lamp></i><span data-v="pump">–</span></p></div>
+              <div class="tile tile--ctl"><p class="tile__k"><span data-i18n="pump-control.demo.mode">제어 방식</span></p><div class="seg" role="radiogroup" aria-label="제어 방식" data-i18n-attr="aria-label:pump-control.demo.mode"><button type="button" class="seg__b" role="radio" aria-checked="false" data-mode="auto"><span data-i18n="pump-control.demo.auto">자동</span></button><button type="button" class="seg__b" role="radio" aria-checked="false" data-mode="manual"><span data-i18n="pump-control.demo.manual">수동</span></button></div>
+                <div class="tile__btns"><button type="button" class="btn btn--sm btn--line" data-p-start><span data-i18n="pump-control.demo.start">펌프 가동</span></button><button type="button" class="btn btn--sm btn--line" data-p-stop><span data-i18n="pump-control.demo.stop">펌프 정지</span></button></div></div>
+            </div>
+            <p class="dash__lock" data-locked hidden><span data-i18n="pump-control.demo.locked">조회 전용입니다. 제어하려면 운영자 권한이 필요합니다.</span></p>
+            <div class="dash__log"><p class="tile__k"><span data-i18n="pump-control.demo.log">이벤트 기록</span></p><ol class="dash__list" data-log aria-live="polite"></ol></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="section decisions">
+    <div class="wrap">
+      <h2 class="h2" data-split><span data-i18n="cs.highlights">주요 구현 내용</span></h2>
+      <div class="dec-list"><article class="dec" data-reveal><h3 data-i18n="pump-control.h1.t">안정적인 센싱</h3><p><span data-i18n="pump-control.h1.d">수위와 유량을 RS-485로 계속 읽어 실시간으로 수집합니다.</span></p></article><article class="dec" data-reveal><h3 data-i18n="pump-control.h2.t">자동 운전</h3><p><span data-i18n="pump-control.h2.d">펌프가 소프트웨어 제어로 동작하므로 취수 운영이 수동 조작에 의존하지 않습니다.</span></p></article><article class="dec" data-reveal><h3 data-i18n="pump-control.h3.t">권한별 접근</h3><p><span data-i18n="pump-control.h3.d">Qt 대시보드는 사용자 권한에 맞는 모니터링·제어 기능만 보여줍니다.</span></p></article><article class="dec" data-reveal><h3 data-i18n="pump-control.h4.t">로컬과 클라우드 데이터</h3><p><span data-i18n="pump-control.h4.d">데이터는 로컬 MySQL에서 관리하고 Google Cloud SQL과 연동합니다.</span></p></article></div>
+    </div>
+  </section>
+  <section class="section related-sec">
+    <div class="wrap split">
+      <h2 class="h2" data-split><span data-i18n="cs.related">관련 프로젝트</span></h2>
+      <div>
+        <ul class="related" data-reveal><li><a href="flow-battery.html"><span data-ptitle="p6"><span class="pt" lang="en">Flow-Battery Monitoring and Protection</span><span class="pt-loc">흐름전지 모니터링 및 보호 시스템</span></span><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 12 12 4M6 4h6v6" stroke="currentColor" fill="none" stroke-width="1.4"/></svg></a></li><li><a href="follow-me.html"><span data-ptitle="p5"><span class="pt" lang="en">Agricultural Follow-Me Transport Vehicle</span><span class="pt-loc">농업용 작업자 추종 운반차</span></span><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 12 12 4M6 4h6v6" stroke="currentColor" fill="none" stroke-width="1.4"/></svg></a></li></ul>
+        <a class="next-case" href="follow-me.html" data-reveal><span class="next-case__k" data-i18n="cs.next">다음 프로젝트</span><span class="next-case__t" data-ptitle="p5"><span class="pt" lang="en">Agricultural Follow-Me Transport Vehicle</span><span class="pt-loc">농업용 작업자 추종 운반차</span></span><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 12 12 4M6 4h6v6" stroke="currentColor" fill="none" stroke-width="1.4"/></svg></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section dark contact-band" data-light>
+    <div class="curve" aria-hidden="true"></div>
+    <div class="wrap contact-band__in">
+      <h2 class="contact-band__title" data-split><span data-i18n-html="cs.discuss">비슷한 프로젝트를 진행하고 계신가요? <em>함께 이야기해 볼까요?</em></span></h2>
+      <div class="intents"><a class="intent-link intent-link--primary" href="../hire.html"><span class="intent-link__t"><span data-i18n="c.hire">프로젝트 의뢰하기</span><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 12 12 4M6 4h6v6" stroke="currentColor" fill="none" stroke-width="1.4"/></svg></span><span class="intent-link__d" data-i18n="c.hire.d">개발 의뢰 및 기술 자문</span></a><a class="intent-link" href="../hire.html?intent=collab"><span class="intent-link__t"><span data-i18n="c.collab">연구 협업 문의</span><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 12 12 4M6 4h6v6" stroke="currentColor" fill="none" stroke-width="1.4"/></svg></span><span class="intent-link__d" data-i18n="c.collab.d">대학 및 연구기관과의 협업</span></a><a class="intent-link" href="../hire.html?intent=msg"><span class="intent-link__t"><span data-i18n="c.msg">메시지 보내기</span><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 12 12 4M6 4h6v6" stroke="currentColor" fill="none" stroke-width="1.4"/></svg></span><span class="intent-link__d" data-i18n="c.msg.d">채용 제안, 교류 및 기타 문의</span></a></div>
+      <footer class="foot">
+        <span>© 2026 <span lang="en">Auntu Gain</span></span>
+        
+        <a href="#main" data-i18n="f.top">맨 위로</a>
+      </footer>
+    </div>
+  </section>
+</main>
+
+<script>window.AG_CASE = {"slug": "pump-control", "diagram": {"lanes": [{"label": "lane1", "nodes": ["sensors", "bus", "pi", "pump"]}, {"label": "lane2", "nodes": ["ui", "mysql", "cloud"]}], "links": [["pi", "ui"]], "first": "pi"}, "demo": "pump-sim"};</script>
+<script src="../../assets/js/i18n/common.js"></script>
+<script src="../../assets/js/i18n/case.js"></script>
+<script src="../../assets/js/i18n/case-pump-control.js"></script>
+<script src="../../assets/js/data/site.js"></script>
+<script src="../../assets/js/site.js"></script>
+<script src="../../assets/js/motion.js"></script>
+<script src="../../assets/js/art.js"></script>
+<script src="../../assets/js/case.js"></script>
+</body>
+</html>
