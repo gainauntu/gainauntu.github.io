@@ -48,9 +48,15 @@ Object.assign((window.AG_DICT = window.AG_DICT || {}), {
   "lbl.p7.cluster": ["Cluster display (original artwork)", "계기판 화면 (개념 일러스트)", "ইনস্ট্রুমেন্ট ক্লাস্টারের ডিসপ্লে (ধারণামূলক ইলাস্ট্রেশন)"],
   "lbl.p7.host": ["Host automation over ADB", "ADB 기반 호스트 측 자동화", "ADB-ভিত্তিক হোস্ট-সাইড অটোমেশন"],
   "lbl.p7.checks": ["Test checks", "테스트 판정", "পরীক্ষার ফল যাচাই"],
-  "cs.media.k": ["Product context (external link)", "관련 제품 자료 (외부 링크)", "পণ্যসংক্রান্ত তথ্য (বাহ্যিক লিংক)"],
   "cs.photos": ["Photographs", "사진", "ছবি"],
   "cs.photo.kind.manufacturer": ["Manufacturer product photo", "제조사 제품 사진", "নির্মাতার পণ্যের ছবি"],
   "cs.photo.kind.project": ["Project photo", "프로젝트 사진", "প্রজেক্টের ছবি"],
-  "cs.photo.kind.exhibition": ["Exhibition photo", "전시회 사진", "প্রদর্শনীর ছবি"]
+  "cs.photo.kind.exhibition": ["Exhibition photo", "전시회 사진", "প্রদর্শনীর ছবি"],
+  "lbl.p8.tank": ["Intake tank", "취수조", "পানি গ্রহণ ট্যাংক"],
+  "lbl.p8.sensors": ["Level and flow sensors", "수위·유량 센서", "স্তর ও প্রবাহ সেন্সর"],
+  "lbl.p8.pump": ["Pump", "펌프", "পাম্প"],
+  "lbl.p8.recharge": ["To recharge", "함양 시설로", "পুনর্ভরণের দিকে"],
+  "lbl.p8.pi": ["Raspberry Pi · RS-485", "Raspberry Pi · RS-485", "Raspberry Pi · RS-485"],
+  "lbl.p8.ui": ["Qt dashboard", "Qt 대시보드", "Qt ড্যাশবোর্ড"],
+  "lbl.p8.db": ["MySQL · Cloud SQL", "MySQL · Cloud SQL", "MySQL · Cloud SQL"]
 });

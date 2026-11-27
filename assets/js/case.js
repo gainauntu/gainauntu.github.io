@@ -251,6 +251,128 @@
     document.addEventListener('ag:lang', render);
   }
 
+  /* ================= demo: intake tank and pump control, simulated (synthetic; Phase 5) =================
+     A live simulation with invented inflow, levels, flows and control settings. It illustrates what the system does
+     (monitoring, automatic pump control, manual control, role-based access); it does not reproduce the project's
+     hardware, settings or results. */
+  function pumpSim() {
+    var box = $('[data-demo="pump-sim"]'); if (!box) return;
+    var k = function (x) { return 'pump-control.demo.' + x; };
+    var plot = $('[data-plot]', box), read = $('[data-state]', box), clock = $('[data-clock]', box), playBtn = $('[data-p-play]', box), resetBtn = $('[data-p-reset]', box);
+    var inBtns = $$('[data-inflow]', box), roleBtns = $$('[data-role]', box), modeBtns = $$('[data-mode]', box);
+    var startBtn = $('[data-p-start]', box), stopBtn = $('[data-p-stop]', box), lock = $('[data-locked]', box), logEl = $('[data-log]', box);
+    var gauge = $('[data-gauge-fill]', box), lv = $('[data-v="level"]', box), fv = $('[data-v="flow"]', box), pv = $('[data-v="pump"]', box), lamp = $('[data-lamp]', box), spark = $('[data-spark]', box);
+    var START = 72, STOP = 28, W = 144, STEP = 5, TICK = 170;                 // illustrative settings; 5 simulated minutes per step
+    var IN = { dry: 0.9, normal: 1.7, storm: 3.3 };
+    var st, r, timer = 0, playing = false, log = [];
+    function rng(seed) { return function () { seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; }; }
+    function reset() {
+      r = rng(23); log = []; logEl.textContent = '';
+      st = { t: 6 * 60, level: 44, pump: false, auto: true, inflow: st ? st.inflow : 'normal', role: st ? st.role : 'operator', hist: [] };
+      for (var i = 0; i < (RM.matches ? W : 30); i++) step(true);
+    }
+    function addLog(key, p) {
+      var e = { tm: st.t, key: key, p: p }; log.unshift(e); if (log.length > 6) log.pop();
+      var li = document.createElement('li'); li.__e = e; logEl.insertBefore(li, logEl.firstChild);
+      while (logEl.children.length > 6) logEl.removeChild(logEl.lastChild);
+      fillLog(li); requestAnimationFrame(function () { li.classList.add('is-in'); });
+    }
+    function hhmm(m) { m = ((m % 1440) + 1440) % 1440; return ('0' + Math.floor(m / 60)).slice(-2) + ':' + ('0' + (m % 60)).slice(-2); }
+    function fillLog(li) { var e = li.__e; li.textContent = hhmm(e.tm) + '  ' + t(k(e.key), e.p ? { x: t(k('in.' + e.p)) } : undefined); }
+    function step(quiet) {
+      var inflow = IN[st.inflow] * (1 + 0.3 * Math.sin(st.t / 95)) + (r() - 0.5) * 0.5;
+      if (st.auto) {
+        if (!st.pump && st.level >= START) { st.pump = true; if (!quiet) addLog('e.autostart'); }
+        else if (st.pump && st.level <= STOP) { st.pump = false; if (!quiet) addLog('e.autostop'); }
+      }
+      var flow = st.pump ? 62 + 18 * Math.sin(st.t / 40) + (r() - 0.5) * 6 : 0;
+      var prev = st.level;
+      st.level = Math.max(0, Math.min(100, st.level + inflow - (st.pump ? 3.5 : 0)));
+      st.hist.push({ t: st.t, level: st.level, flow: flow, on: st.pump, d: st.level - prev });
+      if (st.hist.length > W) st.hist.shift();
+      st.t += STEP;
+    }
+    var B = 236, H = 318, FS = '';                                     // phones: a taller chart with larger labels
+    function X(i) { return 40 + i / (W - 1) * 940; }
+    function Y(v) { return B - v / 100 * (B - 30); }
+    function FY(v) { return (H - (FS ? 52 : 22)) - v / 100 * (FS ? 90 : 30); }
+    function render() {
+      var narrow = plot.clientWidth > 0 && plot.clientWidth < 600;
+      H = narrow ? 760 : 318; B = narrow ? 560 : 236; FS = narrow ? ' style="font-size:40px"' : '';
+      var FL = ' style="text-anchor:start' + (narrow ? ';font-size:40px' : '') + '"';
+      var h = st.hist, n = h.length, s = '<svg viewBox="0 0 1000 ' + H + '" role="img" aria-label="' + t(k('title')) + '">';
+      var a = -1;
+      for (var i = 0; i <= n; i++) {
+        var on = i < n && h[i].on;
+        if (on && a < 0) a = i;
+        if (!on && a >= 0) { s += '<rect class="pump-run" x="' + X(a).toFixed(1) + '" y="30" width="' + Math.max(3, X(i - 1) - X(a)).toFixed(1) + '" height="' + (B - 30) + '"/>'; a = -1; }
+      }
+      s += '<line class="pump-line pump-line--start" x1="40" x2="980" y1="' + Y(START) + '" y2="' + Y(START) + '"/><text class="demo-tick pump-line-t"' + FL + ' x="46" y="' + (Y(START) - (FS ? 12 : 7)) + '">' + t(k('startline')) + '</text>';
+      s += '<line class="pump-line pump-line--stop" x1="40" x2="980" y1="' + Y(STOP) + '" y2="' + Y(STOP) + '"/><text class="demo-tick pump-line-t"' + FL + ' x="46" y="' + (Y(STOP) + (FS ? 44 : 17)) + '">' + t(k('stopline')) + '</text>';
+      s += '<line class="demo-axis" x1="40" x2="980" y1="' + B + '" y2="' + B + '"/><line class="demo-axis" x1="40" x2="980" y1="' + (H - (FS ? 52 : 22)) + '" y2="' + (H - (FS ? 52 : 22)) + '"/>';
+      var area = 'M' + X(0).toFixed(1) + ' ' + B, line = '', fl = '';
+      for (var j = 0; j < n; j++) { area += ' L' + X(j).toFixed(1) + ' ' + Y(h[j].level).toFixed(1); line += X(j).toFixed(1) + ',' + Y(h[j].level).toFixed(1) + ' '; fl += X(j).toFixed(1) + ',' + FY(h[j].flow).toFixed(1) + ' '; }
+      if (n) area += ' L' + X(n - 1).toFixed(1) + ' ' + B + ' Z';
+      s += '<path class="pump-area" d="' + area + '"/><polyline class="pump-level" points="' + line + '"/><polyline class="pump-flow" points="' + fl + '"/>';
+      for (var q = 0; q < n; q++) if (h[q].t % 120 === 0) s += '<text class="demo-tick"' + (X(q) < 90 ? ' style="text-anchor:start' + (FS ? ';font-size:40px' : '') + '"' : FS) + ' x="' + Math.max(40, X(q)).toFixed(1) + '" y="' + (H - 2) + '" text-anchor="middle">' + hhmm(h[q].t) + '</text>';
+      if (n) s += '<circle class="pump-head" cx="' + X(n - 1).toFixed(1) + '" cy="' + Y(h[n - 1].level).toFixed(1) + '" r="' + (FS ? 9 : 5) + '"/>';
+      plot.innerHTML = s + '</svg>';
+      var last = h[n - 1] || { level: st.level, flow: 0, d: 0 };
+      clock.textContent = hhmm(st.t);
+      gauge.style.height = last.level.toFixed(1) + '%';
+      lv.textContent = AG.num(Math.round(last.level)) + '%';
+      fv.textContent = AG.num(Math.round(last.flow)) + '%';
+      pv.textContent = t(k(st.pump ? 'on' : 'off')); lamp.classList.toggle('is-on', st.pump);
+      var sp = ''; h.slice(-36).forEach(function (o, i) { sp += (i * 3.4).toFixed(1) + ',' + (30 - o.flow / 100 * 26).toFixed(1) + ' '; });
+      spark.setAttribute('points', sp);
+      var msg = !st.auto ? 'n.manual' : (!st.pump && st.level >= 96 ? 'n.high' : st.pump ? (last.d < -0.4 ? 'n.fall' : 'n.hold') : 'n.rise');
+      var txt = t(k(msg)); if (read.textContent !== txt) read.textContent = txt;
+      $('.btn__label', playBtn).textContent = t(k(playing ? 'pause' : 'play'));
+      controls();
+    }
+    function controls() {
+      var op = st.role === 'operator';
+      roleBtns.forEach(function (b) { var on = b.getAttribute('data-role') === st.role; b.setAttribute('aria-checked', String(on)); b.tabIndex = on ? 0 : -1; });
+      modeBtns.forEach(function (b) { var on = (b.getAttribute('data-mode') === 'auto') === st.auto; b.setAttribute('aria-checked', String(on)); b.disabled = !op; b.tabIndex = on ? 0 : -1; });
+      inBtns.forEach(function (b) { var on = b.getAttribute('data-inflow') === st.inflow; b.setAttribute('aria-checked', String(on)); b.tabIndex = on ? 0 : -1; });
+      startBtn.disabled = !op || st.auto || st.pump; stopBtn.disabled = !op || st.auto || !st.pump;
+      lock.hidden = op; box.classList.toggle('is-viewer', !op);
+    }
+    function tick() { step(false); render(); }
+    function play() { if (playing) return; playing = true; timer = setInterval(tick, TICK); render(); }
+    function pause() { playing = false; clearInterval(timer); render(); }
+    function radio(btns, attr, set) {
+      btns.forEach(function (b, i) {
+        b.addEventListener('click', function () { if (!b.disabled) set(b.getAttribute(attr)); });
+        b.addEventListener('keydown', function (e) {
+          var d = e.key === 'ArrowRight' || e.key === 'ArrowDown' ? 1 : e.key === 'ArrowLeft' || e.key === 'ArrowUp' ? -1 : 0;
+          if (!d || b.disabled) return; e.preventDefault(); var nb = btns[(i + d + btns.length) % btns.length]; set(nb.getAttribute(attr)); nb.focus();
+        });
+      });
+    }
+    radio(inBtns, 'data-inflow', function (v) { if (v === st.inflow) return; st.inflow = v; addLog('e.inflow', v); render(); });
+    radio(roleBtns, 'data-role', function (v) { st.role = v; render(); });
+    radio(modeBtns, 'data-mode', function (v) {
+      if (st.role !== 'operator' || (v === 'auto') === st.auto) return;
+      st.auto = v === 'auto'; addLog(st.auto ? 'e.auto' : 'e.manual'); render();
+    });
+    startBtn.addEventListener('click', function () { if (st.role !== 'operator' || st.auto || st.pump) return; st.pump = true; addLog('e.manstart'); render(); });
+    stopBtn.addEventListener('click', function () { if (st.role !== 'operator' || st.auto || !st.pump) return; st.pump = false; addLog('e.manstop'); render(); });
+    playBtn.addEventListener('click', function () { if (playing) pause(); else play(); });
+    resetBtn.addEventListener('click', function () { var was = playing; pause(); reset(); render(); if (was) play(); });
+    reset(); render();
+    // runs only while visible; never starts by itself when reduced motion is preferred
+    if ('IntersectionObserver' in window) {
+      var seen = false, held = false;                       // held: paused only because it scrolled away
+      new IntersectionObserver(function (es) {
+        var vis = es[0].isIntersecting;
+        if (vis && ((!seen && !RM.matches) || held)) { seen = true; held = false; play(); }
+        else if (!vis && playing) { pause(); held = true; }
+      }, { threshold: 0.35 }).observe(plot);
+    }
+    document.addEventListener('ag:lang', function () { Array.prototype.forEach.call(logEl.children, fillLog); render(); });
+  }
+
 
   /* ================= demo: a week on one meter, played back (synthetic; Phase 5) =================
      A made-up week of household use at half-hour resolution with three hand-placed illustrative events. Playback,
@@ -352,5 +474,6 @@
   if (CFG.demo === 'wm-events') wmDemo();
 
   if (CFG.demo === 'pill-threshold') pillDemo();
+  if (CFG.demo === 'pump-sim') pumpSim();
   if (CFG.demo === 'arm-angle') armDemo();
 })();

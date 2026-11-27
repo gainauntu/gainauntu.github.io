@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="bn" data-title-key="pump-control.meta.title" data-root="../../" data-alt-en="../../work/pump-control.html" data-alt-ko="../../ko/work/pump-control.html" data-alt-bn="pump-control.html">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>স্বয়ংক্রিয় পানি গ্রহণ ও পাম্প নিয়ন্ত্রণ · Auntu Gain</title>
+<meta name="description" content="কৃত্রিম ভূগর্ভস্থ পানি পুনর্ভরণ ব্যবস্থার পানি গ্রহণ পর্যবেক্ষণ ও নিয়ন্ত্রণের জন্য Raspberry Pi-ভিত্তিক সফটওয়্যার।">
+<link rel="canonical" href="https://gainauntu.github.io/bn/work/pump-control.html">
+<link rel="alternate" hreflang="en" href="https://gainauntu.github.io/work/pump-control.html">
+<link rel="alternate" hreflang="ko" href="https://gainauntu.github.io/ko/work/pump-control.html">
+<link rel="alternate" hreflang="bn" href="https://gainauntu.github.io/bn/work/pump-control.html">
+<link rel="alternate" hreflang="x-default" href="https://gainauntu.github.io/work/pump-control.html">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Auntu Gain">
+<meta property="og:title" content="স্বয়ংক্রিয় পানি গ্রহণ ও পাম্প নিয়ন্ত্রণ · Auntu Gain">
+<meta property="og:description" content="কৃত্রিম ভূগর্ভস্থ পানি পুনর্ভরণ ব্যবস্থার পানি গ্রহণ পর্যবেক্ষণ ও নিয়ন্ত্রণের জন্য Raspberry Pi-ভিত্তিক সফটওয়্যার।">
+<meta property="og:url" content="https://gainauntu.github.io/bn/work/pump-control.html">
+<meta property="og:locale" content="bn_BD">
+<meta property="og:locale:alternate" content="en_GB">
+<meta property="og:locale:alternate" content="ko_KR">
+<meta property="og:image" content="https://gainauntu.github.io/assets/photos/busan-bridge-960.jpg">
+<meta name="twitter:card" content="summary">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#F5F0E6" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#11171B" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600&amp;family=Newsreader:ital,opsz,wght@1,6..72,400&amp;family=Noto+Sans+Bengali:wght@400;500;600&amp;display=swap">
+<link rel="stylesheet" href="../../assets/css/fonts.css">
+<script>(function(d){d.classList.add('js-motion');var t='';try{t=localStorage.getItem('ag-theme')||''}catch(e){}if(t==='dark'||t==='light')d.setAttribute('data-theme',t);})(document.documentElement)</script>
+<link rel="stylesheet" href="../../assets/css/base.css">
+<link rel="stylesheet" href="../../assets/css/motion.css">
+<link rel="stylesheet" href="../../assets/css/art.css">
+<link rel="stylesheet" href="../../assets/css/case.css">
+</head>
+<body>
+<a class="skip" href="#main" data-i18n="a11y.skip">মূল বিষয়বস্তুতে যান</a>
+
+<header class="site-head">
+  <div class="wrap site-head__in">
+    <a class="brand" href="../index.html" data-i18n-attr="aria-label:a11y.homeLink" aria-label="Auntu Gain, হোম">
+      <span class="brand__en" lang="en">Auntu Gain</span>
+      <span class="brand__local" data-i18n="name.local">অন্তু গাইন</span>
+    </a>
+    <nav class="nav" data-i18n-attr="aria-label:nav.primary" aria-label="প্রধান মেনু">
+      <a class="magnetic" data-strength="8" href="../index.html#work" aria-current="page"><span class="mag-inner" data-i18n="nav.work">প্রজেক্ট</span></a>
+      <a class="magnetic" data-strength="8" href="../index.html#experience"><span class="mag-inner" data-i18n="nav.experience">অভিজ্ঞতা</span></a>
+      <a class="magnetic" data-strength="8" href="../index.html#education"><span class="mag-inner" data-i18n="nav.education">শিক্ষা</span></a>
+      <a class="magnetic" data-strength="8" href="../index.html#research"><span class="mag-inner" data-i18n="nav.research">গবেষণার আগ্রহ</span></a>
+      <a class="magnetic" data-strength="8" href="../index.html#about"><span class="mag-inner" data-i18n="nav.about">পরিচিতি</span></a>
+      <a class="magnetic" data-strength="8" href="../index.html#contact"><span class="mag-inner" data-i18n="nav.contact">যোগাযোগ</span></a>
+    </nav>
+    <div class="head-actions">
+      <div class="lang">
+        <button class="lang__btn" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="lang-list" data-i18n-attr="aria-label:a11y.lang" aria-label="ভাষা বদলান">
+          <svg class="flag" data-flag-current aria-hidden="true" focusable="false"><use href="#flag-bd"/></svg>
+          <span class="lang__cur" data-lang-current lang="bn">বাংলা</span><span class="lang__code" data-lang-code aria-hidden="true">BN</span>
+          <svg class="chev" viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5" stroke="currentColor" fill="none" stroke-width="1.4"/></svg>
+        </button>
+        <ul class="lang__list" id="lang-list">
+          <li><a class="lang__opt" href="../../work/pump-control.html" hreflang="en" lang="en" data-lang-set="en"><span class="lang__name" data-flag="en">English</span><svg class="check" viewBox="0 0 14 14" aria-hidden="true"><path d="M2.5 7.5 5.5 10.5 11.5 3.5" stroke="currentColor" fill="none" stroke-width="1.6"/></svg></a></li>
+          <li><a class="lang__opt" href="../../ko/work/pump-control.html" hreflang="ko" lang="ko" data-lang-set="ko"><span class="lang__name" data-flag="ko">한국어</span><svg class="check" viewBox="0 0 14 14" aria-hidden="true"><path d="M2.5 7.5 5.5 10.5 11.5 3.5" stroke="currentColor" fill="none" stroke-width="1.6"/></svg></a></li>
+          <li><a class="lang__opt" href="pump-control.html" hreflang="bn" lang="bn" data-lang-set="bn"><span class="lang__name" data-flag="bn">বাংলা</span><svg class="check" viewBox="0 0 14 14" aria-hidden="true"><path d="M2.5 7.5 5.5 10.5 11.5 3.5" stroke="currentColor" fill="none" stroke-width="1.6"/></svg></a></li>
+        </ul>
+      </div>
+      <button class="theme-btn" type="button" data-theme-toggle data-i18n-attr="aria-label:theme.toDark;title:theme.toDark" aria-label="ডার্ক থিমে যান" title="ডার্ক থিমে যান"><svg class="theme-btn__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><g class="theme-btn__sun" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" fill="none"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.8v2.1M12 19.1v2.1M2.8 12h2.1M19.1 12h2.1M5.5 5.5l1.5 1.5M17 17l1.5 1.5M5.5 18.5 7 17M17 7l1.5-1.5"/></g><path class="theme-btn__moon" d="M19.6 14.6A8 8 0 0 1 9.4 4.4a8 8 0 1 0 10.2 10.2Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg></button>
+      <a class="btn btn--sm magnetic head-hire" href="../hire.html" data-strength="12"><span class="btn__label" data-i18n="nav.hire">প্রজেক্ট নিয়ে আলোচনা</span></a>
+      <button class="menu-btn" type="button" aria-expanded="false" aria-controls="menu" data-i18n-attr="aria-label:a11y.openMenu" aria-label="মেনু খুলুন">
+        <span class="menu-btn__label" data-i18n="nav.menu">মেনু</span><span class="menu-btn__icon" aria-hidden="true"><i></i></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- floating menu button: appears after the header scrolls away; the ring shows page progress -->
+<button class="fab magnetic" type="button" data-strength="16" aria-expanded="false" aria-controls="menu" data-i18n-attr="aria-label:a11y.openMenu" aria-label="মেনু খুলুন">
+  <svg class="fab__ring" viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="30.5"/></svg>
+  <span class="fab__icon mag-inner" aria-hidden="true"><i></i></span>
+</button>
+
+<div class="menu" id="menu" role="dialog" aria-modal="true" data-i18n-attr="aria-label:nav.menu" aria-label="মেনু">
+  <div class="menu__scrim"></div>
+  <div class="menu__panel" data-scroll-native>
+    <span class="menu__curve" aria-hidden="true"></span>
+    <div class="menu__head">
+      <span class="brand__en" lang="en">Auntu Gain</span>
+      <button class="menu__close" type="button" data-i18n-attr="aria-label:a11y.closeMenu" aria-label="মেনু বন্ধ করুন"><span data-i18n="nav.close">বন্ধ করুন</span><i aria-hidden="true"></i></button>
+    </div>
+    <nav class="menu__nav" data-i18n-attr="aria-label:nav.primary" aria-label="প্রধান মেনু">
+      <a href="../index.html#work" data-i18n="nav.work">প্রজেক্ট</a>
+      <a href="../index.html#experience" data-i18n="nav.experience">অভিজ্ঞতা</a>
+      <a href="../index.html#education" data-i18n="nav.education">শিক্ষা</a>
+      <a href="../index.html#research" data-i18n="nav.research">গবেষণার আগ্রহ</a>
+      <a href="../index.html#about" data-i18n="nav.about">পরিচিতি</a>
+      <a href="../index.html#contact" data-i18n="nav.contact">যোগাযোগ</a>
+    </nav>
+    <div class="menu__foot">
+      <a class="btn" href="../hire.html"><span class="btn__label" data-i18n="nav.hire">প্রজেক্ট নিয়ে আলোচনা</span></a>
+      <div class="menu__langs" role="group" data-i18n-attr="aria-label:lang.label" aria-label="ভাষা">
+        <a href="../../work/pump-control.html" hreflang="en" data-lang-set="en" lang="en" data-flag="en">English</a>
+        <a href="../../ko/work/pump-control.html" hreflang="ko" data-lang-set="ko" lang="ko" data-flag="ko">한국어</a>
+        <a href="pump-control.html" hreflang="bn" data-lang-set="bn" lang="bn" data-flag="bn">বাংলা</a>
+      </div>
+      <div class="menu__prefs">
+        <button class="theme-btn theme-btn--menu" type="button" data-theme-toggle data-i18n-attr="aria-label:theme.toDark;title:theme.toDark" aria-label="ডার্ক থিমে যান" title="ডার্ক থিমে যান"><svg class="theme-btn__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><g class="theme-btn__sun" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" fill="none"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.8v2.1M12 19.1v2.1M2.8 12h2.1M19.1 12h2.1M5.5 5.5l1.5 1.5M17 17l1.5 1.5M5.5 18.5 7 17M17 7l1.5-1.5"/></g><path class="theme-btn__moon" d="M19.6 14.6A8 8 0 0 1 9.4 4.4a8 8 0 1 0 10.2 10.2Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg></button>
+      </div>
+      <p class="menu__contact"><a href="mailto:gainauntu@gmail.com" data-fact="contact.email" data-fact-href="contact.emailHref">gainauntu@gmail.com</a><a href="https://www.linkedin.com/in/gainauntu/" rel="noopener">LinkedIn</a></p>
+    </div>
+  </div>
+</div>
+
+<main id="main">
+  <section class="case-hero" data-hero>
+    <div class="wrap">
+      <a class="back link" href="../index.html#work"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M13 8H3M7 3.5 2.5 8 7 12.5" stroke="currentColor" fill="none" stroke-width="1.4"/></svg><span data-i18n="cs.back">সব প্রজেক্ট দেখুন</span></a>
+      <h1 class="case-title" data-ptitle="p8" style="view-transition-name: case-title"><span class="pt" lang="en">Automated Water Intake &amp; Pump Control System</span><span class="pt-loc">স্বয়ংক্রিয় পানি গ্রহণ ও পাম্প নিয়ন্ত্রণ ব্যবস্থা</span></h1>
+      <dl class="facts4 facts4--n3" data-reveal><div><dt data-i18n="cs.k.org">প্রতিষ্ঠান</dt><dd data-i18n="pump-control.org">Approtec Inc.</dd></div><div><dt data-i18n="cs.k.period">সময়কাল</dt><dd data-i18n="pump-control.period">জুন ২০২৩ – জুন ২০২৪</dd></div><div><dt data-i18n="cs.k.role">আমার ভূমিকা</dt><dd data-i18n="pump-control.roleShort">এমবেডেড সফটওয়্যার, পাম্প নিয়ন্ত্রণ ও মনিটরিং</dd></div></dl>
+    </div>
+    <div class="wrap">
+      <figure class="case-visual lit" data-light data-art="p8" data-art-labels data-reveal="fade">
+        <figcaption class="lit__tag" data-i18n="work.illus">বাস্তব ছবি নয়, ধারণাভিত্তিক ইলাস্ট্রেশন</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="section glance">
+    <div class="wrap split">
+      <h2 class="h2" data-split><span data-i18n="cs.glance">একনজরে প্রজেক্টটি</span></h2>
+      <ul class="glance__list"><li data-reveal data-i18n="pump-control.g1">কৃত্রিম ভূগর্ভস্থ পানি পুনর্ভরণ ব্যবস্থার পানি গ্রহণ পর্যবেক্ষণ ও নিয়ন্ত্রণের জন্য Raspberry Pi-ভিত্তিক সফটওয়্যার।</li><li data-reveal data-i18n="pump-control.g2">RS-485-এর মাধ্যমে পানির স্তর ও প্রবাহ সেন্সরের মান পড়ে তা রিয়েল-টাইমে সংগ্রহ ও প্রদর্শন করা হয়।</li><li data-reveal data-i18n="pump-control.g3">স্বয়ংক্রিয় পাম্প নিয়ন্ত্রণ, ভূমিকাভিত্তিক অ্যাক্সেসসহ Qt ড্যাশবোর্ড, এবং MySQL ও Google Cloud SQL-এ ডেটা ব্যবস্থাপনা।</li></ul>
+    </div>
+  </section>
+  <section class="section section--flush outcome" id="outcome">
+    <div class="wrap split">
+      <h2 class="h2" data-split><span data-i18n="cs.outcome">ফলাফল</span></h2>
+      <p class="lead" data-reveal data-i18n="pump-control.o1">RS-485-এর মাধ্যমে পানির স্তর ও প্রবাহের ডেটা সংগ্রহ, স্বয়ংক্রিয় পাম্প নিয়ন্ত্রণ এবং ভূমিকাভিত্তিক Qt ড্যাশবোর্ডে মনিটরিং ও নিয়ন্ত্রণসহ একটি Raspberry Pi সফটওয়্যার তৈরি করেছি; ডেটা থাকে MySQL ও Google Cloud SQL-এ।</p>
+    </div>
+  </section>
+
+  <section class="section section--flush">
+    <div class="wrap split">
+      <h2 class="h2" data-split><span data-i18n="cs.context">যে সমস্যাটি সমাধান করতে চেয়েছি</span></h2>
+      <div class="prose"><p class="lead" data-reveal data-i18n="pump-control.c1">কৃত্রিম পুনর্ভরণ ব্যবস্থা পানি গ্রহণ করে পাম্পের মাধ্যমে সামনে পাঠায়। এর পানির স্তর ও প্রবাহ সবসময় পর্যবেক্ষণ করতে হয়, আর পাম্পগুলোকে কারও হাতে চালানো ছাড়াই চলতে হয়।</p><p data-reveal data-i18n="pump-control.c2">গ্রাহক, স্থান, হার্ডওয়্যারের মডেল ও পরিচালনার সেটিং এখানে উল্লেখ করা হয়নি। এই পৃষ্ঠার ছবি ও সিমুলেশন ধারণাগত।</p></div>
+    </div>
+  </section>
+
+  <section class="section section--flush">
+    <div class="wrap split">
+      <h2 class="h2" data-split><span data-i18n="cs.role">আমি যে কাজগুলো করেছি</span></h2>
+      <ul class="role-list"><li data-reveal data-i18n="pump-control.r1">Raspberry Pi-তে এমবেডেড সফটওয়্যার তৈরি করেছি।</li><li data-reveal data-i18n="pump-control.r2">পানির স্তর ও প্রবাহ সেন্সরের সঙ্গে RS-485 যোগাযোগ এবং রিয়েল-টাইম ডেটা সংগ্রহ বাস্তবায়ন করেছি।</li><li data-reveal data-i18n="pump-control.r3">স্বয়ংক্রিয় পাম্প নিয়ন্ত্রণের ফাংশনগুলো বাস্তবায়ন করেছি।</li><li data-reveal data-i18n="pump-control.r4">ভূমিকাভিত্তিক ব্যবহারকারী অ্যাক্সেসসহ Qt মনিটরিং ও নিয়ন্ত্রণ ড্যাশবোর্ড তৈরি করেছি।</li><li data-reveal data-i18n="pump-control.r5">স্থানীয় ডেটা MySQL-এ পরিচালনা করেছি এবং Google Cloud SQL-এর সঙ্গে যুক্ত করেছি।</li></ul>
+    </div>
+  </section>
+
+  <section class="section arch" id="system">
+    <div class="wrap">
+      <div class="split split--head">
+        <h2 class="h2" data-split><span data-i18n="cs.system">সিস্টেমের গঠন ও কার্যপ্রণালি</span></h2>
+        <p class="muted" data-reveal data-i18n="cs.system.intro">এটি সিস্টেমের একটি সরলীকৃত ধারণামূলক চিত্র। বিস্তারিত জানতে যেকোনো অংশ নির্বাচন করুন।</p>
+      </div>
+      <div class="arch__body" data-reveal="fade">
+        <div class="arch__canvas" data-diagram></div>
+        <aside class="arch__note" aria-live="polite" data-diagram-note></aside>
+      </div>
+      <p class="caption" data-i18n="cs.system.cap">প্রকাশযোগ্য প্রজেক্টের তথ্যের ভিত্তিতে তৈরি সরলীকৃত চিত্র; এটি প্রকৃত পণ্যের নকশা নয়।</p>
+    </div>
+  </section>
+  <section class="section sim-sec">
+    <div class="wrap">
+      <div class="split split--head">
+        <h2 class="h2" data-split><span data-i18n="pump-control.demo.title">এক দিনের পানি গ্রহণ চালিয়ে দেখুন</span></h2>
+        <p class="muted" data-reveal data-i18n="pump-control.demo.intro">কাল্পনিক রিডিং দিয়ে তৈরি একটি সিমুলেটেড পানি গ্রহণ ট্যাংক। প্রবাহের মাত্রা বদলান, স্বয়ংক্রিয় ও ম্যানুয়াল নিয়ন্ত্রণের মধ্যে বদল করুন, আর দেখুন ড্যাশবোর্ডে অপারেটর ও দর্শক আলাদাভাবে কী করতে পারেন। এখানে সবকিছুই উদাহরণ।</p>
+      </div>
+      <div class="sim demo demo--pump" data-demo="pump-sim" data-reveal="fade">
+        <p class="sim__label"><span data-i18n="pump-control.demo.notice">কাল্পনিক ডেটা দিয়ে তৈরি উদাহরণমূলক সিমুলেশন। স্তর, প্রবাহ ও নিয়ন্ত্রণের সেটিং বানানো; এটি প্রজেক্টের হার্ডওয়্যার, সেটিং বা ফলাফল দেখায় না।</span></p>
+        <div class="pump__grid">
+          <div class="pump__main">
+            <div class="sim__plot demo__plot" data-plot></div>
+            <div class="sim__controls pump__controls">
+              <button class="btn btn--sm" type="button" data-p-play><span class="btn__label" data-i18n="pump-control.demo.play">চালান</span></button>
+              <button class="btn btn--sm btn--line" type="button" data-p-reset><span data-i18n="pump-control.demo.reset">আবার শুরু</span></button>
+              <span class="demo__lab"><span data-i18n="pump-control.demo.inflow">আগত প্রবাহ</span></span><div class="seg" role="radiogroup" aria-label="আগত প্রবাহ" data-i18n-attr="aria-label:pump-control.demo.inflow"><button type="button" class="seg__b" role="radio" aria-checked="false" data-inflow="dry"><span data-i18n="pump-control.demo.in.dry">কম</span></button><button type="button" class="seg__b" role="radio" aria-checked="false" data-inflow="normal"><span data-i18n="pump-control.demo.in.normal">স্বাভাবিক</span></button><button type="button" class="seg__b" role="radio" aria-checked="false" data-inflow="storm"><span data-i18n="pump-control.demo.in.storm">বেশি</span></button></div>
+              <span class="pump__clock"><span class="demo__lab"><span data-i18n="pump-control.demo.clock">সিমুলেশনের সময়</span></span> <output data-clock>06:00</output></span>
+            </div>
+            <div class="sim__foot">
+              <ul class="sim__legend"><li><i class="sw sw--lvl"></i><span data-i18n="pump-control.demo.use">পানির স্তর (কাল্পনিক)</span></li><li><i class="sw sw--flow"></i><span data-i18n="pump-control.demo.flowk">পাম্পের প্রবাহ (কাল্পনিক)</span></li><li><i class="sw sw--run"></i><span data-i18n="pump-control.demo.run">পাম্প চলার সময়</span></li></ul>
+              <p class="sim__read demo__state" aria-live="polite" data-state></p>
+            </div>
+          </div>
+          <div class="pump__dash" role="group" aria-label="মনিটরিং ড্যাশবোর্ড (উদাহরণ)" data-i18n-attr="aria-label:pump-control.demo.dash">
+            <p class="dash__bar"><i></i><i></i><i></i><span data-i18n="pump-control.demo.dash">মনিটরিং ড্যাশবোর্ড (উদাহরণ)</span></p>
+            <div class="dash__role"><span class="demo__lab"><span data-i18n="pump-control.demo.role">যে ভূমিকায় লগ-ইন</span></span><div class="seg" role="radiogroup" aria-label="যে ভূমিকায় লগ-ইন" data-i18n-attr="aria-label:pump-control.demo.role"><button type="button" class="seg__b" role="radio" aria-checked="false" data-role="operator"><span data-i18n="pump-control.demo.operator">অপারেটর</span></button><button type="button" class="seg__b" role="radio" aria-checked="false" data-role="viewer"><span data-i18n="pump-control.demo.viewer">দর্শক</span></button></div></div>
+            <div class="dash__tiles">
+              <div class="tile tile--level"><p class="tile__k"><span data-i18n="pump-control.demo.level">পানির স্তর</span></p><div class="tile__tank"><i data-gauge-fill></i></div><p class="tile__v" data-v="level">–</p></div>
+              <div class="tile"><p class="tile__k"><span data-i18n="pump-control.demo.flow">পাম্পের প্রবাহ</span></p><p class="tile__v" data-v="flow">–</p><svg class="tile__spark" viewBox="0 0 120 32" aria-hidden="true"><polyline data-spark/></svg></div>
+              <div class="tile"><p class="tile__k"><span data-i18n="pump-control.demo.pump">পাম্প</span></p><p class="tile__v"><i class="lamp" data-lamp></i><span data-v="pump">–</span></p></div>
+              <div class="tile tile--ctl"><p class="tile__k"><span data-i18n="pump-control.demo.mode">নিয়ন্ত্রণ</span></p><div class="seg" role="radiogroup" aria-label="নিয়ন্ত্রণ" data-i18n-attr="aria-label:pump-control.demo.mode"><button type="button" class="seg__b" role="radio" aria-checked="false" data-mode="auto"><span data-i18n="pump-control.demo.auto">স্বয়ংক্রিয়</span></button><button type="button" class="seg__b" role="radio" aria-checked="false" data-mode="manual"><span data-i18n="pump-control.demo.manual">ম্যানুয়াল</span></button></div>
+                <div class="tile__btns"><button type="button" class="btn btn--sm btn--line" data-p-start><span data-i18n="pump-control.demo.start">পাম্প চালু</span></button><button type="button" class="btn btn--sm btn--line" data-p-stop><span data-i18n="pump-control.demo.stop">পাম্প বন্ধ</span></button></div></div>
+            </div>
+            <p class="dash__lock" data-locked hidden><span data-i18n="pump-control.demo.locked">শুধু দেখা যাবে: নিয়ন্ত্রণের জন্য অপারেটরের ভূমিকা লাগবে।</span></p>
+            <div class="dash__log"><p class="tile__k"><span data-i18n="pump-control.demo.log">ঘটনার লগ</span></p><ol class="dash__list" data-log aria-live="polite"></ol></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="section decisions">
+    <div class="wrap">
+      <h2 class="h2" data-split><span data-i18n="cs.highlights">বাস্তবায়নের উল্লেখযোগ্য দিক</span></h2>
+      <div class="dec-list"><article class="dec" data-reveal><h3 data-i18n="pump-control.h1.t">নির্ভরযোগ্য সেন্সিং</h3><p><span data-i18n="pump-control.h1.d">RS-485-এর মাধ্যমে পানির স্তর ও প্রবাহ নিরবচ্ছিন্নভাবে পড়া ও রিয়েল-টাইমে সংগ্রহ করা হয়।</span></p></article><article class="dec" data-reveal><h3 data-i18n="pump-control.h2.t">স্বয়ংক্রিয় পরিচালনা</h3><p><span data-i18n="pump-control.h2.d">পাম্পগুলো সফটওয়্যারের নিয়ন্ত্রণে চলে, তাই পানি গ্রহণ হাতে চালানোর ওপর নির্ভর করে না।</span></p></article><article class="dec" data-reveal><h3 data-i18n="pump-control.h3.t">ভূমিকাভিত্তিক অ্যাক্সেস</h3><p><span data-i18n="pump-control.h3.d">Qt ড্যাশবোর্ড প্রত্যেক ব্যবহারকারীকে তাঁর ভূমিকায় অনুমোদিত মনিটরিং ও নিয়ন্ত্রণ ফাংশন দেখায়।</span></p></article><article class="dec" data-reveal><h3 data-i18n="pump-control.h4.t">স্থানীয় ও ক্লাউড ডেটা</h3><p><span data-i18n="pump-control.h4.d">ডেটা স্থানীয়ভাবে MySQL-এ পরিচালিত হয় এবং Google Cloud SQL-এর সঙ্গে যুক্ত।</span></p></article></div>
+    </div>
+  </section>
+  <section class="section related-sec">
+    <div class="wrap split">
+      <h2 class="h2" data-split><span data-i18n="cs.related">সম্পর্কিত প্রজেক্ট</span></h2>
+      <div>
+        <ul class="related" data-reveal><li><a href="flow-battery.html"><span data-ptitle="p6"><span class="pt" lang="en">Flow-Battery Monitoring and Protection</span><span class="pt-loc">ফ্লো ব্যাটারি পর্যবেক্ষণ ও সুরক্ষা ব্যবস্থা</span></span><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 12 12 4M6 4h6v6" stroke="currentColor" fill="none" stroke-width="1.4"/></svg></a></li><li><a href="follow-me.html"><span data-ptitle="p5"><span class="pt" lang="en">Agricultural Follow-Me Transport Vehicle</span><span class="pt-loc">কৃষিকর্মীকে অনুসরণকারী পরিবহনযান</span></span><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 12 12 4M6 4h6v6" stroke="currentColor" fill="none" stroke-width="1.4"/></svg></a></li></ul>
+        <a class="next-case" href="follow-me.html" data-reveal><span class="next-case__k" data-i18n="cs.next">পরের কেস স্টাডি</span><span class="next-case__t" data-ptitle="p5"><span class="pt" lang="en">Agricultural Follow-Me Transport Vehicle</span><span class="pt-loc">কৃষিকর্মীকে অনুসরণকারী পরিবহনযান</span></span><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 12 12 4M6 4h6v6" stroke="currentColor" fill="none" stroke-width="1.4"/></svg></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section dark contact-band" data-light>
+    <div class="curve" aria-hidden="true"></div>
+    <div class="wrap contact-band__in">
+      <h2 class="contact-band__title" data-split><span data-i18n-html="cs.discuss">এ ধরনের কোনো প্রজেক্ট নিয়ে কাজ করছেন? <em>চলুন কথা বলি।</em></span></h2>
+      <div class="intents"><a class="intent-link intent-link--primary" href="../hire.html"><span class="intent-link__t"><span data-i18n="c.hire">প্রজেক্ট নিয়ে আলোচনা করুন</span><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 12 12 4M6 4h6v6" stroke="currentColor" fill="none" stroke-width="1.4"/></svg></span><span class="intent-link__d" data-i18n="c.hire.d">চুক্তিভিত্তিক উন্নয়ন ও কারিগরি পরামর্শ</span></a><a class="intent-link" href="../hire.html?intent=collab"><span class="intent-link__t"><span data-i18n="c.collab">গবেষণা সহযোগিতার প্রস্তাব দিন</span><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 12 12 4M6 4h6v6" stroke="currentColor" fill="none" stroke-width="1.4"/></svg></span><span class="intent-link__d" data-i18n="c.collab.d">একাডেমিক ও গবেষণা সহযোগীদের জন্য</span></a><a class="intent-link" href="../hire.html?intent=msg"><span class="intent-link__t"><span data-i18n="c.msg">বার্তা পাঠান</span><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 12 12 4M6 4h6v6" stroke="currentColor" fill="none" stroke-width="1.4"/></svg></span><span class="intent-link__d" data-i18n="c.msg.d">চাকরির প্রস্তাব, পেশাগত যোগাযোগ বা অন্য কোনো বিষয়</span></a></div>
+      <footer class="foot">
+        <span>© 2026 <span lang="en">Auntu Gain</span></span>
+        
+        <a href="#main" data-i18n="f.top">ওপরে ফিরুন</a>
+      </footer>
+    </div>
+  </section>
+</main>
+
+<script>window.AG_CASE = {"slug": "pump-control", "diagram": {"lanes": [{"label": "lane1", "nodes": ["sensors", "bus", "pi", "pump"]}, {"label": "lane2", "nodes": ["ui", "mysql", "cloud"]}], "links": [["pi", "ui"]], "first": "pi"}, "demo": "pump-sim"};</script>
+<script src="../../assets/js/i18n/common.js"></script>
+<script src="../../assets/js/i18n/case.js"></script>
+<script src="../../assets/js/i18n/case-pump-control.js"></script>
+<script src="../../assets/js/data/site.js"></script>
+<script src="../../assets/js/site.js"></script>
+<script src="../../assets/js/motion.js"></script>
+<script src="../../assets/js/art.js"></script>
+<script src="../../assets/js/case.js"></script>
+</body>
+</html>
